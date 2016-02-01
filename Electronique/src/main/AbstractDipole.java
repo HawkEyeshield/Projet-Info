@@ -2,7 +2,7 @@ package main;
 
 /**
  * Classe abstraite définisant les dippôles 
- * @author CF
+ * @author CF, Sterenn
  */
 public abstract class AbstractDipole 
 {
