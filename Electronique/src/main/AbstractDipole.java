@@ -1,7 +1,7 @@
 package main;
 
 /**
- * Classe abstraite définisant les dippôles 
+ * Classe abstraite définisant les dipôles 
  * @author CF, Sterenn
  */
 public abstract class AbstractDipole 
