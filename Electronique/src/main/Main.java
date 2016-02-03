@@ -2,7 +2,7 @@ package main;
 
 import java.util.ArrayList;
 
-/** Classe Main du projet, boucle principale  
+/** Classe Main du projet, boucle principale  coucou
  * @author CF 
  */
 
