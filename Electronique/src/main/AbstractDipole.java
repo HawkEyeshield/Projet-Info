@@ -10,7 +10,12 @@ public abstract class AbstractDipole
 	 * Nom donnée au composant pour affichage user-friendly
 	 */
 	protected String name;
-
+	
+	/**
+	 * Type de composant
+	 */
+	private Type type;
+	
 	/**
 	 * Entier indiquant à quels autres fils est relié le premier lien
 	 */
@@ -22,19 +27,9 @@ public abstract class AbstractDipole
 	protected int second_link;
 
 	/**
-	 * Potentiel par défaut fixé pour les composants passifs
+	 * Flottant indiquant la différence de potentielle
 	 */
-	protected final float DEFAULT_POTENTIAL=0;
-	
-	/**
-	 * Flottant indiquant le potentiel du premier lien
-	 */
-	protected float first_potential=DEFAULT_POTENTIAL;
-
-	/**
-	 * Flottant indiquant le potentiel du second lien
-	 */
-	protected float second_potential=DEFAULT_POTENTIAL;
+	protected float difference_potential;
 
 
 	/**
@@ -47,6 +42,12 @@ public abstract class AbstractDipole
 	 */
 	protected float current=DEFAULT_CURRENT;
 
+	/**
+	 * valeur caractéristique du composant
+	 */
+	private float valeur;
+	
+
 
 	/**
 	 * Constructeur de cette classe, les classes filles préciseront les autres paramètres dans leurs constructeurs respectifs
@@ -54,13 +55,59 @@ public abstract class AbstractDipole
 	 * @param first_link Entier à renseigner pour savoir à quels autres liens est connecté le premier fil
 	 * @param second_link Entier à renseigner pour savoir à quels autres liens est connecté le second fil
 	 */
-	public AbstractDipole(String name, int first_link, int second_link)
+	public AbstractDipole(String name, Type type, int first_link, int second_link, float valeur)
 	{
 		this.name=name;
+		this.type=type;
 		this.first_link=first_link;
 		this.second_link=second_link;
+		this.valeur = valeur;
 	}
-
+	
+	
+	
+	
+	/*
+	public boolean tensionConnue(){
+		return(this.)
+	}
+	
+	*/
+	/**
+	 * Getteur du type
+	 * @return le type du composant
+	 */
+	public Type getType(){
+		return(this.type);
+	}
+	
+	/**
+	 * Getteur de la valeur caractéristique du composant
+	 * @return la valeur caractéristique du composant
+	 */
+	public float getValue(){
+		return(this.valeur);
+	}
+	
+	/**
+	 * Setteur du type
+	 * @param le type du composant
+	 */
+	public void setType(Type type){
+		this.type = type;
+	}
+	
+	/**
+	 * Setteur de la valeur caractéristique du composant
+	 * @param la valeur caractéristique du composant
+	 * @return 
+	 */
+	public void setValue(float valeur){
+		this.valeur = valeur;
+	}
+	
+	
+	
 	/**
 	 * Getteur de name
 	 * @return le nom du composant
@@ -116,40 +163,23 @@ public abstract class AbstractDipole
 	}
 	
 	/**
-	 * Getteur de first_potential
+	 * Getteur de potential
 	 * @return le potentiel du premier fil
 	 */
-	public float getFirstPotential()
+	public float getPotential()
 	{
-		return this.first_potential;
+		return this.difference_potential;
 	}
 	
 	/**
 	 * Setteur de first_potential
-	 * @param first_potential potentiel à imposer au premier lien
+	 * @param potential potentiel à imposer au premier lien
 	 */
-	public void setFirstPotential(float first_potential)
+	public void setFirstPotential(float potential)
 	{
-		this.first_potential=first_potential;
+		this.difference_potential=potential;
 	}
 	
-	/**
-	 * Getteur de second_potential
-	 * @return le potentiel du second fil
-	 */
-	public float getSecondPotential()
-	{
-		return this.second_potential;
-	}
-	
-	/**
-	 * Setteur de second_potential
-	 * @param second_potential potentiel à imposer au second lien
-	 */
-	public void setSecondPotential(float second_potential)
-	{
-		this.second_potential=second_potential;
-	}
 	
 	/**
 	 * Getteur de current

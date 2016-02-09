@@ -19,9 +19,9 @@ public class Resistor extends AbstractDipole
 	 * @param second_link entier désigant les liaisons communes avec le second lien 
 	 * @param value valeur de la résistance
 	 */
-	public Resistor(String name, int first_link, int second_link, float value)
+	public Resistor(String name,Type type, int first_link, int second_link, float value)
 	{
-		super(name, first_link, second_link);
+		super(name, type, first_link, second_link, value);
 		this.value=value;
 	}
 	
@@ -32,10 +32,13 @@ public class Resistor extends AbstractDipole
 	 */
 	public float computeCurrent()
 	{
-		float c=(this.first_potential - this.second_potential)/this.value;
+		float c=(this.difference_potential)/this.value;
 		this.current=c;
 		return c;
 	}
+	
+	
+	//La suite est a priori inutile car maintenant on donne en paramètre la valeur de la résistance
 	/**
 	 * Getteur de value
 	 * @return la valeur du composant

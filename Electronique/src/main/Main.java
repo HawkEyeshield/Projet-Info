@@ -2,7 +2,7 @@ package main;
 
 import java.util.ArrayList;
 
-/** Classe Main du projet, boucle principale  coucou
+/** Classe Main du projet, boucle principale
  * @author CF 
  */
 
@@ -10,6 +10,7 @@ public class Main {
 
 	public static void main(String[] args) 
 	{
+		/*
 		Resistor r1 = new Resistor("r1", 1, 0,100);
 		Resistor r2 = new Resistor("r2", 1, 0,200);
 		Resistor r3 = new Resistor("r3", 2, 0,100);
@@ -29,6 +30,7 @@ public class Main {
 		b.setPotentials();
 		b.setCurrents();
 		System.out.println(b);
+		*/
 	}
 
 }
