@@ -1,3 +1,6 @@
 .metadata/
 .metadata
 .metadata/*
+out/
+.idea/
+RemoteSystemsTempFiles/
