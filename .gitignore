@@ -1,4 +1,5 @@
 .metadata
+.rec
 bin/
 tmp/
 *.tmp
@@ -46,9 +47,11 @@ local.properties
 .springBeans
 
 # Code Recommenders
-.recommenders/.metadata/
+.recommenders/
+
 .metadata
 .metadata/*
+.classpath
 .plugins/
 .settings/
 .root/
