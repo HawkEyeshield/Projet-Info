@@ -1,9 +1,8 @@
 package main;
 
 /**
- * 
- * @author tanguy
  * Classe qui represente les informations utilisées pour le calcul.
+ * @author tanguy
  */
 public class Information { //Placer de base comme étant un interrupteur ouvert
 	boolean tensionConnue = false;
