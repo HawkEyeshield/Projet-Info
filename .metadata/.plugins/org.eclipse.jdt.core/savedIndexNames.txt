@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 INDEX VERSION 1.127+/home/francois/workspace/Projet-Info/.metadata/.plugins/org.eclipse.jdt.core
+=======
+INDEX VERSION 1.127+/home/tanguy/Documents/Projet-Info/.metadata/.plugins/org.eclipse.jdt.core
+>>>>>>> 2b54f3691dd4401bc81b6e6642a5fe74f6afcff0
 3415533129.index
 3542660237.index
 2307328643.index

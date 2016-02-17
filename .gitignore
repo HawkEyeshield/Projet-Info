@@ -5,3 +5,6 @@
 .settings/
 .root/
 .safetable/
+out/
+.idea/
+RemoteSystemsTempFiles/
