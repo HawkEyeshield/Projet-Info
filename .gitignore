@@ -1,3 +1,7 @@
 .metadata/
 .metadata
 .metadata/*
+.plugins/
+.settings/
+.root/
+.safetable/
