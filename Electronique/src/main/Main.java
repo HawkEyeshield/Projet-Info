@@ -1,8 +1,8 @@
 package main;
+import Resolution.test_wheatstone;
 
-import java.util.ArrayList;
 
-/** Classe Main du projet, boucle principale
+/** Classe test_wheatstone du projet, boucle principale
  * @author CF 
  */
 
@@ -10,6 +10,7 @@ public class Main {
 
 	public static void main(String[] args) 
 	{
+		new test_wheatstone();
 		/*
 		Resistor r1 = new Resistor("r1", 1, 0,100);
 		Resistor r2 = new Resistor("r2", 1, 0,200);

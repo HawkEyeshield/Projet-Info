@@ -7,21 +7,23 @@ import java.util.ArrayList;
  * @author tanguy
  *
  */
-
+/*
 public class Graphe {
 	
 	
 	private AbstractDipole[][][] matrice;
 	int nbreNoeud;
+	*/
 	/**
 	 * On le représente par une matrice de dipole, on met aussi le nombre de noeud pour plus de clarté
 	 * @param nombreDeNoeud
 	 */
+/*
 	public Graphe (int nombreDeNoeud){
 		matrice = new AbstractDipole [nombreDeNoeud][nombreDeNoeud][];
 		nbreNoeud = nombreDeNoeud;
 	}
-	
+	*/
 	//TODO fonction qui permet de remplir le graphe en prennant en argument sans doute un tableau dégeu ( à voir avec l'ingterface graphique)
 	
 	//TODO faire une autre fonction qui permet d'ajouter et d'enlever un noeud(risque d'être chiant...)
@@ -32,6 +34,8 @@ public class Graphe {
 	 * @param second_link entier indiquant les liaisons communes avec le second AbstractDipole
 	 * @param valeur dépend du composant
 	 */
+
+/*
 	public void add_link(int first_link, int second_link, String type, String name, float valeur) throws IllegalArgumentException {
 		
 		if (first_link<0 || first_link >= nbreNoeud|| second_link<0 || second_link >= nbreNoeud)
@@ -49,15 +53,19 @@ public class Graphe {
 		if (type == "generateurDeCourant"){
 			a[taille] = new Resistor(name,Type.RESISTOR, first_link,second_link,valeur);
 		}
+		*/
 		//TODO rajouter les générateurs de tension/courant
 		/*
 		if (type == 'n'){
 			a[taille] = new fil();
 		}
 		*/
+
+/*
 		matrice[first_link][second_link] = a;
 		
 	}
+	*/
 	//TODO 3 fonctions qui seront utliser par raph, la première en cours
 	//TODO fonction qui améliore les donner du graphe en regardant chaque composant
 	// par exemple pour un generateur de tension, fixer la tension a ces bornes ainsi que noter que la tension est connue
@@ -72,6 +80,8 @@ public class Graphe {
 	 * @return
 	 * @throws IllegalStateException si i ou j sont pas des bonnes valeurs
 	 */
+
+	/*
 	public Information[] getInfoNode(int i, int j) throws IllegalStateException{
 		
 		if (i<0 || i >= nbreNoeud|| j<0 || j >= nbreNoeud) throw new IllegalStateException("une des deux valeurs n'est pas dans le graphe");
@@ -95,3 +105,4 @@ public class Graphe {
 
 	
 }
+*/
