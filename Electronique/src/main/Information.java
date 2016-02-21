@@ -1,5 +1,7 @@
 package main;
 
+import Components.Type;
+
 /**
  * Classe qui represente les informations utilisées pour le calcul.
  * @author tanguy

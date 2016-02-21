@@ -51,7 +51,7 @@ public class Graphe {
 			a[taille] = new Generator(name,Type.GENERATORTENSION,first_link,second_link,valeur);
 		}
 		if (type == "generateurDeCourant"){
-			a[taille] = new Resistor(name,Type.RESISTOR, first_link,second_link,valeur);
+			a[taille] = new Admittance(name,Type.RESISTOR, first_link,second_link,valeur);
 		}
 		*/
 		//TODO rajouter les générateurs de tension/courant

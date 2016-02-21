@@ -1,18 +1,23 @@
-package main;
+/*
+/*package main;
+ */
+
 
 import java.util.ArrayList;
 
-/**
+/*
  * Classe qui liste les différents composants et trouve leurs potentiel et courants
  * @author CF
  */
+
+/*
 public class Breadboard
 {
-	private ArrayList<Resistor> listr;
+	private ArrayList<Admittance> listr;
 	
 	private ArrayList<Generator> listg;
 	
-	public Breadboard(ArrayList<Resistor> list, ArrayList<Generator> listg)
+	public Breadboard(ArrayList<Admittance> list, ArrayList<Generator> listg)
 	{
 		this.listr=list;
 		this.listg=listg;
@@ -21,6 +26,7 @@ public class Breadboard
 	/**
 	 * Etablit les potentiels
 	 */
+/*
 	public void setPotentials()
 	{
 		for (int i=0;i<this.listg.size();i++)
@@ -50,6 +56,8 @@ public class Breadboard
 	/**
 	 * Méthode calculant les courants après avoir trouvé les potentiels
 	 */
+
+/*
 	public void setCurrents()
 	{
 		for (int i=0; i<this.listr.size();i++)
@@ -80,3 +88,4 @@ public class Breadboard
 		return str;
 	}
 }
+*/

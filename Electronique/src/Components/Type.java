@@ -1,8 +1,8 @@
-package main;
+package Components;
 
 public enum Type {
-	RESISTOR,
-	GENERATORTENSION,
+	ADMITTANCE,
+	VOLTAGEGENERATOR,
 	FIL,
 	NULL;
 }
