@@ -1,9 +1,6 @@
-/*
-/*package main;
- */
+package main;
 
-
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 /*
  * Classe qui liste les différents composants et trouve leurs potentiel et courants

@@ -1,6 +1,6 @@
-package Components;
+package components;
 
-import Exceptions.AdmittanceError;
+import exceptions.AdmittanceError;
 
 /**
  * Classe pour les résistances

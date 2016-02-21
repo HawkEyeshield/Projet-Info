@@ -1,7 +1,4 @@
-package Resolution;
-
-import java.util.ArrayList;
-
+package resolution;
 
 public class Equation {
 
@@ -35,12 +32,17 @@ public class Equation {
     //variables name for print
     public char[] names;
 
-    double[][] symetrise(boolean opposition, double[][] source) {
+    double[][] symetrise(boolean opposition, double[][] source) 
+    {
         double[][] ret = new double[source.length][source[0].length];
-        for (int i_t = 0;i_t<3;i_t++) {
-            for (int i=0;i<size;i++) {
-                for (int j=0;j<i;j++) {
-                    if (opposition) {
+        for (int i_t = 0;i_t<3;i_t++) 
+        {
+            for (int i=0;i<size;i++) 
+            {
+                for (int j=0;j<i;j++) 
+                {
+                    if (opposition) 
+                    {
                         ret[i][j] = source[i][j] - source[j][i];
                         ret[j][i] = 0;
                     }
@@ -54,7 +56,8 @@ public class Equation {
         return ret;
     }
 
-    public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double courant) {
+    public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double courant) 
+    {
         //if ((tt1.length == tt2.length)&&(tt1.length== tt3.length)) return false;//######################################exceptionner
         size = tens.length;
 
@@ -69,19 +72,21 @@ public class Equation {
         //return true;
         }
 
-    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double curr) {//AMODIFIER
+    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double curr) 
+    {   //AMODIFIER
         //type gives the type of the variable substituated (1,2 or 3)
         //i and j give the coordinate of the variable (matrix)
-        //multi is the variable multiplicator (eg : for 2(einstein) = 3(cauchy) +4(dakhly) +5(léo lagrange) multi will be 2
+        //multi is the variable multiplicator (eg : for 2(einstein) = 3(cauchy) +4(dakhly) +5(lï¿½o lagrange) multi will be 2
         //curr is the coefficient of the generator's current
 
         //mod_x (x in [|1;3|] give the equivalent of the substituated variable (what we will replace it with)
         //cst is the value to add to the constant
 
         double coeff;
-        if (type!=-1) {
+        if (type!=-1) 
+        {
             if (mod[type][i][j] != 0)
-                return false; //###################################################################### déclencher une exception
+                return false; //###################################################################### dï¿½clencher une exception
             //##############################################################################################################verifier que la substitution ne fait pas intervenir le parametre qu'elle substitue
             coeff = t[type][i][j];
         }
@@ -90,19 +95,23 @@ public class Equation {
         double[][] m;
         double[][] cur;
         if (coeff !=0) {
-            for (int i_tab=0;i_tab<3;i_tab++) {//modifying each array of variable
+            for (int i_tab=0;i_tab<3;i_tab++) 
+            {//modifying each array of variable
                 //all we have to do is to add the array coefficients by coefficients (one multiplied by #coeff
                 cur = t[i_tab];
                 m = mod[i_tab];
-                for(int c_i=0;c_i<size;c_i++) {//row
-                    for(int c_j=0;c_j<size;c_j++) {//column
+                for(int c_i=0;c_i<size;c_i++) 
+                {//row
+                    for(int c_j=0;c_j<size;c_j++) 
+                    {//column
                         cur[c_i][c_j] += coeff * m[c_i][c_j];//summing
                     }
                 }
             }
         }
         constante-=coeff*cst;
-        if (type != -1) {
+        if (type != -1) 
+        {
             coeff_courant_alim += coeff * curr;
             t[type][i][j] = 0;//deleting the substituated variable
         }
@@ -113,10 +122,13 @@ public class Equation {
         return true;
     }
 
-    public void eliminate_current(boolean voltage_unknown,int i, int j, double value) {
+    public void eliminate_current(boolean voltage_unknown,int i, int j, double value) 
+    {
         double coeff = t[0][i][j];
-        if (coeff != 0) {
-            if (voltage_unknown) {
+        if (coeff != 0) 
+        {
+            if (voltage_unknown) 
+            {
                 t[1][i][j] += value*coeff;
                 t[0][i][j] = 0;
             }
@@ -127,8 +139,10 @@ public class Equation {
         }
     }
 
-    public boolean replace(int type, int i, int j, double value) {
-        if ((type == -1)&&(i == -1)&&(j == 0)) {
+    public boolean replace(int type, int i, int j, double value) 
+    {
+        if ((type == -1)&&(i == -1)&&(j == 0)) 
+        {
             constante-=value*coeff_courant_alim;
             coeff_courant_alim = 0;
             return true;
@@ -141,18 +155,23 @@ public class Equation {
         return true;
     }
 
-    private void update() {
+    private void update() 
+    {
         update_nunk();
         stable =  !((nunk==0)&&(constante != 0));
         trivial = (nunk==0)&&(constante == 0);
     }
 
-    private void update_nunk () {
+    private void update_nunk () 
+    {
         int cpt = 0;
         if (coeff_courant_alim != 0) cpt++;
-        for(int i_t=0;i_t<3;i_t++) {
-            for(int i=0;i<size;i++) {
-                for (int j = 0; j < size; j++) {
+        for(int i_t=0;i_t<3;i_t++) 
+        {
+            for(int i=0;i<size;i++) 
+            {
+                for (int j = 0; j < size; j++) 
+                {
                     if (t[i_t][i][j] != 0) {
                         cpt++;
                     }
@@ -162,11 +181,16 @@ public class Equation {
         nunk = cpt;
     }
 
-    public int[] get_first_variable() {
-        for(int i_t=0;i_t<3;i_t++) {
-            for(int i=0;i<size;i++) {
-                for (int j = 0; j < size; j++) {
-                    if (t[i_t][i][j] != 0) {
+    public int[] get_first_variable() 
+    {
+        for(int i_t=0;i_t<3;i_t++) 
+        {
+            for(int i=0;i<size;i++) 
+            {
+                for (int j = 0; j < size; j++) 
+                {
+                    if (t[i_t][i][j] != 0) 
+                    {
                         used = true;
                         return new int[]{i_t,i,j};
                     }
@@ -178,7 +202,8 @@ public class Equation {
         return new int[]{-1,-1,0};/////////////////////////////////////////////////////////////////////////////////////retourner une erreur au lieu d'un tableau pourri
     }
 
-    public double[] get_value(int[] id) {
+    public double[] get_value(int[] id) 
+    {
         double coeff;
         if ((id[0] == -1)&&(id[2]==0)) return new double[]{constante/coeff_courant_alim,0};
         else {
@@ -187,16 +212,21 @@ public class Equation {
         }
     }
 
-    public double[][][] get_equivalent(int[] x) {
+    public double[][][] get_equivalent(int[] x) 
+    {
         double[][][] ret = new double[3][size][size];
         double coeff;
         if((x[0] == -1)&&(x[1] == -1)&&(x[2]==0)) coeff = coeff_courant_alim;
         else coeff = t[x[0]][x[1]][x[2]];
 
-        for(int i_t=0;i_t<3;i_t++) {
-            for(int i=0;i<size;i++) {
-                for(int j=0;j<size;j++) {
-                    if ((i_t == x[0])&&(i==x[1])&&(j==x[2])) {
+        for(int i_t=0;i_t<3;i_t++) 
+        {
+            for(int i=0;i<size;i++) 
+            {
+                for(int j=0;j<size;j++) 
+                {
+                    if ((i_t == x[0])&&(i==x[1])&&(j==x[2])) 
+                    {
                         ret[i_t][i][j] = 0;
                     }
                     else ret[i_t][i][j] = -t[i_t][i][j]/coeff;
@@ -207,9 +237,12 @@ public class Equation {
     }
 
     //FONCTION AYANT CONNAISSANCE DE LA POSITION DU COURANT
-    public boolean is_current_present() {
-        for (int i=0;i<size;i++) {
-            for (int j= 0; j<size; j++) {
+    public boolean is_current_present() 
+    {
+        for (int i=0;i<size;i++) 
+        {
+            for (int j= 0; j<size; j++) 
+            {
                 if (t[0][i][j] != 0) return true;
             }
         }
@@ -217,14 +250,19 @@ public class Equation {
     }
 
     @Override
-    public String toString() {
+    public String toString() 
+    {
         String str = "";
         boolean sum=false;
-        for(int typ=0;typ<3;typ++) {
+        for(int typ=0;typ<3;typ++) 
+        {
             double[][] c = t[typ];
-            for(int i = 0;i<size;i++) {
-                for(int j = 0;j<size;j++) {
-                    if (c[i][j] != 0) {
+            for(int i = 0;i<size;i++) 
+            {
+                for(int j = 0;j<size;j++) 
+                {
+                    if (c[i][j] != 0) 
+                    {
                         if (sum) str += " + ";
                         else sum = true;
                         if (c[i][j] != 0) str += c[i][j] + "*" + names[typ] + "(" + i + "," + j + ")";
@@ -232,7 +270,8 @@ public class Equation {
                 }
             }
         }
-        if (coeff_courant_alim != 0) {
+        if (coeff_courant_alim != 0) 
+        {
             str+= " + " + coeff_courant_alim + "*I ";
         }
 

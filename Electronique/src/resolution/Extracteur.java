@@ -1,25 +1,29 @@
-package Resolution;
+package resolution;
 
-import Components.AbstractDipole;
-import Components.Generator;
 import org.jgrapht.graph.Multigraph;
+
+import components.AbstractDipole;
+import components.Generator;
 
 import java.util.ArrayList;
 
 /**
- * Created by Raphaël on 19/02/2016.
+ * @author Briztou
  */
-public class Extracteur {
+public class Extracteur 
+{
 
     public Multigraph<Integer, AbstractDipole> graph;
 
-    public Extracteur(Multigraph<Integer, AbstractDipole> g) {
+    public Extracteur(Multigraph<Integer, AbstractDipole> g) 
+    {
         graph = g;
 
         extraction();
     }
 
-    private void extraction() {
+    private void extraction() 
+    {
         //First Step : get all generators
         //ArrayList<Generator> generateurs = graph.get_all_generators();
 

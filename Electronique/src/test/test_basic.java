@@ -1,5 +1,7 @@
-package Resolution;
+package test;
 
+import resolution.Equation;
+import resolution.Solveur;
 
 public class test_basic {
     public test_basic() {
@@ -48,7 +50,8 @@ public class test_basic {
 
 
         Equation[] eq = new Equation[]{eq1, eq2, eq3, eq4};
-        Solveur solveur = new Solveur(u, i, y, new double[]{0, 0}, eq);
+        @SuppressWarnings("unused")
+		Solveur solveur = new Solveur(u, i, y, new double[]{0, 0}, eq);
     }
 
 

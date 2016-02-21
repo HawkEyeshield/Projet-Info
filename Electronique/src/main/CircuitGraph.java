@@ -1,11 +1,12 @@
 package main;
-import Components.AbstractDipole;
-import Components.VoltageGenerator;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.Multigraph;
 
+import components.AbstractDipole;
+import components.VoltageGenerator;
+
 /**
- * Created by Raphaël on 19/02/2016.
+ * Created by Raphaï¿½l on 19/02/2016.
  */
 public class CircuitGraph {
 

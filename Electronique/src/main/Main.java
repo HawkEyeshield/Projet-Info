@@ -1,5 +1,5 @@
 package main;
-import Resolution.test_wheatstone;
+import test.test_wheatstone;
 
 
 /** Classe test_wheatstone du projet, boucle principale

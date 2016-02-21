@@ -1,6 +1,6 @@
 package main;
 
-import Components.Type;
+import components.Type;
 
 /**
  * Classe qui represente les informations utilisées pour le calcul.
