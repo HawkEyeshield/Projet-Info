@@ -1,4 +1,5 @@
 package main;
+import Resolution.test_extracteur;
 import Resolution.test_wheatstone;
 
 
@@ -10,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) 
 	{
-		new test_wheatstone();
+		new test_extracteur();
 		/*
 		Admittance r1 = new Admittance("r1", 1, 0,100);
 		Admittance r2 = new Admittance("r2", 1, 0,200);

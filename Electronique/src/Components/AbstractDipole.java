@@ -63,7 +63,7 @@ public abstract class AbstractDipole
 
 
 	//Getters de type : il n'y a pas de mutabilité du type donc pas de setter
-	public Type getType(){
+	public Type type(){
 		return(this.type);
 	}
 

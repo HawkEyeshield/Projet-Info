@@ -18,7 +18,7 @@ public class Admittance extends AbstractDipole
 	 * @param first_link entier désignant les liaisons communes avec le premier lien
 	 * @param second_link entier désigant les liaisons communes avec le second lien 
 	 */
-	public Admittance(String name, Type type, int first_link, int second_link)
+	public Admittance(String name, int first_link, int second_link)
 	{
 		super(name, Type.ADMITTANCE, first_link, second_link);
 		this.determination = new boolean[]{false,false,false};

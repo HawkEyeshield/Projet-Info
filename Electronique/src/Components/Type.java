@@ -3,6 +3,7 @@ package Components;
 public enum Type {
 	ADMITTANCE,
 	VOLTAGEGENERATOR,
+	CURRENTGENERATOR,
 	FIL,
 	NULL;
 }
