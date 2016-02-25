@@ -1,15 +1,15 @@
 package Resolution;
 
-import Components.Generator;
-import Components.Type;
+import Components.*;
 import GraphStructure.CircuitGraph;
 import GraphStructure.Vertex;
 import GraphStructure.map;
+import org.jgrapht.graph.Multigraph;
 
 import java.util.ArrayList;
 
 /**
- * Created by Raphaël on 19/02/2016.
+ * @author Briztou
  */
 public class Extracteur {
 
@@ -19,6 +19,7 @@ public class Extracteur {
         graph = g;
         extraction(false);
     }
+
     public void log(String s) {
         System.out.println(s);
     }
@@ -98,9 +99,9 @@ public class Extracteur {
                             cour[vertices[k].get()][m.Vertex().get()] = 1;
                             //TODO faire le cas ou le courant est fixé.
                             break;
-                        case CURRENTGENERATOR:
+                        case CURRENT_GENERATOR:
                             break;
-                        case VOLTAGEGENERATOR:
+                        case VOLTAGE_GENERATOR:
                             Generator gen = (Generator) m.component();
                             if (gen.is_active()) {
                                 //if cur_gen has already been modified, we know that almost two generators are active : ERROR
@@ -108,7 +109,6 @@ public class Extracteur {
                                     log("failed to turn off all generators : two are still active");
                                     return false;
                                 } else cur_gen = signe;
-
                             }
                             break;
                     }

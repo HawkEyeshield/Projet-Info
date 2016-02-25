@@ -1,11 +1,15 @@
 package Exceptions;
 
 /**
- * Created by Raphaël on 21/02/2016.
+ * @author Briztou
  */
 
 public class AdmittanceError extends AbstractDipoleError{
-    public AdmittanceError(String m) {
+    
+	private static final long serialVersionUID = 1L;
+
+	public AdmittanceError(String m) 
+	{
         super(m);
     }
 }

@@ -3,8 +3,8 @@ package Components;
 import Exceptions.VoltageGeneratorError;
 
 /**
- * Classe pour les générateurs
- * @author CF
+ * Classe pour les générateurs de tension
+ * @author CF, Briztou
  */
 public class VoltageGenerator extends Generator
 {
@@ -15,32 +15,43 @@ public class VoltageGenerator extends Generator
 	 * @param second_link entier indiquant les liaisons communes avec le second lien
 	 */
 	public VoltageGenerator(String name, int first_link, int second_link) {
-		super(name, Type.VOLTAGEGENERATOR, first_link, second_link);
+		super(name, Type.VOLTAGE_GENERATOR, first_link, second_link);
 	}
 
 	public VoltageGenerator(String name, int first_link, int second_link, double v) {
-		super(name, Type.VOLTAGEGENERATOR, first_link, second_link);
+		super(name, Type.VOLTAGE_GENERATOR, first_link, second_link);
 		this.voltage = v;
+
 	}
 
 
-	//Recuperation de la tension
-	@Override
-	public double getVoltage() {
+	/**
+	 * Getter de volage
+	 * @return la différence de potentiel aux bornes du générateur
+	 */
+	public double getVoltage() 
+	{
 		return this.voltage;
 	}
 
 
 	//fonctions de paramétrage des composants
-	//courant
-	@Override
+	
+	/**
+	 * Setter de current
+	 * @param c le courant traversant le générateur
+	 * @throws VoltageGeneratorError
+	 */
 	public void setCurrent(double c) throws VoltageGeneratorError
 	{
-		throw new VoltageGeneratorError("Sur contrainte : Le courant ne peut etre fixé dans un générateur de tension");
+		throw new VoltageGeneratorError("Sur contrainte : Le courant ne peut être fixé dans un générateur de tension");
 	}
 
-	//tension
-	@Override
+	/**
+	 * Setter de voltage
+	 * @param v la différence de potentiel que l'on impose aux bornes du générateur
+	 * @throws VoltageGeneratorError
+	 */
 	public void setVoltage(double v) throws VoltageGeneratorError
 	{
 		this.voltage = v;
@@ -49,7 +60,11 @@ public class VoltageGenerator extends Generator
 	//valeur caracteristique
 
 	//TODO Eventuellement parametrer la valeur caracteristique comme la tension délivrée par le générateur, en discuter avec l'equipe.
-	@Override
+	/**
+	 * Setter de value
+	 * @param valeur a valeur caractéritstique du générateur
+	 * @throws VoltageGeneratorError
+	 */
 	public void setValue(double valeur) throws VoltageGeneratorError
 	{
 		throw new VoltageGeneratorError("Un générateur de tension n'a pas de valeur caracteristique");

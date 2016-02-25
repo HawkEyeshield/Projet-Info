@@ -37,7 +37,7 @@ public class CircuitGraph {
         Set<AbstractDipole> set = graph.edgeSet();
         AbstractDipole[] d = set.toArray(new AbstractDipole[set.size()]);
         for (int i = 0; i < d.length; i++) {
-            if ((d[i].type() == Type.CURRENTGENERATOR) || (d[i].type() == Type.VOLTAGEGENERATOR)) {
+            if ((d[i].type() == Type.CURRENT_GENERATOR) || (d[i].type() == Type.VOLTAGE_GENERATOR)) {
                 s.add((Generator) d[i]);
             }
         }

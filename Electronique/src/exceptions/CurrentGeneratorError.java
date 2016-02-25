@@ -1,10 +1,14 @@
 package Exceptions;
-//Created by Raphaël on 21/02/2016.
 
 /**
+ * @author Briztou
  */
 public class CurrentGeneratorError extends AbstractDipoleError {
-    public CurrentGeneratorError(String m) {
+    
+	private static final long serialVersionUID = 1L;
+
+	public CurrentGeneratorError(String m) 
+	{
         super(m);
     }
 }

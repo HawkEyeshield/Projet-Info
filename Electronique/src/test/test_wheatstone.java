@@ -1,5 +1,8 @@
 
-package Resolution;
+package test;
+
+import Resolution.Equation;
+import Resolution.Solveur;
 
 public class test_wheatstone {
 
@@ -78,7 +81,8 @@ public class test_wheatstone {
 
 
         Equation[] eq = new Equation[]{eq1,eq2,eq3,eq4,eq5,eq6,eq7};
-        Solveur solveur = new Solveur(u,i,y,new double[]{0,0},eq);
+        @SuppressWarnings("unused")
+		Solveur solveur = new Solveur(u,i,y,new double[]{0,0},eq);
 
     }
 }
