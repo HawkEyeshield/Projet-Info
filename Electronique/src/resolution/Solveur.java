@@ -37,6 +37,8 @@ public class Solveur
             I U Y Igenerateur
 
         */
+
+        System.out.println("generator " +cg[0] +":"+cg[1]);
         nb_nodes = volt.length;
 
         variables = new double[][][][]{curr, volt, adm};
@@ -87,7 +89,7 @@ public class Solveur
         {
             for (int ind = 0; ind < nb_eq; ind++) 
             {
-                equations[ind].replace(-1, -1, -1, curr_generator[1]);
+                equations[ind].replace(-1, -1, 0, curr_generator[1]);
             }
         }
 
@@ -150,7 +152,6 @@ public class Solveur
     private boolean replace(int[] id,int cat, int nb, double value) 
     {//cat and nb give the original equation, so that we do not modify it.
         //##############################################################################################################verifier qu'on a pas d�ja d�termin� cette valeur
-
         //replacing the value in all equations
         set_variable_value(id,value,false);
         boolean div = false;
@@ -176,6 +177,7 @@ public class Solveur
                 }
             }
         }
+        System.out.println("done");
         return true;
     }
 

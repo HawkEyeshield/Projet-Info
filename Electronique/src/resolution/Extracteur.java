@@ -65,13 +65,16 @@ public class Extracteur {
         ArrayList<Equation> equations;//The equation list;
         int signe;//The coefficient variable
         double[][] cour;//The current matrix for equation
-        double cur_gen; //The generator current coefficient
+        double coeff_cur_gen; //The generator current coefficient
+        boolean cur_gen_det;
+        double cur_gen_value;
 
         //the variables matrices
         double[][][] voltages;
         double[][][] admittances;
         double[][][] currents;
         double[][][][] vartab;
+        boolean generator_found;
 
         //Step 2 : for each generator, calculate the circuit parameters
 
@@ -108,11 +111,15 @@ public class Extracteur {
                 }
             }
 
+            cur_gen_value=0;
+            cur_gen_det = false;
+//TODO reorganiser le graphe lorsque l'on coupe les generteurs : creer un nouveau graphe a chaque fois car des aretes disparaissent et des noeuds sont fusionnés.
             //Step 4 : Get all nodes equations
             for (Vertex vertice : vertices) {
                 log("Vertex " + vertice.get());
                 componentMap map;
-                cur_gen = 0;
+                coeff_cur_gen = 0;
+                generator_found = false;
                 cour = new double[len][len];
 
                 ArrayList<componentMap> connections = graph.getConnectedComponents(vertice);//Getting all components connected to this vertex
@@ -121,44 +128,67 @@ public class Extracteur {
                     if (m.incoming()) signe = 1;
                     else signe = -1;
                     //TODO : FAIRE LE GENERATEUR DE COURANT DANS LE RESOLVEUR
-
+                    Generator gen;
                     switch (m.component().type()) {
                         //writing coefficients in equation arrays;
+                        //TODO Faire la verif des valeurs
                         case ADMITTANCE:
                             //there is an admittance between the two vertices => a current (non generator-generated) can exist and an admittance too.
                             currents[vertice.get()][m.Vertex().get()][0] = 0;
                             admittances[vertice.get()][m.Vertex().get()][0] = 0;
-
                             cour[vertice.get()][m.Vertex().get()] = 1;
                             break;
-                        case CURRENT_GENERATOR:
-                            break;
-                        case VOLTAGE_GENERATOR:
-                            Generator gen = (Generator) m.component();
-                            int s = -1;
-                            if (m.incoming()) s=1;
+                        //This part doesnt replace values, this job is for the solver.
 
-                            voltages[vertice.get()][m.Vertex().get()] = new double[]{1,s*gen.getVoltage()};
+
+                        //Todo : verifier si les valeurs des generateurs sont bien remplacées dans cette partie ET dans la partie recup des valeurs, et si c'est le cas, simplifier.
+                        case VOLTAGE_GENERATOR://A Voltage generator determines the voltage between the points;
+                            gen = (Generator) m.component();
+                            //TODO modifier cette partie apres la reorganisation des graphes : si on detecte deux generateurs erreur.
+                            voltages[vertice.get()][m.Vertex().get()][0] = 1;
                             if (gen.is_active()) {
-                                //if cur_gen has already been modified, we know that almost two generators are active : ERROR
-                                if (cur_gen != 0) {
+                                voltages[vertice.get()][m.Vertex().get()][1] = signe*gen.getVoltage();//If the generator is not active, the voltage will be set to 0
+                                //if coeff_cur_gen has already been modified, we know that almost two generators are active : ERROR
+                                if (generator_found) {
                                     log("failed to turn off all generators : two are still active");
                                     return false;
-                                } else cur_gen = signe;
+                                } else coeff_cur_gen = signe;
+                                generator_found = true;//a generator has been found
+
+                            }
+                            break;
+                        case CURRENT_GENERATOR://A current Generator determines the current through a component
+                            System.out.println("\n\n\nBIPBIP\n\n\n");
+                            gen = (Generator) m.component();
+                            currents[vertice.get()][m.Vertex().get()][0] = 0;
+                            if (gen.is_active()) {
+                                currents[vertice.get()][m.Vertex().get()][1] = signe*gen.getCurrent();//If the generator is not active, the current will be set to 0
+                                //if coeff_cur_gen has already been modified, we know that almost two generators are active : ERROR
+                                if (generator_found) {
+                                    log("failed to turn off all generators : two are still active");
+                                    return false;
+                                }
+                                else {
+                                    coeff_cur_gen = signe;//TODO verifier si la constante est necessaire, et si on ne peut pas s'en passer, genre si elle n'est pas saisie dans la partie suivante
+                                    cur_gen_det = true;
+                                    cur_gen_value=signe*gen.getCurrent();
+                                }
+                                generator_found = true;//a generator has been found
                             }
                             break;
                     }
 
-                    //writing values in variables arrays;
+                    //writing values in variables arrays, so that they can be replaced in the solver.
                     double[][] det = m.component().getParameters();
                     for (int d = 0; d < 3; d++) {
                         if (det[d][0] == 1) {
                             vartab[d][vertice.get()][m.Vertex().get()][0] = 1;
-                            vartab[d][vertice.get()][m.Vertex().get()][1] = det[d][1];
+                            vartab[d][vertice.get()][m.Vertex().get()][1] = signe*det[d][1];
                         }
                     }
+                    //Todo tester si le signe est correctement mis dans les valeurs (aka l'orientation est bien faite)
                 }
-                Equation eq = new Equation(new double[len][len], cour, new double[len][len], 0, st, cur_gen);
+                Equation eq = new Equation(new double[len][len], cour, new double[len][len], 0, st, coeff_cur_gen);
                 log(eq.toString());
                 equations.add(eq);
             }
@@ -173,14 +203,16 @@ public class Extracteur {
                         volt[r+p][p+(r+1)%(f-p+1)] = 1;
                     }
                     System.out.println();
-                    Equation eq = new Equation(volt,new double[len][len], new double[len][len], 0, st, 0);
+                    Equation eq = new Equation(volt,new double[len][len], new double[len][len], 0, st,0);
 
                     equations.add(eq);
                 }
 
             }
             for(Equation eq:equations) System.out.println(eq);
-            double[] cg = new double[]{0, 0};
+            double[] cg;
+            if (cur_gen_det) cg = new double[]{1, cur_gen_value};
+            else cg = new double[]{0, 0};
             Equation[] eq = equations.toArray(new Equation[equations.size()]);
             new Solveur(voltages, currents, admittances, cg, eq);
         }

@@ -32,6 +32,24 @@ public class Equation {
     //variables name for print
     public char[] names;
 
+    public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double courant_alim)
+    {
+        //if ((tt1.length == tt2.length)&&(tt1.length== tt3.length)) return false;//######################################exceptionner
+        size = tens.length;
+
+        t = new double[][][]{symetrise(true,cour),symetrise(true,tens),symetrise(false,admit)};
+        constante = cst;
+        used = false;
+        names = v;
+        solved = false;
+        update();
+        coeff_courant_alim = courant_alim;
+
+        //return true;
+    }
+
+
+
     double[][] symetrise(boolean opposition, double[][] source) 
     {
         double[][] ret = new double[source.length][source[0].length];
@@ -56,23 +74,7 @@ public class Equation {
         return ret;
     }
 
-    public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double courant) 
-    {
-        //if ((tt1.length == tt2.length)&&(tt1.length== tt3.length)) return false;//######################################exceptionner
-        size = tens.length;
-
-        t = new double[][][]{symetrise(true,cour),symetrise(true,tens),symetrise(false,admit)};
-        constante = cst;
-        used = false;
-        names = v;
-        solved = false;
-        update();
-        coeff_courant_alim = courant;
-
-        //return true;
-        }
-
-    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double curr) 
+    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double curr)
     {   //AMODIFIER
         //type gives the type of the variable substituated (1,2 or 3)
         //i and j give the coordinate of the variable (matrix)
@@ -91,6 +93,7 @@ public class Equation {
             coeff = t[type][i][j];
         }
         else coeff = coeff_courant_alim;
+
 
         double[][] m;
         double[][] cur;
@@ -115,8 +118,7 @@ public class Equation {
             coeff_courant_alim += coeff * curr;
             t[type][i][j] = 0;//deleting the substituated variable
         }
-
-        else coeff_courant_alim = 0;
+        else  coeff_courant_alim = 0;
 
         update();
         return true;
@@ -139,9 +141,9 @@ public class Equation {
         }
     }
 
-    public boolean replace(int type, int i, int j, double value) 
+    public boolean replace(int type, int i, int j, double value)
     {
-        if ((type == -1)&&(i == -1)&&(j == 0)) 
+        if ((type == -1)&&(i == -1)&&(j == 0))
         {
             constante-=value*coeff_courant_alim;
             coeff_courant_alim = 0;
@@ -166,7 +168,7 @@ public class Equation {
     {
         int cpt = 0;
         if (coeff_courant_alim != 0) cpt++;
-        for(int i_t=0;i_t<3;i_t++) 
+        for(int i_t=0;i_t<3;i_t++)
         {
             for(int i=0;i<size;i++) 
             {
@@ -202,6 +204,7 @@ public class Equation {
         return new int[]{-1,-1,0};/////////////////////////////////////////////////////////////////////////////////////retourner une erreur au lieu d'un tableau pourri
     }
 
+    //TODO POINT NEVRALGIQUE : VERIFIER CE QUI EST FAIT DU RENDU DE LA FONCTION
     public double[] get_value(int[] id) 
     {
         double coeff;
@@ -270,10 +273,11 @@ public class Equation {
                 }
             }
         }
-        if (coeff_courant_alim != 0) 
+        if (coeff_courant_alim != 0)
         {
             str+= " + " + coeff_courant_alim + "*I ";
         }
+
 
         str+= " = " + constante;//+" . Nb inconnues : "+nunk+", Utilise : "+used+", resolue : "+solved;
 

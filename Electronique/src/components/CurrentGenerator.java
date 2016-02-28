@@ -16,12 +16,12 @@ public class CurrentGenerator extends Generator
 	 * @param second_link entier indiquant les liaisons communes avec le second lien
 	 */
 	public CurrentGenerator(String name, int first_link, int second_link) {
-		super(name, Type.VOLTAGE_GENERATOR, first_link, second_link);
+		super(name, Type.CURRENT_GENERATOR, first_link, second_link);
 		determination = false;
 	}
 
 	public CurrentGenerator(String name, int first_link, int second_link, double v) {
-		super(name, Type.VOLTAGE_GENERATOR, first_link, second_link);
+		super(name, Type.CURRENT_GENERATOR, first_link, second_link);
 		determination = true;
 		this.current = v;
 	}
