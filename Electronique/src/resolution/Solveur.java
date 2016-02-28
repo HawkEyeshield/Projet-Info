@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * @author Briztou
+ * @author TINTIN
  */
 public class Solveur 
 {

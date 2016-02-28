@@ -1,5 +1,8 @@
 package Resolution;
 
+/*
+@author Jean Pierre Coffe
+ */
 public class Equation {
 
     public int size;

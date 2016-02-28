@@ -8,7 +8,7 @@ import GraphStructure.componentMap;
 import java.util.ArrayList;
 
 /**
- * @author Briztou
+ * @author Un Boeuf
  */
 public class Extracteur {
 
@@ -113,7 +113,7 @@ public class Extracteur {
 
             cur_gen_value=0;
             cur_gen_det = false;
-//TODO reorganiser le graphe lorsque l'on coupe les generteurs : creer un nouveau graphe a chaque fois car des aretes disparaissent et des noeuds sont fusionnés.
+//TODO reorganiser le graphe lorsque l'on coupe les genereteurs : creer un nouveau graphe a chaque fois car des aretes disparaissent et des noeuds sont fusionnés.
             //Step 4 : Get all nodes equations
             for (Vertex vertice : vertices) {
                 log("Vertex " + vertice.get());

@@ -4,7 +4,7 @@ package main;
 
 /*
  * Classe qui liste les différents composants et trouve leurs potentiel et courants
- * @author CF
+ * @author Olivier de Carglass
  */
 
 /*
