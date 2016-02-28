@@ -30,6 +30,13 @@ public class VoltageGenerator extends Generator
 		return this.voltage;
 	}
 
+	public double[][] getParameters() {
+		double[][] ret = new double[3][2];
+		if (determination) {
+			ret[1] = new double[]{1,voltage};
+		}
+		return ret;
+	}
 
 	//fonctions de paramétrage des composants
 	//courant

@@ -17,13 +17,22 @@ public class CurrentGenerator extends Generator
 	 */
 	public CurrentGenerator(String name, int first_link, int second_link) {
 		super(name, Type.VOLTAGE_GENERATOR, first_link, second_link);
+		determination = false;
 	}
 
 	public CurrentGenerator(String name, int first_link, int second_link, double v) {
 		super(name, Type.VOLTAGE_GENERATOR, first_link, second_link);
-		this.voltage = v;
+		determination = true;
+		this.current = v;
 	}
 
+	public double[][] getParameters() {
+		double[][] ret = new double[3][2];
+		if (determination) {
+			ret[0] = new double[]{1,current};
+		}
+		return ret;
+	}
 
 	//Recuperation deu courant
 	@Override
@@ -46,6 +55,7 @@ public class CurrentGenerator extends Generator
 	public void setCurrent(double c) throws VoltageGeneratorError
 	{
 		this.current = c;
+		determination = true;
 	}
 
 	//valeur caracteristique

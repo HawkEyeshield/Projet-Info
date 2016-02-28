@@ -3,8 +3,7 @@ package Resolution;
 import Components.*;
 import GraphStructure.CircuitGraph;
 import GraphStructure.Vertex;
-import GraphStructure.map;
-import org.jgrapht.graph.Multigraph;
+import GraphStructure.componentMap;
 
 import java.util.ArrayList;
 
@@ -33,8 +32,7 @@ public class Extracteur {
 
         if (!resetting) {
             log("Resetting is disabled, I will not modify vertices numbers.");
-        }
-        else {
+        } else {
             log("Setting the vertices numbers...");
             //Step 0 :setting vertices : giving to each a number from 0 to [nb_vertices]
             for (int i = 0; i < len; i++) {
@@ -45,10 +43,10 @@ public class Extracteur {
 
         //Step 1 : checking that there are no parallel admittances
         log("Checking the components...");
-        for (int i=0;i<len;i++) {
-            for (int j=0;j<i;j++) {
-                if (graph.get_all_admittances(vertices[i],vertices[j]).size() >1) {
-                    log("There are two components connected to the same two vertices, I can't solve this problemfor instance.");
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < i; j++) {
+                if (graph.multipleAdmittances(vertices[i], vertices[j])) {
+                    log("There are two components connected to the same two vertices, I can't solve this problem for instance.");
                     return false;
                 }
             }
@@ -59,45 +57,79 @@ public class Extracteur {
         //Step 1 : get all generators
         ArrayList<Generator> generateurs = graph.get_all_generators();
         int l = generateurs.size();
-        log("Found "+l+" generators.\n");
+        log("Found " + l + " generators.\n");
+
+        //Variables for the extraction :
+        char[] st = new char[]{'U', 'I', 'Y'};
+
+        ArrayList<Equation> equations;//The equation list;
+        int signe;//The coefficient variable
+        double[][] cour;//The current matrix for equation
+        double cur_gen; //The generator current coefficient
+
+        //the variables matrices
+        double[][][] voltages;
+        double[][][] admittances;
+        double[][][] currents;
+        double[][][][] vartab;
 
         //Step 2 : for each generator, calculate the circuit parameters
 
-        char[] st = new char[]{'U', 'I', 'Y'};
-
-        for (int i = 0;i<l;i++) {
-            log("Generator "+i+" : ");
+        //Generate the variables a
+        for (int i = 0; i < l; i++) {
+            log("Generator " + i + " : ");
             //Step 3 : turning on each generator and disabling all others
-            for (int j = 0;j<l;j++) {
-                if (j==i) generateurs.get(j).turn_on();
+            for (int j = 0; j < l; j++) {
+                if (j == i) generateurs.get(j).turn_on();
                 else generateurs.get(j).turn_off();
             }
 
-            ArrayList<Equation> equations = new ArrayList<>();
+            equations = new ArrayList<>();
+            voltages = new double[len][len][2];//pas besoin d'initialiser, car toutes les tensions sont connues.
+            for (double[][] x:voltages) {
+                for (double[] y:x) y[0] = 0;
+            }
 
-            int signe;//The coefficient variable
-            double[][] cour;//The current matrix for equation
-            double cur_gen; //The generator current coefficient
+            currents = new double[len][len][2];//There we need to initialise, as current do not exist without a dipole
+            for (double[][] x:currents) {
+                for (double[] y:x) y[0] = 1;
+            }
+
+            admittances = new double[len][len][2];
+            for (double[][] x:admittances) {
+                for (double[] y:x) y[0] = 1;
+            }
+
+            vartab = new double[][][][]{currents, voltages, admittances};
+
+            for (int tp=0;tp<len;tp++) {
+                for (int dd=0;dd<3;dd++) {
+                    vartab[dd][tp][tp] = new double[]{1,0};
+                }
+            }
 
             //Step 4 : Get all nodes equations
-            for (int k=0;k<len;k++) {
-                log("Vertex "+vertices[k].get());
-                map m;
+            for (Vertex vertice : vertices) {
+                log("Vertex " + vertice.get());
+                componentMap map;
                 cur_gen = 0;
                 cour = new double[len][len];
 
-                ArrayList<map> connections = graph.getConnectedComponents(vertices[k]);//Getting all components connected to this vertex
-                for(int c = 0;c<connections.size();c++) {//for each component connected
-                    m = connections.get(c);//for code comprehensibility
+                ArrayList<componentMap> connections = graph.getConnectedComponents(vertice);//Getting all components connected to this vertex
+                for (componentMap m : connections) {//for each component connected
                     //Setting the signe of the coefficient, because components are oriented, as we set their current and voltage.
                     if (m.incoming()) signe = 1;
-                    else signe  =-1;
-
+                    else signe = -1;
                     //TODO : FAIRE LE GENERATEUR DE COURANT DANS LE RESOLVEUR
-                    switch(m.component().type()) {
+
+                    switch (m.component().type()) {
+                        //writing coefficients in equation arrays;
                         case ADMITTANCE:
-                            cour[vertices[k].get()][m.Vertex().get()] = 1;
-                            //TODO faire le cas ou le courant est fixé.
+                            //there is an admittance between the two vertices => a current (non generator-generated) can exist and an admittance too.
+                            currents[vertice.get()][m.Vertex().get()][0] = 0;
+                            admittances[vertice.get()][m.Vertex().get()][0] = 0;
+
+                            cour[vertice.get()][m.Vertex().get()] = 1;
                             break;
                         case CURRENT_GENERATOR:
                             break;
@@ -112,13 +144,44 @@ public class Extracteur {
                             }
                             break;
                     }
+
+                    //writing values in variables arrays;
+                    double[][] det = m.component().getParameters();
+                    for (int d = 0; d < 3; d++) {
+                        System.out.println(det[d][0] == 1);
+                        if (det[d][0] == 1) {
+                            vartab[d][vertice.get()][m.Vertex().get()][0] = 1;
+                            vartab[d][vertice.get()][m.Vertex().get()][1] = det[d][1];
+                        }
+                    }
                 }
-                Equation eq = new Equation(new double[len][len],cour,new double[len][len],0,st,cur_gen);
-                log(eq.toString());
+                Equation eq = new Equation(new double[len][len], cour, new double[len][len], 0, st, cur_gen);
                 equations.add(eq);
             }
+            double[][] volt;
+            //Lois des mailles :
+            for (int p=0;p<len-2;p++) {//Premiers point des cycle;
+                for (int f=p+2;f<len;f++) {//points de fin des mailles
+                    volt = new double[len][len];
+                    for (int r=0;r<=f-p;r++) {
+                        System.out.print((r+p)+":");
+                        System.out.print((p+(r+1)%(f-p+1))+" ");
+                        volt[r+p][p+(r+1)%(f-p+1)] = 1;
+                    }
+                    System.out.println();
+                    Equation eq = new Equation(volt,new double[len][len], new double[len][len], 0, st, 0);
+
+                    equations.add(eq);
+                }
+
+            }
+            for(Equation eq:equations) System.out.println(eq);
+            double[] cg = new double[]{0, 0};
+            Equation[] eq = equations.toArray(new Equation[equations.size()]);
+            new Solveur(voltages, currents, admittances, cg, eq);
         }
         return true;
+
     }
 
 }

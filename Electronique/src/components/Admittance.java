@@ -4,7 +4,7 @@ import Exceptions.AdmittanceError;
 
 /**
  * Classe pour les résistances
- * @author CF
+ * @author CF  LOL!!!!#JE_RIS
  */
 public class Admittance extends AbstractDipole
 {	
@@ -23,6 +23,18 @@ public class Admittance extends AbstractDipole
 		super(name, Type.ADMITTANCE, first_link, second_link);
 		this.determination = new boolean[]{false,false,false};
 		this.value = 0;
+	}
+
+	public Admittance(String name, int first_link, int second_link, double v)
+	{
+		super(name, Type.ADMITTANCE, first_link, second_link);
+		this.determination = new boolean[]{false,false,true};
+		this.value = v;
+	}
+
+	//getter de determination
+	public boolean[] determination() {
+		return determination;
 	}
 
 	//fonctions de récuperation des valeurs du composant
@@ -49,6 +61,33 @@ public class Admittance extends AbstractDipole
 		if (determination[2])
 			return this.value;
 		else return 0;
+	}
+
+	public double[][] getParameters() {
+		double [][] ret = new double[3][2];
+		for (int i=0;i<3;i++) {
+			if (determination[i]) {
+				System.out.println("hint");
+				ret[i][0] = 1;
+				switch(i) {
+					case 0:
+						ret[i][1] = current;
+						break;
+					case 1:
+						ret[i][1] = voltage;
+						break;
+					case 2:
+						ret[i][1] = value;
+						break;
+				}
+			}
+			else {
+				ret[i][0] = 0;
+				ret[i][1] = 0;
+			}
+		}
+		System.out.println(ret[2][0]);
+		return ret;
 	}
 
 	//fonctions de paramétrage des composants

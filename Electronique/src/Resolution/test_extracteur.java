@@ -27,11 +27,11 @@ public class test_extracteur {
         g.add_vertex(v3);
 
         g.add_component(v0, v3, new VoltageGenerator("E", 0, 3, 10));
-        g.add_component(v0, v1, new Admittance("Y0", 0, 1));
-        g.add_component(v0, v2, new Admittance("Y1", 0, 2));
-        g.add_component(v1, v2, new Admittance("Y2", 1, 2));
-        g.add_component(v1, v3, new Admittance("Y3", 1, 3));
-        g.add_component(v2, v3, new Admittance("Y4", 2, 3));
+        g.add_component(v0, v1, new Admittance("Y0", 0, 1,5));
+        g.add_component(v0, v2, new Admittance("Y1", 0, 2,5));
+        g.add_component(v1, v2, new Admittance("Y2", 1, 2,5));
+        g.add_component(v1, v3, new Admittance("Y3", 1, 3,5));
+        g.add_component(v2, v3, new Admittance("Y4", 2, 3,5));
         System.out.println("ducon");
        new Extracteur(g);
     }
