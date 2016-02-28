@@ -61,7 +61,7 @@ public class Equation {
         //if ((tt1.length == tt2.length)&&(tt1.length== tt3.length)) return false;//######################################exceptionner
         size = tens.length;
 
-        t = new double[][][]{symetrise(true,tens),symetrise(true,cour),symetrise(false,admit)};
+        t = new double[][][]{symetrise(true,cour),symetrise(true,tens),symetrise(false,admit)};
         constante = cst;
         used = false;
         names = v;

@@ -1,6 +1,9 @@
 
 package Resolution;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * @author Briztou
  */
@@ -386,6 +389,7 @@ public class Solveur
 
     public void print_variables() 
     {
+        NumberFormat nf = new DecimalFormat("0.00###");
         char[] aff = equations[0].names;
         for(int i_t=0;i_t<3;i_t++) 
         {
@@ -396,7 +400,7 @@ public class Solveur
                 {
                     if (variables[i_t][i][j][0] == 1) 
                     {
-                        System.out.print(" "+variables[i_t][i][j][1] + " ");
+                        System.out.print(" "+ nf.format(variables[i_t][i][j][1]) + " ");
                     }
                     else System.out.print(" x ");
                 }

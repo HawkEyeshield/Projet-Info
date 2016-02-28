@@ -67,7 +67,6 @@ public class Admittance extends AbstractDipole
 		double [][] ret = new double[3][2];
 		for (int i=0;i<3;i++) {
 			if (determination[i]) {
-				System.out.println("hint");
 				ret[i][0] = 1;
 				switch(i) {
 					case 0:
@@ -86,7 +85,6 @@ public class Admittance extends AbstractDipole
 				ret[i][1] = 0;
 			}
 		}
-		System.out.println(ret[2][0]);
 		return ret;
 	}
 

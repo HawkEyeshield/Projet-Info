@@ -60,7 +60,7 @@ public class Extracteur {
         log("Found " + l + " generators.\n");
 
         //Variables for the extraction :
-        char[] st = new char[]{'U', 'I', 'Y'};
+        char[] st = new char[]{'I', 'U', 'Y'};
 
         ArrayList<Equation> equations;//The equation list;
         int signe;//The coefficient variable
@@ -135,6 +135,10 @@ public class Extracteur {
                             break;
                         case VOLTAGE_GENERATOR:
                             Generator gen = (Generator) m.component();
+                            int s = -1;
+                            if (m.incoming()) s=1;
+
+                            voltages[vertice.get()][m.Vertex().get()] = new double[]{1,s*gen.getVoltage()};
                             if (gen.is_active()) {
                                 //if cur_gen has already been modified, we know that almost two generators are active : ERROR
                                 if (cur_gen != 0) {
@@ -148,7 +152,6 @@ public class Extracteur {
                     //writing values in variables arrays;
                     double[][] det = m.component().getParameters();
                     for (int d = 0; d < 3; d++) {
-                        System.out.println(det[d][0] == 1);
                         if (det[d][0] == 1) {
                             vartab[d][vertice.get()][m.Vertex().get()][0] = 1;
                             vartab[d][vertice.get()][m.Vertex().get()][1] = det[d][1];
@@ -156,6 +159,7 @@ public class Extracteur {
                     }
                 }
                 Equation eq = new Equation(new double[len][len], cour, new double[len][len], 0, st, cur_gen);
+                log(eq.toString());
                 equations.add(eq);
             }
             double[][] volt;

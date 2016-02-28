@@ -1,5 +1,5 @@
 package main;
-import Resolution.test_extracteur;
+import test.test_extracteur;
 
 
 /** Classe test_wheatstone du projet, boucle principale
