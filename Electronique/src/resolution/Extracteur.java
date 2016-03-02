@@ -158,7 +158,6 @@ public class Extracteur {
                             }
                             break;
                         case CURRENT_GENERATOR://A current Generator determines the current through a component
-                            System.out.println("\n\n\nBIPBIP\n\n\n");
                             gen = (Generator) m.component();
                             currents[vertice.get()][m.Vertex().get()][0] = 0;
                             if (gen.is_active()) {
@@ -169,6 +168,7 @@ public class Extracteur {
                                     return false;
                                 }
                                 else {
+                                    //TODO Rediger les conventions sur les generateurs (sens du courant et de la tension avec un dipole a->b
                                     coeff_cur_gen = signe;//TODO verifier si la constante est necessaire, et si on ne peut pas s'en passer, genre si elle n'est pas saisie dans la partie suivante
                                     cur_gen_det = true;
                                     cur_gen_value=signe*gen.getCurrent();
@@ -183,6 +183,7 @@ public class Extracteur {
                     for (int d = 0; d < 3; d++) {
                         if (det[d][0] == 1) {
                             vartab[d][vertice.get()][m.Vertex().get()][0] = 1;
+                            if (d==2) signe=1;
                             vartab[d][vertice.get()][m.Vertex().get()][1] = signe*det[d][1];
                         }
                     }
