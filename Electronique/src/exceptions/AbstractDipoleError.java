@@ -1,7 +1,7 @@
-package Exceptions;
+package exceptions;
 
-/**
- * @author Briztou
+/** Exception pour les erreurs concernant les dipôles en général
+ * @author Raphaël
  */
 public class AbstractDipoleError extends Exception {
 

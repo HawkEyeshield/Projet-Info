@@ -1,9 +1,12 @@
 
 package test;
 
-import Resolution.Equation;
-import Resolution.Solveur;
+import resolution.Equation;
+import resolution.Solveur;
 
+/**
+ * @author Raphaël
+ */
 public class test_wheatstone {
 
     public test_wheatstone() {

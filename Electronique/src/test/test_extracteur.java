@@ -1,13 +1,13 @@
 package test;
 
-import Components.*;
-import GraphStructure.*;
-import Resolution.Extracteur;
+import components.*;
+import resolution.Extracteur;
+import graphStructure.*;
 
 import java.util.ArrayList;
 
 /**
- * Created by Raphaël on 25/02/2016.
+ * @author RaphaÃ«l
  */
 public class test_extracteur {
 

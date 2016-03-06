@@ -1,11 +1,11 @@
-package Components;
+package components;
 
-import Exceptions.CurrentGeneratorError;
-import Exceptions.VoltageGeneratorError;
+import exceptions.CurrentGeneratorError;
+import exceptions.VoltageGeneratorError;
 
 /**
- * Classe pour les générateurs
- * @author CF
+ * Classe pour les générateurs de courant
+ * @author François, Raphaël
  */
 public class CurrentGenerator extends Generator
 {
@@ -47,7 +47,7 @@ public class CurrentGenerator extends Generator
 	@Override
 	public void setVoltage(double v) throws CurrentGeneratorError
 	{
-		throw new CurrentGeneratorError("Sur contrainte : La tension ne peut etre fixé dans un générateur de courant");
+		throw new CurrentGeneratorError("Sur contrainte : la tension ne peut être fixée dans un générateur de courant");
 	}
 
 	//tension
