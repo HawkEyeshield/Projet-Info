@@ -1,54 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SampleController">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <SplitPane dividerPositions="0.7976588628762542" layoutX="200.0" layoutY="96.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane fx:id="splitPane" dividerPositions="0.6789297658862876" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane fx:id="anchorPane2" minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="1000.0">
                <children>
-                  <SplitPane dividerPositions="0.12373737373737374" layoutX="165.0" layoutY="67.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="79.0" prefWidth="348.0" SplitPane.resizableWithParent="false">
-                           <children>
-                              <Button layoutX="14.0" layoutY="11.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMousePressed="#sayHelloWorld" prefHeight="25.0" prefWidth="50.0" text="Run" AnchorPane.leftAnchor="10.0" />
-                              <Button layoutX="66.0" layoutY="11.0" mnemonicParsing="false" text="Debugge" AnchorPane.leftAnchor="68.0" />
-                              <Button layoutX="161.0" layoutY="11.0" mnemonicParsing="false" text="Valeur à déterminer" AnchorPane.leftAnchor="160.0" />
-                              <Button layoutX="325.0" layoutY="11.0" mnemonicParsing="false" text="Tension à imposer" AnchorPane.leftAnchor="320.0" />
-                           </children></AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <SplitPane dividerPositions="0.8856304985337243" layoutX="100.0" layoutY="115.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                       <children>
-                                          <ScrollBar layoutX="170.0" layoutY="276.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                          <ScrollBar layoutX="438.0" layoutY="70.0" orientation="VERTICAL" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children></AnchorPane>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" SplitPane.resizableWithParent="false">
-                                       <children>
-                                          <TextField layoutX="149.0" layoutY="14.0" />
-                                       </children></AnchorPane>
-                                </items>
-                              </SplitPane>
-                           </children></AnchorPane>
-                    </items>
-                  </SplitPane>
+                  <Button fx:id="Run" mnemonicParsing="false" text="Run" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="34.0" />
+                  <Button fx:id="Debugge" layoutX="85.0" layoutY="34.0" mnemonicParsing="false" text="Debugge" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="34.0" />
+                  <Button fx:id="ValeurADeterminer" layoutX="162.0" layoutY="34.0" mnemonicParsing="false" text="Valeur à déterminer" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="34.0" />
+                  <Button fx:id="TensionAImposer" layoutX="322.0" layoutY="34.0" mnemonicParsing="false" text="Tension à imposer" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="34.0" />
+                  <MenuBar fx:id="menuBar" layoutX="14.0" layoutY="21.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <menus>
+                      <Menu fx:id="file" mnemonicParsing="false" text="File">
+                        <items>
+                          <MenuItem fx:id="Close" mnemonicParsing="false" text="Close" />
+                        </items>
+                      </Menu>
+                      <Menu fx:id="Edit" mnemonicParsing="false" text="Edit">
+                        <items>
+                          <MenuItem fx:id="Delete" mnemonicParsing="false" text="Delete" />
+                        </items>
+                      </Menu>
+                      <Menu fx:id="Help" mnemonicParsing="false" text="Help">
+                        <items>
+                          <MenuItem fx:id="About" mnemonicParsing="false" text="About" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
+                  <ScrollPane fx:id="scrollPane" layoutX="50.0" layoutY="190.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="63.0">
+                    <content>
+                      <AnchorPane fx:id="anchorPane3" minHeight="0.0" minWidth="0.0" prefHeight="303.0" prefWidth="474.0" />
+                    </content>
+                  </ScrollPane>
                </children>
             </AnchorPane>
-          <AnchorPane prefHeight="292.0" prefWidth="84.0" SplitPane.resizableWithParent="false">
+          <AnchorPane fx:id="anchorPane4" minHeight="0.0" minWidth="0.0" SplitPane.resizableWithParent="false">
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="72.0" layoutX="53.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../Image/generateur%20de%20tension%20droite%20gauche.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="101.0" fitWidth="59.0" layoutX="47.0" layoutY="222.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../Image/a.gif" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="36.0" layoutX="61.0" layoutY="-46.0" stroke="BLACK" strokeType="INSIDE" width="188.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                  <Text layoutX="28.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Composant" textAlignment="CENTER" wrappingWidth="132.0">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Text>
+               </children></AnchorPane>
         </items>
       </SplitPane>
    </children>
