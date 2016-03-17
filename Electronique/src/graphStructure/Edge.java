@@ -1,18 +1,19 @@
-package GraphStructure;
+package graphStructure;
 
-import Components.AbstractDipole;
-import Components.Admittance;
-import Components.Generator;
+import components.Admittance;
+import components.AbstractDipole;
+import components.Generator;
 
 import java.util.ArrayList;
 
 /**
- * Created by Raphaël on 26/02/2016.
+ * @author RaphaÃ«l
  *
  * EDGE is the edge class in the graph. Its utility is to avoid the orientation problem, as we work in an undirected graph
  * To do this, it's gonna keep as attributes its two source and destination vertices vertices
  */
-public class Edge {
+public class Edge 
+{
     private Vertex v_dep;
     private Vertex v_arr;
 
@@ -22,7 +23,8 @@ public class Edge {
     private ArrayList<Admittance> dep_admittances;
     private ArrayList<Admittance> arr_admittances;
 
-    public Edge(Vertex vd,Vertex va,Generator gen,ArrayList<Admittance> p_admit,ArrayList<Admittance> n_admit) {
+    public Edge(Vertex vd,Vertex va,Generator gen,ArrayList<Admittance> p_admit,ArrayList<Admittance> n_admit) 
+    {
         this.v_dep = vd;
         this.v_arr = va;
         this.generator = gen;
@@ -30,7 +32,8 @@ public class Edge {
         this.arr_admittances = n_admit;
     }
 
-    public Edge(Vertex vd,Vertex va,Admittance admit) {
+    public Edge(Vertex vd,Vertex va,Admittance admit) 
+    {
         this.v_dep = vd;
         this.v_arr = va;
         this.generator = null;
@@ -39,7 +42,8 @@ public class Edge {
         this.arr_admittances = new ArrayList<Admittance>();
     }
 
-    public Edge(Vertex vd,Vertex va,Generator gen) {
+    public Edge(Vertex vd,Vertex va,Generator gen) 
+    {
         this.v_dep = vd;
         this.v_arr = va;
         this.generator = gen;
@@ -47,73 +51,96 @@ public class Edge {
         this.arr_admittances = new ArrayList<>();
     }
 
-    public Generator generator() {
+    public Generator generator() 
+    {
         return this.generator;
     }
 
-    public void setGenerator(Vertex originVertex,Generator g) {
+    public void setGenerator(Vertex originVertex,Generator g) 
+    {
         if (originVertex == this.v_dep) this.generator = g;
         else if (originVertex == v_arr) {this.generator = g;this.gen_at_dep = false;}
     }
 
-    public void addAdmittance(Vertex origin_vertex,Admittance a) {
+    public void addAdmittance(Vertex origin_vertex,Admittance a) 
+    {
         if (origin_vertex == v_dep) this.dep_admittances.add(a);
         else if (origin_vertex == v_arr) this.arr_admittances.add(a);
         /////////////////////////////////faire une erreur, le cas else n'est pas normal.
     }
 
-    public int AdmittancesNb() {
+    public int AdmittancesNb() 
+    {
         System.out.println("dep "+dep_admittances+" arr "+arr_admittances);
         return this.dep_admittances.size()+this.arr_admittances.size();
     }
 
     //The couple of functions that will return admittances depending on their orientation
-    public ArrayList<AbstractDipole> componentsFrom(Vertex src) {
+    public ArrayList<AbstractDipole> componentsFrom(Vertex src) 
+    {
         ArrayList<AbstractDipole> a;
-        if (src == v_dep) {
+        if (src == v_dep) 
+        {
             a = new ArrayList<AbstractDipole>(dep_admittances);
-            if ((gen_at_dep)&&(generator!=null)) {a.add(generator);}
+            if ((gen_at_dep)&&(generator!=null)) 
+            {
+            	a.add(generator);
+            }
         }
-        else {
+        else 
+        {
             a = new ArrayList<AbstractDipole>(dep_admittances);
-            if ((!gen_at_dep)&&(generator!=null)) {a.add(generator);}
+            if ((!gen_at_dep)&&(generator!=null)) 
+            {
+            	a.add(generator);
+            }
         }
         return a;
     }
 
-    public ArrayList<AbstractDipole> componentsTo(Vertex dst) {
+    public ArrayList<AbstractDipole> componentsTo(Vertex dst) 
+    {
         ArrayList<AbstractDipole> a;
-        if (dst == v_arr) {
+        if (dst == v_arr) 
+        {
             a = new ArrayList<AbstractDipole>(dep_admittances);
-            if ((gen_at_dep)&&(generator!=null)) {a.add(generator);}
+            if ((gen_at_dep)&&(generator!=null)) 
+            {
+            	a.add(generator);
+            }
         }
-        else {
+        else 
+        {
             a = new ArrayList<AbstractDipole>(dep_admittances);
-            if ((!gen_at_dep)&&(generator!=null)) {a.add(generator);}
+            if ((!gen_at_dep)&&(generator!=null)) 
+            {
+            	a.add(generator);
+            }
         }
         return a;
     }
 
-    public boolean beginsWith(Vertex v) {
+    public boolean beginsWith(Vertex v) 
+    {
         if (v_dep == v) return true;
         return false;
     }
 
-    public boolean endsWith(Vertex v) {
+    public boolean endsWith(Vertex v) 
+    {
         if (v_arr == v) return true;
         return false;
     }
 
-    public Vertex beginVertex() {
+    public Vertex beginVertex() 
+    {
         return v_dep;
     }
 
-    public Vertex endVertex() {
+    public Vertex endVertex() 
+    {
         return v_arr;
     }
 
     //The couple o
-
-
-
 }

@@ -1,10 +1,10 @@
-package Components;
+package components;
 
-import Exceptions.AdmittanceError;
+import exceptions.AdmittanceError;
 
 /**
  * Classe pour les résistances
- * @author CF  LOL!!!!#JE_RIS
+ * @author François
  */
 public class Admittance extends AbstractDipole
 {	

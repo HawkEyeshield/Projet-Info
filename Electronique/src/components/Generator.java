@@ -1,9 +1,9 @@
-package Components;
+package components;
 
-import Exceptions.AbstractDipoleError;
+import exceptions.AbstractDipoleError;
 
-/**
- * Created by Olivier de c on 21/02/2016.
+/** Classe abstraite des générateurs
+ * @author Raphaël
  */
 public abstract class Generator extends AbstractDipole {
 

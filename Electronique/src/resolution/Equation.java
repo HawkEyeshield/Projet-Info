@@ -1,7 +1,7 @@
-package Resolution;
+package resolution;
 
-/*
-@author Jean Pierre Coffe
+/**
+ * @author Rapĥaël
  */
 public class Equation {
 

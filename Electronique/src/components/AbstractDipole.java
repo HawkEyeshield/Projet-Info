@@ -1,10 +1,10 @@
-package Components;
+package components;
 
-import Exceptions.AbstractDipoleError;
+import exceptions.AbstractDipoleError;
 
 /**
  * Classe abstraite définisant les dipôles 
- * @author CF, Sterenn
+ * @author François, Sterenn
  */
 public abstract class AbstractDipole 
 {

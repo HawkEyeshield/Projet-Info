@@ -1,11 +1,11 @@
 
-package Resolution;
+package resolution;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * @author TINTIN
+ * @author Raphaël
  */
 public class Solveur 
 {

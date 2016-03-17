@@ -1,7 +1,7 @@
-package Exceptions;
+package exceptions;
 
-/**
- * @author Briztou
+/** Exception pour les admittances
+ * @author Raphaël
  */
 
 public class AdmittanceError extends AbstractDipoleError{

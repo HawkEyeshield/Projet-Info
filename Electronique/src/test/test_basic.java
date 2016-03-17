@@ -1,8 +1,11 @@
 package test;
 
-import Resolution.Equation;
-import Resolution.Solveur;
+import resolution.Equation;
+import resolution.Solveur;
 
+/**
+ * @author Raphaël
+ */
 public class test_basic {
     public test_basic() {
         char[] st = new char[]{'I', 'U', 'Y'};

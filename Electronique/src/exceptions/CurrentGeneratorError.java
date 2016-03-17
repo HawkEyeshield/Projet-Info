@@ -1,7 +1,7 @@
-package Exceptions;
+package exceptions;
 
-/**
- * @author Briztou
+/** Exception concernant les erreurs sur les générateurs de courant
+ * @author Raphaël
  */
 public class CurrentGeneratorError extends AbstractDipoleError {
     

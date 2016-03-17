@@ -1,14 +1,15 @@
-package Resolution;
+package resolution;
 
-import Components.*;
-import GraphStructure.CircuitGraph;
-import GraphStructure.Vertex;
-import GraphStructure.componentMap;
+import components.*;
+import components.Generator;
+import graphStructure.CircuitGraph;
+import graphStructure.Vertex;
+import graphStructure.componentMap;
 
 import java.util.ArrayList;
 
 /**
- * @author Un Boeuf
+ * @author RaphaÃ«l
  */
 public class Extracteur {
 
@@ -113,7 +114,7 @@ public class Extracteur {
 
             cur_gen_value=0;
             cur_gen_det = false;
-//TODO reorganiser le graphe lorsque l'on coupe les genereteurs : creer un nouveau graphe a chaque fois car des aretes disparaissent et des noeuds sont fusionnés.
+//TODO reorganiser le graphe lorsque l'on coupe les genereteurs : creer un nouveau graphe a chaque fois car des aretes disparaissent et des noeuds sont fusionnï¿½s.
             //Step 4 : Get all nodes equations
             for (Vertex vertice : vertices) {
                 log("Vertex " + vertice.get());
@@ -141,7 +142,7 @@ public class Extracteur {
                         //This part doesnt replace values, this job is for the solver.
 
 
-                        //Todo : verifier si les valeurs des generateurs sont bien remplacées dans cette partie ET dans la partie recup des valeurs, et si c'est le cas, simplifier.
+                        //Todo : verifier si les valeurs des generateurs sont bien remplacï¿½es dans cette partie ET dans la partie recup des valeurs, et si c'est le cas, simplifier.
                         case VOLTAGE_GENERATOR://A Voltage generator determines the voltage between the points;
                             gen = (Generator) m.component();
                             //TODO modifier cette partie apres la reorganisation des graphes : si on detecte deux generateurs erreur.

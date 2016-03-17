@@ -1,10 +1,10 @@
-package Components;
+package components;
 
-import Exceptions.VoltageGeneratorError;
+import exceptions.VoltageGeneratorError;
 
 /**
- * Classe pour les générateurs
- * @author CF
+ * Classe pour les générateurs de tension
+ * @author François, Raphaël
  */
 public class VoltageGenerator extends Generator
 {
