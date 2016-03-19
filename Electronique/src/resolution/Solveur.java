@@ -18,15 +18,13 @@ public class Solveur
     /*Variables appearance order : I U Y
     */
     //grandeurs relatives aux parametres
-    private int nb_nodes;
-    private int nb_eq;
-    private int nb_unknown;
+    private int nbNodes;
+    private int nbEq;
+    private int nbUnknown;
 
-    private boolean current_unknown;
+    private boolean[][] currentsSubstituated;
 
-    private boolean[][] currents_substituated;
-
-    double[] curr_generator;
+    private double[] currGenerator;
 
     public Solveur(double[][][] volt, double[][][] curr, double[][][] adm,double[] cg, Equation[] eq) 
     {
@@ -38,45 +36,43 @@ public class Solveur
 
         */
 
-        System.out.println("generator " +cg[0] +":"+cg[1]);
-        nb_nodes = volt.length;
+        logn("generator " + cg[0] + ":" + cg[1]);
+        nbNodes = volt.length;
 
         variables = new double[][][][]{curr, volt, adm};
         equations = eq;
-        nb_eq = eq.length;
+        nbEq = eq.length;
 
-        curr_generator = cg;
+        currGenerator = cg;
 
-        currents_substituated = new boolean[nb_nodes][nb_nodes];
+        currentsSubstituated = new boolean[nbNodes][nbNodes];
 
         for (int i_t = 0; i_t < 3; i_t++) 
         {
-            for (int i = 0; i < nb_nodes; i++) 
+            for (int i = 0; i < nbNodes; i++)
             {
-                for (int j = 0; j < nb_nodes; j++) 
+                for (int j = 0; j < nbNodes; j++)
                 {
                     if (variables[i_t][i][j][0] == 1)
-                        set_variable_value(new int[]{i_t, i, j}, variables[i_t][i][j][1], true);
+                        setVariableValue(new int[]{i_t, i, j}, variables[i_t][i][j][1], true);
                 }
             }
         }
         //###############################################################################################################tester la validit� des donn�es en entr�e : taille des tableaux, format des admittances, symetrie des courants tension, etc..
 
 
-        make_symetries();
-        print_variables();
-
+        makeSymetries();
         //replacing all found variables (correct initialisation)
         for (int i_t = 0; i_t < 3; i_t++) 
         {
-            for (int i = 0; i < nb_nodes; i++) 
+            for (int i = 0; i < nbNodes; i++)
             {
-                for (int j = 0; j < nb_nodes; j++) 
+                for (int j = 0; j < nbNodes; j++)
                 {
-                    if (variables[i_t][i][j][0] == 1) 
+                    if (variables[i_t][i][j][0] == 1)
                     {
                         replace(new int[]{i_t, i, j}, 0, -1, variables[i_t][i][j][1]);
-                       /*for(int ind =0;ind<nb_eq;ind++) {
+                       /*for(int ind =0;ind<nbEq;ind++) {
                            equations[ind].replace(i_t,i,j,variables[i_t][i][j][1]);
                        }*/
                     }
@@ -85,53 +81,66 @@ public class Solveur
         }
 
         //Replacing the generator current if known
-        if (curr_generator[0] == 1) 
+        if (currGenerator[0] == 1)
         {
-            for (int ind = 0; ind < nb_eq; ind++) 
+            for (int ind = 0; ind < nbEq; ind++)
             {
-                equations[ind].replace(-1, -1, 0, curr_generator[1]);
+                equations[ind].replace(-1, -1, 0, currGenerator[1]);
             }
         }
 
-        update_number_unknown();
-        System.out.println("parameters saved");
-        print_equations();
-        print_variables();
-        resolution();
+        updateNumberUnknown();
+        logn("parameters saved");
+
+    }
+
+    public double currGenerator() {
+        return currGenerator[1];
+    }
+
+    public double[][][] variables() {
+        double[][][] ret = new double[3][nbNodes][nbNodes];
+        for (int i=0;i<3;i++) {
+            for (int j=0;j<nbNodes;j++) {
+                for (int k=0;k<nbNodes;k++) {
+                    ret[i][j][k] = variables[i][j][k][1];
+                }
+            }
+        }
+        return ret;
     }
 
     public boolean resolution() 
     {
-        while (!update_number_unknown()) 
+        while (!updateNumberUnknown())
         {
-            System.out.println("UNKNOWN" + nb_unknown);
-            //Step 1 : determining all calculable values : we use the method calculate_variables while it doesn't returns 0;
+            logn("UNKNOWN" + nbUnknown);
+            //Step 1 : determining all calculable values : we use the method calculateVariables while it doesn't returns 0;
             int a;
-            while ((a = calculate_variables()) != 0) 
+            while ((a = calculateVariables()) != 0)
             {
 
             }
-            update_number_unknown();
-            if (update_number_unknown()) break;//if all variables were found : job done .
+            updateNumberUnknown();
+            if (updateNumberUnknown()) break;//if all variables were found : job done .
 
 
             //Step 2 : inject an equation
             if (!substituate_variable()) 
             {
-                System.out.println("not solvable");
+                logn("not solvable");
                 return false;
             }
-            print_equations();
+            printEquations();
         }
-        System.out.println("System solved");
-        print_variables();
+        logn("System solved");
         return true;
     }
 
-    private int calculate_variables() 
+    private int calculateVariables()
     {	
         int cpt = 0;
-        for(int ind =0;ind<nb_eq;ind++) 
+        for(int ind =0;ind< nbEq;ind++)
         {
             if ((equations[ind].nunk == 1)&&(!equations[ind].solved)) 
             {
@@ -140,8 +149,8 @@ public class Solveur
                 replace(indices, 0, ind, value);//on injecte dans toutes les equations
                 equations[ind].solved = true;
                 cpt++;
-                System.out.println("remplacement d'une variables");
-                print_equations();
+                logn("remplacement d'une variables");
+                printEquations();
 
 
             }
@@ -153,7 +162,7 @@ public class Solveur
     {//cat and nb give the original equation, so that we do not modify it.
         //##############################################################################################################verifier qu'on a pas d�ja d�termin� cette valeur
         //replacing the value in all equations
-        set_variable_value(id,value,false);
+        setVariableValue(id, value, false);
         boolean div = false;
         boolean voltage_unknown = false;
         if (id[0] == 1) 
@@ -167,21 +176,21 @@ public class Solveur
             voltage_unknown = true;
         }
 
-        for (int i_e=0;i_e<nb_eq;i_e++) 
+        for (int i_e=0;i_e< nbEq;i_e++)
         {
             if ((cat != 0)||(nb != i_e)) 
             {
                 equations[i_e].replace(id[0],id[1],id[2],value);
                 if (div) {
-                    equations[i_e].eliminate_current(voltage_unknown, id[1],id[2],value);
+                    equations[i_e].eliminateCurrent(voltage_unknown, id[1], id[2], value);
                 }
             }
         }
-        System.out.println("done");
+        logn("done");
         return true;
     }
 
-    public boolean set_variable_value(int[] id, double value,boolean remplissage) 
+    private boolean setVariableValue(int[] id, double value, boolean remplissage)
     {/////////////////remplacer les valeurs dans les equations
         //id : coordinates of value in variables
         //value : the new value
@@ -191,11 +200,11 @@ public class Solveur
 
         if ((id[0] == -1)&&(id[1] == -1)&&(id[2] == 0)) 
         {
-            if (curr_generator[0] == 0) 
+            if (currGenerator[0] == 0)
             {
-                curr_generator = new double[]{1,value};
+                currGenerator = new double[]{1,value};
             } else {
-                if (curr_generator[1] != value)
+                if (currGenerator[1] != value)
                     return false;///////////////////////////////////////////////////////////////////////equation equivalentes erreur
             }
             return true;
@@ -237,23 +246,23 @@ public class Solveur
             if ((variables[1][id[1]][id[2]][0] == 1)&&(variables[0][id[1]][id[2]][0] == 0)) 
             {//Voltage known - Current not known
                 variables[0][id[1]][id[2]] = new double[]{1,variables[1][id[1]][id[2]][1]*value};//determining current I = U*Y
-                System.out.println(id[1]+" "+ id[2] +"replaced");
+                logn(id[1] + " " + id[2] + "replaced");
             }
         }
         if (!remplissage) 
         {
             variables[id[0]][id[1]][id[2]] = new double[] {1,value};
-            make_symetries();
+            makeSymetries();
         }
 
         return true;
     }
 
-    private boolean make_symetries() 
+    private boolean makeSymetries()
     {
         for (int i_t=0;i_t<3;i_t++)
         {
-            for (int i=0;i<nb_nodes;i++) 
+            for (int i=0;i< nbNodes;i++)
             {
                 for(int j=0;j<=i;j++) 
                 {
@@ -297,37 +306,37 @@ public class Solveur
 
     private boolean substituate_variable() 
     {
-        int ind = get_substituable_equation();
+        int ind = getSubstituableEquation();
         if (ind==-1) return false;//if no equation is substituable, error
 
-        System.out.println("Injection de l'equation "+ind);
+        logn("Injection de l'equation " + ind);
         int[] indice = equations[ind].get_first_variable();
         double[][][] equivalent = equations[ind].get_equivalent(indice);//recuperation of equivalents
         double[] param = equations[ind].get_value(indice);//constante, coefficient du courant g�n�rateur
 
-        System.out.println("parametres " + param[0]+" "+param[1]);
+        logn("parametres " + param[0] + " " + param[1]);
 
 
 
         equations[ind].used = true;//marking that the equation has now been used.
 
-        for (int i=0;i<nb_eq;i++) 
+        for (int i=0;i< nbEq;i++)
         {
             if (i!=ind) {
                 equations[i].substituate(indice[0], indice[1], indice[2], equivalent, param[0],param[1]);
             }
         }
-        if (indice[0]== 0) currents_substituated[indice[1]][indice[2]] = true;
+        if (indice[0]== 0) currentsSubstituated[indice[1]][indice[2]] = true;
         return true;
 
     }
 
-    private int get_substituable_equation() 
+    private int getSubstituableEquation()
     {
         int i = -1;
-        boolean cur = isCurrent_unknown();
+        boolean cur = isCurrentUnknown();
 
-        for (int cpt=0;cpt<nb_eq;cpt++) 
+        for (int cpt=0;cpt< nbEq;cpt++)
         {
             if (!equations[cpt].used) 
             {
@@ -347,10 +356,10 @@ public class Solveur
         return i;
     }
 
-    private boolean isCurrent_unknown() 
+    private boolean isCurrentUnknown()
     {
         boolean ret = false;
-        for (int i=0;i<nb_eq;i++) 
+        for (int i=0;i< nbEq;i++)
         {
             if (equations[i].is_current_present()) 
             {
@@ -358,58 +367,65 @@ public class Solveur
                 break;
             }
         }
-        current_unknown = ret;
         return ret;
-    }//////////prendre en compte les injetions
+    }
 
-    public boolean update_number_unknown() 
+    private boolean updateNumberUnknown()
     {//returns if all variables are found
         int nb = 0;
-        if (curr_generator[0] == 0) nb++;
+        if (currGenerator[0] == 0) nb++;
         for (int i_t=0;i_t<3;i_t++) 
         {
-            for (int i = 0;i<nb_nodes;i++) 
+            for (int i = 0;i< nbNodes;i++)
             {
-                for (int j=0; j < nb_nodes; j++) 
+                for (int j=0; j < nbNodes; j++)
                 {
                     if (variables[i_t][i][j][0]==0) nb++;
                 }
             }
         }
-        nb_unknown = nb;
+        nbUnknown = nb;
         return nb==0;
     }
 
-    public void print_equations() 
+    public void printEquations()
     {
-        System.out.println("\nEquations\n");
-        for (int i = 0;i<nb_eq;i++) 
+        logn("\nEquations\n");
+        for (int i = 0;i< nbEq;i++)
         {
-            System.out.println(equations[i]);
+            logn(equations[i]);
         }
     }
 
-    public void print_variables() 
+    public void printVariables()
     {
         NumberFormat nf = new DecimalFormat("0.00###");
         char[] aff = equations[0].names;
         for(int i_t=0;i_t<3;i_t++) 
         {
-            System.out.print("\n"+aff[i_t]+"\n");
-            for (int i = 0;i<nb_nodes;i++) 
+            System.out.print("\n" + aff[i_t] + "\n");
+            for (int i = 0;i< nbNodes;i++)
             {
-                for (int j = 0;j<nb_nodes;j++) 
+                for (int j = 0;j< nbNodes;j++)
                 {
                     if (variables[i_t][i][j][0] == 1) 
                     {
-                        System.out.print(" "+ nf.format(variables[i_t][i][j][1]) + " ");
+                        System.out.print(" " + nf.format(variables[i_t][i][j][1]) + " ");
                     }
                     else System.out.print(" x ");
                 }
                 System.out.println("");
             }
         }
-        System.out.println("courant Generateur : "+ curr_generator[1]);
+        logn("courant Generateur : " + currGenerator[1]);
+    }
+
+    private void log(Object s) {
+
+    }
+
+    private void logn(Object s) {
+        log(s);log("\n");
     }
 
 }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/InterfaceGraphique.iml" filepath="$PROJECT_DIR$/InterfaceGraphique.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Electronique.iml" filepath="$PROJECT_DIR$/Electronique.iml" />
     </modules>
   </component>
 </project>

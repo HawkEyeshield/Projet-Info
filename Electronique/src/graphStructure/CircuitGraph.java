@@ -72,12 +72,18 @@ public class CircuitGraph
         return false;
     }
 
-    public Vertex[] get_all_vertices() 
+    public Vertex[] getAllVertices()
     {
         Set<Vertex> set = graph.vertexSet();
         return set.toArray(new Vertex[set.size()]);
     }
-    
+
+    public Edge[] getAllEdges()
+    {
+        Set<Edge> set = graph.edgeSet();
+    return set.toArray(new Edge[set.size()]);
+}
+
     //Fonction de récupération des générateurs
     public ArrayList<Generator> get_all_generators() 
     {
@@ -109,9 +115,9 @@ public class CircuitGraph
         if (e.AdmittancesNb()>1) return true;
         return false;
     }
-    public ArrayList<componentMap> getConnectedComponents(Vertex v) 
+    public ArrayList<ComponentMap> getConnectedComponents(Vertex v)
     {
-        ArrayList<componentMap> maps = new ArrayList<componentMap>();
+        ArrayList<ComponentMap> maps = new ArrayList<ComponentMap>();
         //First : get all Edges.
         Edge[] edges = edgesOf(v);
 
@@ -131,13 +137,13 @@ public class CircuitGraph
             a_tmp = e_tmp.componentsFrom(v);
             for (int j=0;j<a_tmp.size();j++) 
             {
-                maps.add(new componentMap(a_tmp.get(j),v_tmp,true));
+                maps.add(new ComponentMap(a_tmp.get(j),v_tmp,true));
             }
             //get edges ending with this vertex
             a_tmp = e_tmp.componentsTo(v);
             for (int j=0;j<a_tmp.size();j++) 
             {
-                maps.add(new componentMap(a_tmp.get(j),v_tmp,false));
+                maps.add(new ComponentMap(a_tmp.get(j),v_tmp,false));
             }
         }
         return maps;

@@ -1,6 +1,6 @@
 package exceptions;
 
-/** Exceptions pour les erreurs sur les générateurs de tension
+/** exceptions pour les erreurs sur les générateurs de tension
  * @author Raphaël
  */
 public class VoltageGeneratorError extends AbstractDipoleError {

@@ -5,14 +5,14 @@ import components.AbstractDipole;
 /**
  * @author Raphaël
  */
-public class componentMap 
+public class ComponentMap
 {
 
     private AbstractDipole component;
     private boolean incoming;
     private Vertex vertex;
 
-    public componentMap(AbstractDipole a, Vertex v, boolean incom) 
+    public ComponentMap(AbstractDipole a, Vertex v, boolean incom)
     {
         component = a;
         vertex = v;
@@ -24,7 +24,7 @@ public class componentMap
         return component;
     }
 
-    public Vertex Vertex() 
+    public Vertex vertex()
     {
         return vertex;
     }

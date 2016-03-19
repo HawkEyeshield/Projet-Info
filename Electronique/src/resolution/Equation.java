@@ -127,7 +127,7 @@ public class Equation {
         return true;
     }
 
-    public void eliminate_current(boolean voltage_unknown,int i, int j, double value) 
+    public void eliminateCurrent(boolean voltage_unknown, int i, int j, double value)
     {
         double coeff = t[0][i][j];
         if (coeff != 0) 
@@ -287,6 +287,8 @@ public class Equation {
 
         return str;
     }
+
+
 
 
 }

@@ -4,11 +4,10 @@ import components.*;
 import resolution.Extracteur;
 import graphStructure.*;
 
-import java.util.ArrayList;
-
 /**
- * @author Raphaël
+ Simple test de l'extracteur avec un pont de wheatstone equilibré;
  */
+
 public class test_extracteur {
 
     CircuitGraph g;
@@ -35,6 +34,8 @@ public class test_extracteur {
         g.add_component(v1, v3, new Admittance("Y3", 1, 3,1));
         g.add_component(v2, v3, new Admittance("Y4", 2, 3,1));
         System.out.println("ducon");
-       new Extracteur(g);
+        Extracteur e = new Extracteur(g);
+
+        e.printVariables();
     }
 }

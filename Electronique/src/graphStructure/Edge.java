@@ -20,16 +20,16 @@ public class Edge
     private Generator generator;
     private boolean gen_at_dep = true;
 
-    private ArrayList<Admittance> dep_admittances;
-    private ArrayList<Admittance> arr_admittances;
+    public ArrayList<Admittance> directAdmittances;
+    public ArrayList<Admittance> indirectAdmittances;
 
     public Edge(Vertex vd,Vertex va,Generator gen,ArrayList<Admittance> p_admit,ArrayList<Admittance> n_admit) 
     {
         this.v_dep = vd;
         this.v_arr = va;
         this.generator = gen;
-        this.dep_admittances = p_admit;
-        this.arr_admittances = n_admit;
+        this.directAdmittances = p_admit;
+        this.indirectAdmittances = n_admit;
     }
 
     public Edge(Vertex vd,Vertex va,Admittance admit) 
@@ -37,9 +37,9 @@ public class Edge
         this.v_dep = vd;
         this.v_arr = va;
         this.generator = null;
-        this.dep_admittances = new ArrayList<Admittance>();
-        this.dep_admittances.add(admit);
-        this.arr_admittances = new ArrayList<Admittance>();
+        this.directAdmittances = new ArrayList<Admittance>();
+        this.directAdmittances.add(admit);
+        this.indirectAdmittances = new ArrayList<Admittance>();
     }
 
     public Edge(Vertex vd,Vertex va,Generator gen) 
@@ -47,11 +47,11 @@ public class Edge
         this.v_dep = vd;
         this.v_arr = va;
         this.generator = gen;
-        this.dep_admittances = new ArrayList<>();
-        this.arr_admittances = new ArrayList<>();
+        this.directAdmittances = new ArrayList<>();
+        this.indirectAdmittances = new ArrayList<>();
     }
 
-    public Generator generator() 
+    public Generator generator()
     {
         return this.generator;
     }
@@ -64,15 +64,14 @@ public class Edge
 
     public void addAdmittance(Vertex origin_vertex,Admittance a) 
     {
-        if (origin_vertex == v_dep) this.dep_admittances.add(a);
-        else if (origin_vertex == v_arr) this.arr_admittances.add(a);
+        if (origin_vertex == v_dep) this.directAdmittances.add(a);
+        else if (origin_vertex == v_arr) this.indirectAdmittances.add(a);
         /////////////////////////////////faire une erreur, le cas else n'est pas normal.
     }
 
     public int AdmittancesNb() 
     {
-        System.out.println("dep "+dep_admittances+" arr "+arr_admittances);
-        return this.dep_admittances.size()+this.arr_admittances.size();
+        return this.directAdmittances.size()+this.indirectAdmittances.size();
     }
 
     //The couple of functions that will return admittances depending on their orientation
@@ -81,7 +80,7 @@ public class Edge
         ArrayList<AbstractDipole> a;
         if (src == v_dep) 
         {
-            a = new ArrayList<AbstractDipole>(dep_admittances);
+            a = new ArrayList<AbstractDipole>(directAdmittances);
             if ((gen_at_dep)&&(generator!=null)) 
             {
             	a.add(generator);
@@ -89,7 +88,7 @@ public class Edge
         }
         else 
         {
-            a = new ArrayList<AbstractDipole>(dep_admittances);
+            a = new ArrayList<AbstractDipole>(directAdmittances);
             if ((!gen_at_dep)&&(generator!=null)) 
             {
             	a.add(generator);
@@ -103,7 +102,7 @@ public class Edge
         ArrayList<AbstractDipole> a;
         if (dst == v_arr) 
         {
-            a = new ArrayList<AbstractDipole>(dep_admittances);
+            a = new ArrayList<AbstractDipole>(directAdmittances);
             if ((gen_at_dep)&&(generator!=null)) 
             {
             	a.add(generator);
@@ -111,7 +110,7 @@ public class Edge
         }
         else 
         {
-            a = new ArrayList<AbstractDipole>(dep_admittances);
+            a = new ArrayList<AbstractDipole>(directAdmittances);
             if ((!gen_at_dep)&&(generator!=null)) 
             {
             	a.add(generator);

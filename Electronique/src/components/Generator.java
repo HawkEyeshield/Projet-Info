@@ -14,11 +14,11 @@ public abstract class Generator extends AbstractDipole {
         super(name, t, first_link, second_link);
     }
 
-    public void turn_on() {
+    public void turnOn() {
         is_active = true;
     }
 
-    public void turn_off() {
+    public void turnOff() {
         is_active = false;
     }
 
