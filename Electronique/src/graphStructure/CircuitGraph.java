@@ -23,13 +23,13 @@ public class CircuitGraph
     }
 
     //Procédure d'ajout de sommet
-    public void add_vertex(Vertex new_vertex) 
+    public void addVertex(Vertex new_vertex)
     {
         graph.addVertex(new_vertex);
     }
 
     //Procédure d'ajout de composant
-    public void add_component(Vertex src,Vertex dst, AbstractDipole composant) 
+    public void addComponent(Vertex src, Vertex dst, AbstractDipole composant)
     {
         boolean b = isComponentBetween(src,dst);
         if (!b) 

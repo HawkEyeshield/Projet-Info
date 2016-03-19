@@ -16,30 +16,34 @@ import java.util.ArrayList;
  */
 public class Extracteur {
 
-    public CircuitGraph graph;
-    public int nbNodes;
-    public int nbGenerators;
 
-    public double[] resultCurrents;
-    public double[][][] resultVariables;
-    public double[][][][] varFix;
+    private CircuitGraph graph;
+    private int nbNodes;
+    private int nbGenerators;
 
-    public char[] st;
+    private double[] resultCurrents;
+    private double[][][] resultVariables;
+    private double[][][][] varFix;
+
+    private char[] st;
+
+    private boolean solved;
 
     public Extracteur(CircuitGraph g) {
         graph = g;
-        extraction(false);
+        solved = false;
     }
 
-    public void logn(Object s) {
+
+    private void logn(Object s) {
         System.out.println(s);
     }
 
-    public void log(Object s) {
+    private void log(Object s) {
         log(s);log("\n");
     }
 
-    private boolean extraction(boolean resetting) {
+    public boolean extraction(boolean resetting) {
         //In this part we will assume that there ca be no parallel admittances aka there is at most an unique admitance between two vertices.7
         //A future version will allow that case, in introducing more variables in the resolution algorythm, but for instance, I am limited to this.
 
@@ -146,16 +150,23 @@ public class Extracteur {
         ArrayList<Equation> equations;//La liste des equations;
         int signe;//La variable de coefficients
         double[][] cour;//La matrice de courants pour les equations
-        double coeffCurGen; //Le coefficient du courant générateur
-        boolean curGenDet;
-        double curGenValue;
+        double[][] powerCurrents;
+        ArrayList<Generator> genOrder;
+
 
         //the variables matrices
         double[][][] voltages;
         double[][][] admittances;
         double[][][] currents;
         double[][][][] vartab;
+
+        double[] equationCurrents;
+        int pci;
+        int[][] genertorCorrespondance;
         boolean generatorFound;
+        int pg;
+
+        Generator foundGenerator;
 
         //Etape 2 : calcul des parametres du circuit pour chaque générateur.
 
@@ -191,16 +202,19 @@ public class Extracteur {
                 }
             }
 
-            curGenValue=0;
-            curGenDet = false;
+            powerCurrents=new double[nbGenerators][2];
+            genOrder = new ArrayList<>();
+            pci = 0;
+
             //Etape 4 : récupération des equations aux noeuds
             
             logn("Equation aux noeuds ...");
             for (Vertex vertice : vertices) {
                 ComponentMap map;
-                coeffCurGen = 0;
                 generatorFound = false;
+                foundGenerator = null;
                 cour = new double[nbNodes][nbNodes];
+                equationCurrents = new double[nbGenerators];
 
                 ArrayList<ComponentMap> connections = graph.getConnectedComponents(vertice);//Getting all components connected to this vertex
                 for (ComponentMap m : connections) {//for each component connected
@@ -223,40 +237,46 @@ public class Extracteur {
                         //Todo : verifier si les valeurs des generateurs sont bien remplac�es dans cette partie ET dans la partie recup des valeurs, et si c'est le cas, simplifier.
                         case VOLTAGE_GENERATOR://A Voltage generator determines the voltage between the points;
                             gen = (Generator) m.component();
-                            //TODO modifier cette partie apres la reorganisation des graphes : si on detecte deux generateurs erreur.
                             voltages[vertice.get()][m.vertex().get()][0] = 1;
-                            if (gen.is_active()) {
-                                voltages[vertice.get()][m.vertex().get()][1] = signe*gen.getVoltage();//If the generator is not active, the voltage will be set to 0
-                                if (!gen.is_active()) {//si le generateur n'est pas actif, AUCUN COURANT NE LE TRAVERSE
-                                    currents[vertice.get()][m.vertex().get()][0] = 1;
-                                    currents[vertice.get()][m.vertex().get()][1] = 0;
-
-                                }
+                            pg = genOrder.indexOf(gen);//on regarde si on a pas déja le générateur
+                            if (pg==-1) {//si on ajoute un generateur
+                                pg=pci;
+                                genOrder.add(gen);
+                                pci++;
+                            }
+                            equationCurrents[pg] = signe;
+                            if (gen.isActive()) {
+                                voltages[vertice.get()][m.vertex().get()][1] = signe * gen.getVoltage();//If the generator is not active, the voltage will be set to 0
                                 //if coeffCurGen has already been modified, we know that almost two generators are active : ERROR
-                                if (generatorFound) {
+                                if ((generatorFound) && (gen != foundGenerator)) {
                                     logn("Echec d'extinction des generateurs, arret du programmme.");
                                     return false;
-                                } else coeffCurGen = signe;
+                                }
                                 generatorFound = true;//a generator has been found
+                                foundGenerator = gen;
 
                             }
                             break;
+
                         case CURRENT_GENERATOR://A current Generator determines the current through a component
                             gen = (Generator) m.component();
                             currents[vertice.get()][m.vertex().get()][0] = 0;
-                            if (gen.is_active()) {
-                                currents[vertice.get()][m.vertex().get()][1] = signe*gen.getCurrent();//If the generator is not active, the current will be set to 0
+                            pg = genOrder.indexOf(gen);//on regarde si on a pas déja le générateur
+                            if (pg==-1) {
+                                if (gen.isActive()) powerCurrents[pci] = new double[]{1,signe * gen.getCurrent()};
+                                genOrder.add(gen);
+                                pg=pci;
+                                //si le generateur est actif, on remplace sa valeur dans le tableau des courants.
+                                pci++;
+                            }
+                            equationCurrents[pg] = signe;
+                            if (gen.isActive()) {
+                                currents[vertice.get()][m.vertex().get()][1] = signe * gen.getCurrent();//If the generator is not active, the current will be set to 0
                                 //if coeffCurGen has already been modified, we know that almost two generators are active : ERROR
                                 if (generatorFound) {
                                     logn("Echec d'extinction des generateurs, arret du programmme.");
-                                    return false;
-                                }
-                                else {
-                                    //TODO Rediger les conventions sur les generateurs (sens du courant et de la tension avec un dipole a->b
-                                    coeffCurGen = signe;//TODO verifier si la constante est necessaire, et si on ne peut pas s'en passer, genre si elle n'est pas saisie dans la partie suivante
-                                    curGenDet = true;
-                                    curGenValue=signe*gen.getCurrent();
-                                }
+                                    return false;}
+
                                 generatorFound = true;//a generator has been found
                             }
                             break;
@@ -275,7 +295,7 @@ public class Extracteur {
 
                     //TODO tester si les générateurs eteints imposent bien 0V à leurs bornes.
                 }
-                Equation eq = new Equation(new double[nbNodes][nbNodes], cour, new double[nbNodes][nbNodes], 0, st, coeffCurGen);
+                Equation eq = new Equation(new double[nbNodes][nbNodes], cour, new double[nbNodes][nbNodes], 0, st, equationCurrents);
                 equations.add(eq);
             }
             logn("Fait. \n\nEquations aux mailles ...");
@@ -287,7 +307,7 @@ public class Extracteur {
                     for (int r=0;r<=f-p;r++) {
                         volt[r+p][p+(r+1)%(f-p+1)] = 1;
                     }
-                    Equation eq = new Equation(volt,new double[nbNodes][nbNodes], new double[nbNodes][nbNodes], 0, st,0);
+                    Equation eq = new Equation(volt,new double[nbNodes][nbNodes], new double[nbNodes][nbNodes], 0, st,new double[nbGenerators]);
                     equations.add(eq);
                 }
 
@@ -297,12 +317,10 @@ public class Extracteur {
             for(Equation eq:equations) System.out.println(eq);
             logn("");
             double[] cg;
-            if (curGenDet) cg = new double[]{1, curGenValue};
-            else cg = new double[]{0, 0};
             Equation[] eq = equations.toArray(new Equation[equations.size()]);
-            solveur = new Solveur(voltages, currents, admittances, cg, eq);
+            solveur = new Solveur(voltages, currents, admittances, powerCurrents, eq);
             if (solveur.resolution()) {
-                resultCurrents[i] = solveur.currGenerator();
+                resultCurrents[i] = solveur.currGenerator()[i][1];
 
                 //ajout du tableau actuel aux reusltats
                 logn("Circuit résolu. Ajout du résultat au circuit global ... \n");
@@ -310,10 +328,12 @@ public class Extracteur {
             }
             else {
                 logn("Systeme inrésolvable. Arret...");
+                return false;
             }
         }
 
         System.out.println("Systeme resolu.");
+        solved = true;
         return true;
     }
 
@@ -333,6 +353,10 @@ public class Extracteur {
 
     public void printVariables()
     {
+        if (!solved) {
+            System.out.println("Le circuit n'est pas encore résolu, ou inrésolvable, aucun résultat à afficher");
+            return;
+        }
         NumberFormat nf = new DecimalFormat("0.00###");
         for(int i_t=0;i_t<3;i_t++) {
             System.out.print("\n"+st[i_t]+"\n");

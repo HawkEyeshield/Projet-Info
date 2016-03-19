@@ -3,6 +3,7 @@ package resolution;
 /**
  * @author Rapĥaël
  */
+
 public class Equation {
 
     public int size;
@@ -14,9 +15,10 @@ public class Equation {
     private double[][] t2;
     private double[][] t3;
     */
+
     public double constante;
 
-    private double coeff_courant_alim;
+    private double[] powerCurrents;
 
     //for more ease to manipulate each Equation, we define nunk as the number of variables still unknown at this moment (actualised after each operation)
     public int nunk;
@@ -35,18 +37,18 @@ public class Equation {
     //variables name for print
     public char[] names;
 
-    public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double courant_alim)
+    public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double[] courantAlim)
     {
-        //if ((tt1.length == tt2.length)&&(tt1.length== tt3.length)) return false;//######################################exceptionner
         size = tens.length;
-
-        t = new double[][][]{symetrise(true,cour),symetrise(true,tens),symetrise(false,admit)};
         constante = cst;
-        used = false;
         names = v;
+        powerCurrents = courantAlim;
+
+        used = false;
         solved = false;
+        t = new double[][][]{symetrise(true,cour),symetrise(true,tens),symetrise(false,admit)};
         update();
-        coeff_courant_alim = courant_alim;
+
 
         //return true;
     }
@@ -77,15 +79,16 @@ public class Equation {
         return ret;
     }
 
-    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double curr)
+    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double[] curr)
     {   //AMODIFIER
-        //type gives the type of the variable substituated (1,2 or 3)
-        //i and j give the coordinate of the variable (matrix)
-        //multi is the variable multiplicator (eg : for 2(einstein) = 3(cauchy) +4(dakhly) +5(l�o lagrange) multi will be 2
-        //curr is the coefficient of the generator's current
+        //mod_x (x in [|1;3|] donne l'equivalent de la variable substituée dans la base des autres parametres ohmiques
+        //cst est la constante à ajouter
 
-        //mod_x (x in [|1;3|] give the equivalent of the substituated variable (what we will replace it with)
-        //cst is the value to add to the constant
+        //type : type de la variable à modifier -1:courantAlim/0:Courant/1:Tension/2:Admittance
+        //i et j sont les coordonnées dans la matrice de variables, dans le cas ou c'est un courantAim, seul j est utilisé (tableau simple)
+        //multi est le coeff multiplicateur (eg : pour 2(einstein) = 3(cauchy) +4(dakhly) +5(l�o lagrange), multi = 2
+        //curr est le nouveau tableau des courantsAlim
+
 
         double coeff;
         if (type!=-1) 
@@ -95,9 +98,9 @@ public class Equation {
             //##############################################################################################################verifier que la substitution ne fait pas intervenir le parametre qu'elle substitue
             coeff = t[type][i][j];
         }
-        else coeff = coeff_courant_alim;
+        else coeff = powerCurrents[j];
 
-
+        //substitution dans les parametres réguliers
         double[][] m;
         double[][] cur;
         if (coeff !=0) {
@@ -115,13 +118,16 @@ public class Equation {
                 }
             }
         }
+
+        //substitution dans la constante
         constante-=coeff*cst;
-        if (type != -1) 
-        {
-            coeff_courant_alim += coeff * curr;
-            t[type][i][j] = 0;//deleting the substituated variable
-        }
-        else  coeff_courant_alim = 0;
+
+        //substitution dans les courantAlim
+        for (int ca=0;ca< powerCurrents.length;ca++) powerCurrents[ca] += coeff * curr[ca];
+
+        //mise à 0 du parametre substitué
+        if (type != -1) t[type][i][j] = 0;//parametre regulier
+        else  powerCurrents[j] = 0;//courantAlim
 
         update();
         return true;
@@ -146,10 +152,10 @@ public class Equation {
 
     public boolean replace(int type, int i, int j, double value)
     {
-        if ((type == -1)&&(i == -1)&&(j == 0))
+        if ((type == -1)&&(i == -1))//si on doit remplacer un courantAlim (j joue toujours le role d'indicatif).
         {
-            constante-=value*coeff_courant_alim;
-            coeff_courant_alim = 0;
+            constante-=value* powerCurrents[j];
+            powerCurrents[j] = 0;
             return true;
         }
 
@@ -170,60 +176,68 @@ public class Equation {
     private void update_nunk () 
     {
         int cpt = 0;
-        if (coeff_courant_alim != 0) cpt++;
+
+        //courantsAlim
+        for (double a: powerCurrents)
+            if (a!=0) cpt++;
+
+        //Parametres  reguliers
         for(int i_t=0;i_t<3;i_t++)
-        {
-            for(int i=0;i<size;i++) 
-            {
-                for (int j = 0; j < size; j++) 
-                {
-                    if (t[i_t][i][j] != 0) {
+            for(int i=0;i<size;i++)
+                for (int j = 0; j < size; j++)
+                    if (t[i_t][i][j] != 0)
                         cpt++;
-                    }
-                }
-            }
-        }
         nunk = cpt;
     }
 
-    public int[] get_first_variable() 
+    public int[] get_first_variable()
     {
-        for(int i_t=0;i_t<3;i_t++) 
-        {
-            for(int i=0;i<size;i++) 
-            {
-                for (int j = 0; j < size; j++) 
-                {
-                    if (t[i_t][i][j] != 0) 
-                    {
+        for(int i_t=0;i_t<3;i_t++)
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size; j++)
+                    if (t[i_t][i][j] != 0) {
                         used = true;
-                        return new int[]{i_t,i,j};
+                        return new int[]{i_t, i, j};
                     }
-                }
-            }
-        }
-        if (coeff_courant_alim!= 0) return new int[]{-1,-1,0};
+        for (int j=0;j< powerCurrents.length;j++)
+            if (powerCurrents[j] != 0) return new int[]{-1,-1,j};
 
-        return new int[]{-1,-1,0};/////////////////////////////////////////////////////////////////////////////////////retourner une erreur au lieu d'un tableau pourri
+        return new int[]{-1,-1,-1};/////////////////////////////////////////////////////////////////////////////////////retourner une erreur au lieu d'un tableau pourri
     }
 
-    //TODO POINT NEVRALGIQUE : VERIFIER CE QUI EST FAIT DU RENDU DE LA FONCTION
-    public double[] get_value(int[] id) 
+    public double getEqConstant(int[] id)
     {
         double coeff;
-        if ((id[0] == -1)&&(id[2]==0)) return new double[]{constante/coeff_courant_alim,0};
+        if (id[0] == -1)
+            return constante/ powerCurrents[id[2]];
         else {
             coeff = t[id[0]][id[1]][id[2]];
-            return new double[]{constante/coeff,-coeff_courant_alim/coeff};
+            return constante/coeff;
         }
     }
 
-    public double[][][] get_equivalent(int[] x) 
+    public double[] getEqPowerCurrents(int[] id) {
+        double coeff;
+        double[] ret = new double[powerCurrents.length];
+
+        boolean b = (id[0] == -1);//on utilise ce truc 2 fois.
+
+        //coeff
+        if (b) coeff=powerCurrents[id[2]];
+        else coeff = t[id[0]][id[1]][id[2]];
+
+        //ajout des lignes
+        for (int i=0;i<powerCurrents.length;i++) ret[i] = -powerCurrents[i]/coeff;
+
+        if (b) ret[id[2]] = 0;//si on a equivalenté un corantAlim, on met son coeff à 0 (logique...)
+        return ret;
+    }
+    public double[][][] get_equivalent(int[] id)
     {
         double[][][] ret = new double[3][size][size];
         double coeff;
-        if((x[0] == -1)&&(x[1] == -1)&&(x[2]==0)) coeff = coeff_courant_alim;
-        else coeff = t[x[0]][x[1]][x[2]];
+        if((id[0] == -1)) coeff = powerCurrents[id[2]];
+        else coeff = t[id[0]][id[1]][id[2]];
 
         for(int i_t=0;i_t<3;i_t++) 
         {
@@ -231,7 +245,7 @@ public class Equation {
             {
                 for(int j=0;j<size;j++) 
                 {
-                    if ((i_t == x[0])&&(i==x[1])&&(j==x[2])) 
+                    if ((i_t == id[0])&&(i==id[1])&&(j==id[2]))
                     {
                         ret[i_t][i][j] = 0;
                     }
@@ -263,23 +277,17 @@ public class Equation {
         for(int typ=0;typ<3;typ++) 
         {
             double[][] c = t[typ];
-            for(int i = 0;i<size;i++) 
-            {
-                for(int j = 0;j<size;j++) 
-                {
-                    if (c[i][j] != 0) 
-                    {
+            for(int i = 0;i<size;i++)
+                for (int j = 0; j < size; j++)
+                    if (c[i][j] != 0) {
                         if (sum) str += " + ";
                         else sum = true;
                         if (c[i][j] != 0) str += c[i][j] + "*" + names[typ] + "(" + i + "," + j + ")";
                     }
-                }
-            }
         }
-        if (coeff_courant_alim != 0)
-        {
-            str+= " + " + coeff_courant_alim + "*I ";
-        }
+        for (int k=0;k<powerCurrents.length;k++)
+            if (powerCurrents[k] != 0)
+                str += " + " + powerCurrents + "*Ip"+k+" ";
 
 
         str+= " = " + constante;//+" . Nb inconnues : "+nunk+", Utilise : "+used+", resolue : "+solved;

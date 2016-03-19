@@ -22,7 +22,7 @@ public abstract class Generator extends AbstractDipole {
         is_active = false;
     }
 
-    public boolean is_active() {
+    public boolean isActive() {
         return is_active;
     }
 

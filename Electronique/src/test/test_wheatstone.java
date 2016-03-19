@@ -6,15 +6,11 @@ import resolution.Solveur;
 
 /**
  * @author Raphaël
- */
+ *//*
 public class test_wheatstone {
 
     public test_wheatstone() {
         char[] st = new char[]{'I', 'U', 'Y'};
-
-        /*double[][] t11 = new double[][]{{1, 0}, {0, 0}};
-        double[][] t12 = new double[][]{{0, 0}, {0, 0}};
-        double[][] t13 = new double[][]{{0, 0}, {0, 0}};*/
 
         double[][] t11 = new double[][]{{0,1,1,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
         double[][] t12 = new double[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
@@ -88,4 +84,4 @@ public class test_wheatstone {
 		Solveur solveur = new Solveur(u,i,y,new double[]{0,0},eq);
 
     }
-}
+}*/

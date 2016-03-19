@@ -6,6 +6,7 @@ import resolution.Solveur;
 /**
  * @author Raphaël
  */
+/*
 public class test_basic {
     public test_basic() {
         char[] st = new char[]{'I', 'U', 'Y'};
@@ -58,4 +59,4 @@ public class test_basic {
     }
 
 
-}
+}*/
