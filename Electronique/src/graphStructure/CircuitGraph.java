@@ -23,9 +23,9 @@ public class CircuitGraph
     }
 
     //Procédure d'ajout de sommet
-    public void addVertex(Vertex new_vertex)
+    public void addVertex(Vertex newVertex)
     {
-        graph.addVertex(new_vertex);
+        graph.addVertex(newVertex);
     }
 
     //Procédure d'ajout de composant
@@ -38,9 +38,9 @@ public class CircuitGraph
             {
                 case ADMITTANCE:
                     graph.addEdge(src, dst, new Edge(src,dst,(Admittance)composant));break;
-                case CURRENT_GENERATOR:
+                case CURRENTGENERATOR:
                     graph.addEdge(src, dst, new Edge(src,dst,(Generator)composant));break;
-                case VOLTAGE_GENERATOR:
+                case VOLTAGEGENERATOR:
                     graph.addEdge(src, dst, new Edge(src,dst,(Generator)composant));break;
                 default:break;
             }
@@ -52,9 +52,9 @@ public class CircuitGraph
             {
                 case ADMITTANCE:
                     e.addAdmittance(src,(Admittance)composant);break;//add the new admittance according to the source vertex
-                case CURRENT_GENERATOR:
+                case CURRENTGENERATOR:
                     e.setGenerator(src, (Generator) composant);break;//Modify the generator according to the source vertex
-                case VOLTAGE_GENERATOR:
+                case VOLTAGEGENERATOR:
                     e.setGenerator(src, (Generator) composant);break;//same thing
                 default:break;
             }
@@ -85,7 +85,7 @@ public class CircuitGraph
 }
 
     //Fonction de récupération des générateurs
-    public ArrayList<Generator> get_all_generators() 
+    public ArrayList<Generator> getAllGenerators()
     {
         ArrayList<Generator> s = new ArrayList<>();
         Set<Edge> set = graph.edgeSet();
@@ -112,8 +112,7 @@ public class CircuitGraph
     {
         Edge e = graph.getEdge(v0,v1);
         if (e==null) return false;
-        if (e.AdmittancesNb()>1) return true;
-        return false;
+        return e.AdmittancesNb() > 1;
     }
     public ArrayList<ComponentMap> getConnectedComponents(Vertex v)
     {
@@ -122,28 +121,28 @@ public class CircuitGraph
         Edge[] edges = edgesOf(v);
 
         //temp vars
-        Edge e_tmp; //a temp var for the current edge
-        Vertex v_tmp;
-        ArrayList<AbstractDipole> a_tmp;//a temp var for the componements
+        Edge tE; //a temp var for the current edge
+        Vertex tV;
+        ArrayList<AbstractDipole> tA;//a temp var for the componements
 
         //For all Edges :
         for (int i = 0;i<edges.length;i++) 
         {
-            e_tmp = edges[i];
-            if (e_tmp.beginsWith(v)) v_tmp = e_tmp.endVertex();
-            else v_tmp = e_tmp.beginVertex();
+            tE = edges[i];
+            if (tE.beginsWith(v)) tV = tE.endVertex();
+            else tV = tE.beginVertex();
 
             //get the edges components begining with this vertex
-            a_tmp = e_tmp.componentsFrom(v);
-            for (int j=0;j<a_tmp.size();j++) 
+            tA = tE.componentsFrom(v);
+            for (int j=0;j<tA.size();j++)
             {
-                maps.add(new ComponentMap(a_tmp.get(j),v_tmp,true));
+                maps.add(new ComponentMap(tA.get(j),tV,true));
             }
             //get edges ending with this vertex
-            a_tmp = e_tmp.componentsTo(v);
-            for (int j=0;j<a_tmp.size();j++) 
+            tA = tE.componentsTo(v);
+            for (int j=0;j<tA.size();j++)
             {
-                maps.add(new ComponentMap(a_tmp.get(j),v_tmp,false));
+                maps.add(new ComponentMap(tA.get(j),tV,false));
             }
         }
         return maps;

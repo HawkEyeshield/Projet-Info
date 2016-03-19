@@ -15,19 +15,19 @@ public class Admittance extends AbstractDipole
 	/**
 	 * Constructeur de resistances
 	 * @param name nom du la resistance
-	 * @param first_link entier désignant les liaisons communes avec le premier lien
-	 * @param second_link entier désigant les liaisons communes avec le second lien 
+	 * @param firstLink entier désignant les liaisons communes avec le premier lien
+	 * @param secondLink entier désigant les liaisons communes avec le second lien
 	 */
-	public Admittance(String name, int first_link, int second_link)
+	public Admittance(String name, int firstLink, int secondLink)
 	{
-		super(name, Type.ADMITTANCE, first_link, second_link);
+		super(name, Type.ADMITTANCE, firstLink, secondLink);
 		this.determination = new boolean[]{false,false,false};
 		this.value = 0;
 	}
 
-	public Admittance(String name, int first_link, int second_link, double v)
+	public Admittance(String name, int firstLink, int secondLink, double v)
 	{
-		super(name, Type.ADMITTANCE, first_link, second_link);
+		super(name, Type.ADMITTANCE, firstLink, secondLink);
 		this.determination = new boolean[]{false,false,true};
 		this.value = v;
 	}

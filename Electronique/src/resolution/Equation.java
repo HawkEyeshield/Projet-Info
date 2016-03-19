@@ -58,7 +58,7 @@ public class Equation {
     double[][] symetrise(boolean opposition, double[][] source) 
     {
         double[][] ret = new double[source.length][source[0].length];
-        for (int i_t = 0;i_t<3;i_t++) 
+        for (int k = 0;k<3;k++)
         {
             for (int i=0;i<size;i++) 
             {
@@ -104,16 +104,16 @@ public class Equation {
         double[][] m;
         double[][] cur;
         if (coeff !=0) {
-            for (int i_tab=0;i_tab<3;i_tab++) 
+            for (int t=0;t<3;t++)
             {//modifying each array of variable
                 //all we have to do is to add the array coefficients by coefficients (one multiplied by #coeff
-                cur = t[i_tab];
-                m = mod[i_tab];
-                for(int c_i=0;c_i<size;c_i++) 
+                cur = this.t[t];
+                m = mod[t];
+                for(int x=0;x<size;x++)
                 {//row
-                    for(int c_j=0;c_j<size;c_j++) 
+                    for(int y=0;y<size;y++)
                     {//column
-                        cur[c_i][c_j] += coeff * m[c_i][c_j];//summing
+                        cur[x][y] += coeff * m[x][y];//summing
                     }
                 }
             }
@@ -133,12 +133,12 @@ public class Equation {
         return true;
     }
 
-    public void eliminateCurrent(boolean voltage_unknown, int i, int j, double value)
+    public void eliminateCurrent(boolean voltageUnknown, int i, int j, double value)
     {
         double coeff = t[0][i][j];
         if (coeff != 0) 
         {
-            if (voltage_unknown) 
+            if (voltageUnknown)
             {
                 t[1][i][j] += value*coeff;
                 t[0][i][j] = 0;
@@ -168,12 +168,12 @@ public class Equation {
 
     private void update() 
     {
-        update_nunk();
+        updateNunk();
         stable =  !((nunk==0)&&(constante != 0));
         trivial = (nunk==0)&&(constante == 0);
     }
 
-    private void update_nunk () 
+    private void updateNunk()
     {
         int cpt = 0;
 
@@ -182,22 +182,22 @@ public class Equation {
             if (a!=0) cpt++;
 
         //Parametres  reguliers
-        for(int i_t=0;i_t<3;i_t++)
+        for(int x=0;x<3;x++)
             for(int i=0;i<size;i++)
                 for (int j = 0; j < size; j++)
-                    if (t[i_t][i][j] != 0)
+                    if (t[x][i][j] != 0)
                         cpt++;
         nunk = cpt;
     }
 
-    public int[] get_first_variable()
+    public int[] getFirstVariable()
     {
-        for(int i_t=0;i_t<3;i_t++)
+        for(int x=0;x<3;x++)
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    if (t[i_t][i][j] != 0) {
+                    if (t[x][i][j] != 0) {
                         used = true;
-                        return new int[]{i_t, i, j};
+                        return new int[]{x, i, j};
                     }
         for (int j=0;j< powerCurrents.length;j++)
             if (powerCurrents[j] != 0) return new int[]{-1,-1,j};
@@ -232,24 +232,24 @@ public class Equation {
         if (b) ret[id[2]] = 0;//si on a equivalenté un corantAlim, on met son coeff à 0 (logique...)
         return ret;
     }
-    public double[][][] get_equivalent(int[] id)
+    public double[][][] getEquivalent(int[] id)
     {
         double[][][] ret = new double[3][size][size];
         double coeff;
         if((id[0] == -1)) coeff = powerCurrents[id[2]];
         else coeff = t[id[0]][id[1]][id[2]];
 
-        for(int i_t=0;i_t<3;i_t++) 
+        for(int x=0;x<3;x++)
         {
             for(int i=0;i<size;i++) 
             {
                 for(int j=0;j<size;j++) 
                 {
-                    if ((i_t == id[0])&&(i==id[1])&&(j==id[2]))
+                    if ((x == id[0])&&(i==id[1])&&(j==id[2]))
                     {
-                        ret[i_t][i][j] = 0;
+                        ret[x][i][j] = 0;
                     }
-                    else ret[i_t][i][j] = -t[i_t][i][j]/coeff;
+                    else ret[x][i][j] = -t[x][i][j]/coeff;
                 }
             }
         }
@@ -257,7 +257,7 @@ public class Equation {
     }
 
     //FONCTION AYANT CONNAISSANCE DE LA POSITION DU COURANT
-    public boolean is_current_present() 
+    public boolean isCurrentPresent()
     {
         for (int i=0;i<size;i++) 
         {

@@ -14,28 +14,28 @@ import java.util.ArrayList;
  */
 public class Edge 
 {
-    private Vertex v_dep;
-    private Vertex v_arr;
+    private Vertex vDep;
+    private Vertex vArr;
 
     private Generator generator;
-    private boolean gen_at_dep = true;
+    private boolean genAtDep = true;
 
     public ArrayList<Admittance> directAdmittances;
     public ArrayList<Admittance> indirectAdmittances;
 
-    public Edge(Vertex vd,Vertex va,Generator gen,ArrayList<Admittance> p_admit,ArrayList<Admittance> n_admit) 
+    public Edge(Vertex vd,Vertex va,Generator gen,ArrayList<Admittance> pAdmit,ArrayList<Admittance> nAdmit)
     {
-        this.v_dep = vd;
-        this.v_arr = va;
+        this.vDep = vd;
+        this.vArr = va;
         this.generator = gen;
-        this.directAdmittances = p_admit;
-        this.indirectAdmittances = n_admit;
+        this.directAdmittances = pAdmit;
+        this.indirectAdmittances = nAdmit;
     }
 
     public Edge(Vertex vd,Vertex va,Admittance admit) 
     {
-        this.v_dep = vd;
-        this.v_arr = va;
+        this.vDep = vd;
+        this.vArr = va;
         this.generator = null;
         this.directAdmittances = new ArrayList<Admittance>();
         this.directAdmittances.add(admit);
@@ -44,8 +44,8 @@ public class Edge
 
     public Edge(Vertex vd,Vertex va,Generator gen) 
     {
-        this.v_dep = vd;
-        this.v_arr = va;
+        this.vDep = vd;
+        this.vArr = va;
         this.generator = gen;
         this.directAdmittances = new ArrayList<>();
         this.indirectAdmittances = new ArrayList<>();
@@ -58,14 +58,14 @@ public class Edge
 
     public void setGenerator(Vertex originVertex,Generator g) 
     {
-        if (originVertex == this.v_dep) this.generator = g;
-        else if (originVertex == v_arr) {this.generator = g;this.gen_at_dep = false;}
+        if (originVertex == this.vDep) this.generator = g;
+        else if (originVertex == vArr) {this.generator = g;this.genAtDep = false;}
     }
 
-    public void addAdmittance(Vertex origin_vertex,Admittance a) 
+    public void addAdmittance(Vertex originVertex,Admittance a)
     {
-        if (origin_vertex == v_dep) this.directAdmittances.add(a);
-        else if (origin_vertex == v_arr) this.indirectAdmittances.add(a);
+        if (originVertex == vDep) this.directAdmittances.add(a);
+        else if (originVertex == vArr) this.indirectAdmittances.add(a);
         /////////////////////////////////faire une erreur, le cas else n'est pas normal.
     }
 
@@ -78,10 +78,10 @@ public class Edge
     public ArrayList<AbstractDipole> componentsFrom(Vertex src) 
     {
         ArrayList<AbstractDipole> a;
-        if (src == v_dep) 
+        if (src == vDep)
         {
             a = new ArrayList<AbstractDipole>(directAdmittances);
-            if ((gen_at_dep)&&(generator!=null)) 
+            if ((genAtDep)&&(generator!=null))
             {
             	a.add(generator);
             }
@@ -89,7 +89,7 @@ public class Edge
         else 
         {
             a = new ArrayList<AbstractDipole>(directAdmittances);
-            if ((!gen_at_dep)&&(generator!=null)) 
+            if ((!genAtDep)&&(generator!=null))
             {
             	a.add(generator);
             }
@@ -100,10 +100,10 @@ public class Edge
     public ArrayList<AbstractDipole> componentsTo(Vertex dst) 
     {
         ArrayList<AbstractDipole> a;
-        if (dst == v_arr) 
+        if (dst == vArr)
         {
             a = new ArrayList<AbstractDipole>(directAdmittances);
-            if ((gen_at_dep)&&(generator!=null)) 
+            if ((genAtDep)&&(generator!=null))
             {
             	a.add(generator);
             }
@@ -111,7 +111,7 @@ public class Edge
         else 
         {
             a = new ArrayList<AbstractDipole>(directAdmittances);
-            if ((!gen_at_dep)&&(generator!=null)) 
+            if ((!genAtDep)&&(generator!=null))
             {
             	a.add(generator);
             }
@@ -121,24 +121,24 @@ public class Edge
 
     public boolean beginsWith(Vertex v) 
     {
-        if (v_dep == v) return true;
+        if (vDep == v) return true;
         return false;
     }
 
     public boolean endsWith(Vertex v) 
     {
-        if (v_arr == v) return true;
+        if (vArr == v) return true;
         return false;
     }
 
     public Vertex beginVertex() 
     {
-        return v_dep;
+        return vDep;
     }
 
     public Vertex endVertex() 
     {
-        return v_arr;
+        return vArr;
     }
 
     //The couple o

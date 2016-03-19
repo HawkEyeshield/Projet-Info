@@ -30,28 +30,28 @@ public class Graphe {
 	/**
 	 * créer un AbstractDipole en placant un composant
 	 * @param name nom du composant
-	 * @param first_link entier indiquant les liaions communes avec le premier AbstractDipole
-	 * @param second_link entier indiquant les liaisons communes avec le second AbstractDipole
+	 * @param firstLink entier indiquant les liaions communes avec le premier AbstractDipole
+	 * @param secondLink entier indiquant les liaisons communes avec le second AbstractDipole
 	 * @param valeur dépend du composant
 	 */
 
 /*
-	public void add_link(int first_link, int second_link, String type, String name, float valeur) throws IllegalArgumentException {
+	public void add_link(int firstLink, int secondLink, String type, String name, float valeur) throws IllegalArgumentException {
 		
-		if (first_link<0 || first_link >= nbreNoeud|| second_link<0 || second_link >= nbreNoeud)
+		if (firstLink<0 || firstLink >= nbreNoeud|| secondLink<0 || secondLink >= nbreNoeud)
 			throw new IllegalArgumentException("Invalid node identifer");
 		//"va te faire" si un de tes noeuds n'existent pas
-		int taille = matrice[first_link][second_link].length;
+		int taille = matrice[firstLink][secondLink].length;
 		AbstractDipole [] a = new AbstractDipole [taille + 1];
 		for (int i = 0 ; i < taille ; i++){
-			a[i] = matrice[first_link][second_link][i];
+			a[i] = matrice[firstLink][secondLink][i];
 			// flemme d'utiliser une array list, du coup on recréer le tableau des AbstractDipoles
 		}
 		if (type == "resistance"){
-			a[taille] = new Generator(name,Type.GENERATORTENSION,first_link,second_link,valeur);
+			a[taille] = new Generator(name,Type.GENERATORTENSION,firstLink,secondLink,valeur);
 		}
 		if (type == "generateurDeCourant"){
-			a[taille] = new Admittance(name,Type.RESISTOR, first_link,second_link,valeur);
+			a[taille] = new Admittance(name,Type.RESISTOR, firstLink,secondLink,valeur);
 		}
 		*/
 		//TODO rajouter les générateurs de tension/courant
@@ -62,7 +62,7 @@ public class Graphe {
 		*/
 
 /*
-		matrice[first_link][second_link] = a;
+		matrice[firstLink][secondLink] = a;
 		
 	}
 	*/

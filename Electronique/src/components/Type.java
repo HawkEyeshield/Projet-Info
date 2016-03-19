@@ -7,7 +7,7 @@ package components;
  */
 public enum Type {
 	ADMITTANCE,
-	VOLTAGE_GENERATOR,
-	CURRENT_GENERATOR,
+	VOLTAGEGENERATOR,
+	CURRENTGENERATOR,
 	NULL;
 }

@@ -5,8 +5,10 @@ public class main {
 
     public static void main(String[] args) {
 
-        double[] ca = new double[5];
-        for (int i=0;i<ca.length;i++) ca[i]+=5;
-        for (double a:ca) System.out.println(a);
+        switch (1) {
+
+            case 1:System.out.println("ducon");break;
+            case 1:System.out.println("ducon");break;
+        }
     }
 }

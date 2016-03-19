@@ -18,10 +18,10 @@ public abstract class AbstractDipole
 	private Type type;
 	
 	//Entier indiquant à quels autres fils est relié le premier lien
-	protected int first_link;
+	protected int firstLink;
 
 	//Entier indiquant à quels autres fils est relié le second lien
-	protected int second_link;
+	protected int secondLink;
 
 	//Courant par défaut traversant les composants
 	protected final double DEFAULT_CURRENT=0;
@@ -40,15 +40,15 @@ public abstract class AbstractDipole
 	/**
 	 * Constructeur de cette classe, les classes filles préciseront les autres paramètres dans leurs constructeurs respectifs
 	 * @param name Nom à donner au composant 
-	 * @param first_link Entier à renseigner pour savoir à quels autres liens est connecté le premier fil
-	 * @param second_link Entier à renseigner pour savoir à quels autres liens est connecté le second fil
+	 * @param firstLink Entier à renseigner pour savoir à quels autres liens est connecté le premier fil
+	 * @param secondLink Entier à renseigner pour savoir à quels autres liens est connecté le second fil
 	 */
-	public AbstractDipole(String name, Type type, int first_link, int second_link)
+	public AbstractDipole(String name, Type type, int firstLink, int secondLink)
 	{
 		this.name=name;
 		this.type=type;
-		this.first_link=first_link;
-		this.second_link=second_link;
+		this.firstLink = firstLink;
+		this.secondLink = secondLink;
 	}
 
 	//Getters et Setters de name
@@ -73,11 +73,11 @@ public abstract class AbstractDipole
 	 */
 	public int getFirstLink()
 	{
-		return this.first_link;
+		return this.firstLink;
 	}
 	public int getSecondLink()
 	{
-		return this.second_link;
+		return this.secondLink;
 	}
 
 
@@ -88,11 +88,11 @@ public abstract class AbstractDipole
 
 	public void setFirstLink(int l)
 	{
-		this.first_link=l;
+		this.firstLink =l;
 	}
 	public void setSecondLink(int l)
 	{
-		this.second_link=l;
+		this.secondLink =l;
 	}
 
 

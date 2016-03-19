@@ -1,13 +1,11 @@
 package components;
 
-import exceptions.AbstractDipoleError;
-
 /** Classe abstraite des générateurs
  * @author Raphaël
  */
 public abstract class Generator extends AbstractDipole {
 
-    protected boolean is_active = true;
+    protected boolean isActive = true;
     protected boolean determination;
 
     public Generator(String name, Type t, int first_link, int second_link) {
@@ -15,15 +13,15 @@ public abstract class Generator extends AbstractDipole {
     }
 
     public void turnOn() {
-        is_active = true;
+        isActive = true;
     }
 
     public void turnOff() {
-        is_active = false;
+        isActive = false;
     }
 
     public boolean isActive() {
-        return is_active;
+        return isActive;
     }
 
 
