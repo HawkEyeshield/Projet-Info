@@ -95,10 +95,10 @@ public class Admittance extends AbstractDipole
 	public void setCurrent(double c) throws AdmittanceError
 	{
 		if (!(determination[1]&&determination[2])) {
-			this.voltage = c;
+			this.current = c;
 			determination[0] = true;
 		}
-		else throw new AdmittanceError(" Sur contrainte : la tension et l'admitance sont déja fixés");
+		else throw new AdmittanceError("Sur contrainte : la tension et l'admitance sont déja fixés");
 	}
 
 	//tension
@@ -109,7 +109,7 @@ public class Admittance extends AbstractDipole
 			this.voltage = v;
 			determination[1] = true;
 		}
-		else throw new AdmittanceError(" Sur contrainte : le courant et l'admitance sont déja fixés");
+		else throw new AdmittanceError("Sur contrainte : le courant et l'admitance sont déja fixés");
 	}
 
 	//valeur

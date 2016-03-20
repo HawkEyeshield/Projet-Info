@@ -88,7 +88,7 @@ public class Edge
         }
         else 
         {
-            a = new ArrayList<AbstractDipole>(directAdmittances);
+            a = new ArrayList<AbstractDipole>(indirectAdmittances);
             if ((!genAtDep)&&(generator!=null))
             {
             	a.add(generator);
@@ -110,7 +110,7 @@ public class Edge
         }
         else 
         {
-            a = new ArrayList<AbstractDipole>(directAdmittances);
+            a = new ArrayList<AbstractDipole>(indirectAdmittances);
             if ((!genAtDep)&&(generator!=null))
             {
             	a.add(generator);

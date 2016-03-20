@@ -2,6 +2,7 @@ package test;
 
 import components.Admittance;
 import components.VoltageGenerator;
+import exceptions.AdmittanceError;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
 import resolution.Extracteur;
@@ -28,17 +29,29 @@ public class epreuveExtracteur {
         g.addVertex(v2);
 
         //les divers composants sont ici ajoutés au graphe.
-        g.addComponent(v0, v1, new VoltageGenerator("E0", 0, 2, 10));
-        g.addComponent(v1, v2, new VoltageGenerator("E1", 2, 3, 10));
-        g.addComponent(v0, v1, new Admittance("Y0", 0, 1, 1));
-        g.addComponent(v0, v2, new Admittance("Y0", 0, 1, 1));
+        Admittance a;
+
+        g.addComponent(v0, v2, new VoltageGenerator("E0", 0, 2, 10));
+        
+        a = new Admittance("Y0", 0, 1);
+        try {a.setCurrent(5.0);}
+        catch (AdmittanceError e) {e.printStackTrace();return;}
+        g.addComponent(v0, v1, a);
+
+        a = new Admittance("Y0", 0, 1);
+        try {a.setVoltage(5.0);}
+        catch (AdmittanceError e) {e.printStackTrace();return;}
+        g.addComponent(v1, v2, a);
+        //g.addComponent(v1, v2, new Admittance("Y0", 0, 1, 1));
+
 
         //création de l'extracteur
         Extracteur e = new Extracteur(g);
 
+        long t = System.currentTimeMillis();
         //resolution du circuit
         e.extraction(false);
-
+        System.out.println("temps d'execution : "+(System.currentTimeMillis()-t)+"ms");
         //affichage du résultat
         e.printVariables();
 

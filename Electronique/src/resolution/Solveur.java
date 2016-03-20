@@ -34,7 +34,6 @@ public class Solveur {
 
         */
 
-        logn("generator " + cg[0] + ":" + cg[1]);
         nbNodes = volt.length;
 
         variables = new double[][][][]{curr, volt, adm};
@@ -42,6 +41,7 @@ public class Solveur {
         nbEq = eq.length;
 
         currGenerator = cg;
+        printVariables();
 
         currentsSubstituated = new boolean[nbNodes][nbNodes];
 
@@ -97,13 +97,13 @@ public class Solveur {
             logn("UNKNOWN" + nbUnknown);
             //Step 1 : determining all calculable values : we use the method calculateVariables while it doesn't returns 0;
             int a;
-            while ((a = calculateVariables()) != 0) {
+            printVariables();
+            while ((calculateVariables() != 0)&&(!updateNumberUnknown())) {
 
             }
-            updateNumberUnknown();
             if (updateNumberUnknown()) break;//if all variables were found : job done .
 
-
+            printVariables();
             //Step 2 : inject an equation
             if (!substituateVariable()) {
                 logn("not solvable");
@@ -122,10 +122,11 @@ public class Solveur {
             if ((eq.nunk == 1) && (!eq.solved)) {
                 int[] indices = eq.getFirstVariable();//on trouve la seule variable restante.
                 double value = eq.getEqConstant(indices);//coeff,constante
+                logn("remplacement d'une variables : " + indices[0]+" "+indices[1]+" "+indices[2]);
                 replace(indices, 0, ind, value);//on injecte dans toutes les equations
                 eq.solved = true;
                 cpt++;
-                logn("remplacement d'une variables");
+                printVariables();
                 printEquations();
 
 
@@ -157,7 +158,6 @@ public class Solveur {
                 }
             }
         }
-        logn("done");
         return true;
     }
 
@@ -206,12 +206,13 @@ public class Solveur {
             }
             if ((variables[1][id[1]][id[2]][0] == 1) && (variables[0][id[1]][id[2]][0] == 0)) {//Voltage known - Current not known
                 variables[0][id[1]][id[2]] = new double[]{1, variables[1][id[1]][id[2]][1] * value};//determining current I = U*Y
-                logn(id[1] + " " + id[2] + "replaced");
             }
         }
+        System.out.println("replaced");
         if (!remplissage) {
             variables[id[0]][id[1]][id[2]] = new double[]{1, value};
-            makeSymetries();
+
+            System.out.println("Symetries made : "+makeSymetries());
         }
 
         return true;
@@ -222,8 +223,9 @@ public class Solveur {
             for (int i = 0; i < nbNodes; i++) {
                 for (int j = 0; j <= i; j++) {
                     if (i == j) {
-                        if (variables[x][i][j][1] != 0)
-                            return false;/////////////////////////////////////////exception parametre pas � 0
+                        if (variables[x][i][j][1] != 0) {
+                            System.out.println("bad case");return false;/////////////////////////////////////////exception parametre pas � 0
+                        }
                         continue;
                     } else {
                         if ((variables[x][i][j][0] == 1) && (variables[x][j][i][0] == 0)) {//if only [i,j] is known
@@ -242,6 +244,7 @@ public class Solveur {
                                 return false;
                             }
                             if ((x != 2) && (variables[x][i][j][1] != -1 * variables[x][j][i][1])) {
+                                System.out.println("bad case : "+x+" " +i+" "+j);
                                 return false;
                             }
                             continue;
@@ -343,10 +346,16 @@ public class Solveur {
                 System.out.println("");
             }
         }
-        logn("courant Generateur : " + currGenerator[1]);
+        System.out.println("");
+        System.out.println("Courants Generateurs :");
+        for (int i = 0; i < currGenerator.length; i++) {
+            System.out.println("Generateur " + currGenerator[i][0] + " : " + currGenerator[i][1]);
+        }
     }
 
+
     private void log(Object s) {
+        System.out.print(s);
     }
 
     private void logn(Object s) {
