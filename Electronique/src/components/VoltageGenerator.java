@@ -8,6 +8,11 @@ import exceptions.VoltageGeneratorError;
  */
 public class VoltageGenerator extends Generator
 {
+
+/* ============================= */
+/* Déclaration des constructeurs */
+/* ============================= */
+	
 	/**
 	 * Constructeur de générateurs de tension
 	 * @param name nom du générateur
@@ -23,16 +28,22 @@ public class VoltageGenerator extends Generator
 		this.voltage = v;
 	}
 
+/* ======================== */
+/* Déclaration des méthodes */
+/* ======================== */
 
-	//Recuperation de la tension
+	//Récupération de la tension
 	@Override
-	public double getVoltage() {
+	public double getVoltage() 
+	{
 		return this.voltage;
 	}
 
-	public double[][] getParameters() {
+	public double[][] getParameters() 
+	{
 		double[][] ret = new double[3][2];
-		if (determination) {
+		if (determination) 
+		{
 			ret[1] = new double[]{1,voltage};
 		}
 		return ret;
@@ -53,13 +64,25 @@ public class VoltageGenerator extends Generator
 		this.voltage = v;
 	}
 
-	//valeur caracteristique
+	//valeur caractéristique
 
-	//TODO Eventuellement parametrer la valeur caracteristique comme la tension délivrée par le générateur, en discuter avec l'equipe.
+	//TODO Eventuellement paramétrer la valeur caracteristique comme la tension délivrée par le générateur, en discuter avec l'équipe.
 	@Override
 	public void setValue(double valeur) throws VoltageGeneratorError
 	{
 		throw new VoltageGeneratorError("Un générateur de tension n'a pas de valeur caracteristique");
+	}
+
+	@Override
+	public double getCurrent() 
+	{
+		return this.current;
+	}
+
+	@Override
+	public double getValue() 
+	{
+		return this.value;
 	}
 
 }

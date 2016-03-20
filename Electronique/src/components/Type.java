@@ -5,7 +5,8 @@ package components;
  * Ne répertorie pas de fil (wire) pour que la résolution soit possible
  * @author François
  */
-public enum Type {
+public enum Type 
+{
 	ADMITTANCE,
 	VOLTAGEGENERATOR,
 	CURRENTGENERATOR,

@@ -4,44 +4,49 @@ import exceptions.AbstractDipoleError;
 
 /**
  * Classe abstraite définisant les dipôles 
- * @author François, Sterenn
+ * @author François, Sterenn, Raphaël
  */
 public abstract class AbstractDipole 
 {
-	/**
-	 * Nom donnée au composant pour affichage user-friendly
-	 */
+	
+/* ========================= */
+/* Déclaration des attributs */
+/* ========================= */
+	
+	
+	/** Nom donnée au composant pour affichage user-friendly*/
 	protected String name;
 	
-	//Type de composant
-
+	/**Type du composant */
 	private Type type;
 	
-	//Entier indiquant à quels autres fils est relié le premier lien
+	/**Entier indiquant à quels autres fils est relié le premier lien*/
 	protected int firstLink;
 
-	//Entier indiquant à quels autres fils est relié le second lien
+	/**Entier indiquant à quels autres fils est relié le second lien*/
 	protected int secondLink;
 
-	//Courant par défaut traversant les composants
+	/**Courant par défaut traversant les composants*/
 	protected final double DEFAULT_CURRENT=0;
 
-	//Courant parcourant les dipôles
+	/**Courant parcourant les dipôles*/
 	protected double current;//=DEFAULT_CURRENT;
 
-	//double indiquant la différence de potentielle
+	/**Double indiquant la différence de potentiel*/
 	protected double voltage;
 
-	//value caractéristique du composant
+	/**Value caractéristique du composant*/
 	protected double value;
 	
-
-
+/* ============================ */
+/* Déclaration du constructeurs */
+/* ============================ */
+	
 	/**
 	 * Constructeur de cette classe, les classes filles préciseront les autres paramètres dans leurs constructeurs respectifs
-	 * @param name Nom à donner au composant 
-	 * @param firstLink Entier à renseigner pour savoir à quels autres liens est connecté le premier fil
-	 * @param secondLink Entier à renseigner pour savoir à quels autres liens est connecté le second fil
+	 * @param name : Nom à donner au composant 
+	 * @param firstLink : Entier à renseigner pour savoir à quels autres liens est connecté le premier fil
+	 * @param secondLink : Entier à renseigner pour savoir à quels autres liens est connecté le second fil
 	 */
 	public AbstractDipole(String name, Type type, int firstLink, int secondLink)
 	{
@@ -51,7 +56,10 @@ public abstract class AbstractDipole
 		this.secondLink = secondLink;
 	}
 
-	//Getters et Setters de name
+/* ======================== */
+/* Déclaration des méthodes */
+/* ======================== */
+	
 	public String getName()
 	{
 		return this.name;
@@ -63,14 +71,12 @@ public abstract class AbstractDipole
 
 
 	//Getters de type : il n'y a pas de mutabilité du type donc pas de setter
-	public Type type(){
+	public Type type()
+	{
 		return(this.type);
 	}
 
-	/**
-	 * Getters de link
-	 * @return l'entier indiquant les liaisons communes
-	 */
+
 	public int getFirstLink()
 	{
 		return this.firstLink;
@@ -81,11 +87,6 @@ public abstract class AbstractDipole
 	}
 
 
-	/**
-	 * Setters de link
-	 * @param l entier à renseigner pour indiquer les liaisons communes
-	 */
-
 	public void setFirstLink(int l)
 	{
 		this.firstLink =l;
@@ -94,20 +95,18 @@ public abstract class AbstractDipole
 	{
 		this.secondLink =l;
 	}
-
-
-
+	
 	//fonctions de récuperation des valeurs du composant
-	//Elles vont etre redéfines dans les classes filles. On ne fait ici que les définir.
+	//Elles vont être redéfines dans les classes filles. On ne fait ici que les définir.
 
 	//courant
-	public double getCurrent()	{return 0;}
+	public abstract double getCurrent();
 
 	//tension
-	public double getVoltage() {return 0;}
+	public abstract double getVoltage();
 
 	//value
-	public double getValue(){return 0;}
+	public abstract double getValue();
 
 	public abstract double[][] getParameters();
 
@@ -115,18 +114,18 @@ public abstract class AbstractDipole
 	//pourront renvoyer des erreurs propres au composant héritant de la classe AbstractdipoleError
 
 	//courant
-	public void setCurrent(double c) throws AbstractDipoleError{}
+	public abstract void setCurrent(double c) throws AbstractDipoleError;
 
 	//tension
-	public void setVoltage(double v) throws AbstractDipoleError{}
+	public abstract void setVoltage(double v) throws AbstractDipoleError;
 
 	//value
-	public void setValue(double valeur) throws AbstractDipoleError{}
-
+	public abstract void setValue(double valeur) throws AbstractDipoleError;
 
 
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return name+" "+type;
 	}
 }

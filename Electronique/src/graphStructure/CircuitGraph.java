@@ -10,18 +10,31 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
+ * Classe définissant le graphe sur lequel réaliser la résolution
  * @author Raphaël
  */
 public class CircuitGraph 
 {
 
+/* ========================= */
+/* Déclaration des attributs */
+/* ========================= */
+	
     public SimpleGraph<Vertex, Edge> graph;
 
+/* =========================== */
+/* Déclaration du constructeur */
+/* =========================== */
+    
     public CircuitGraph() 
     {
         graph = new SimpleGraph<Vertex, Edge>(Edge.class);
     }
 
+/* ======================== */
+/* Déclaration des méthodes */
+/* ======================== */
+    
     //Procédure d'ajout de sommet
     public void addVertex(Vertex newVertex)
     {
@@ -33,7 +46,7 @@ public class CircuitGraph
     {
         boolean b = isComponentBetween(src,dst);
         if (!b) 
-        {//if we need to create an edge
+        {//si besoin de créer un bord
             switch(composant.type()) 
             {
                 case ADMITTANCE:
@@ -47,7 +60,7 @@ public class CircuitGraph
         }
         else 
         {
-            Edge e = getEdge(src,dst);//getting the current edge
+            Edge e = getEdge(src,dst);//récupération du courant du bord
             switch(composant.type()) 
             {
                 case ADMITTANCE:
@@ -117,28 +130,28 @@ public class CircuitGraph
     public ArrayList<ComponentMap> getConnectedComponents(Vertex v)
     {
         ArrayList<ComponentMap> maps = new ArrayList<ComponentMap>();
-        //First : get all Edges.
+        //On récupère en premier tout les bords
         Edge[] edges = edgesOf(v);
 
-        //temp vars
-        Edge tE; //a temp var for the current edge
+        //Variables temporaires
+        Edge tE; //une pour le courant du bord
         Vertex tV;
-        ArrayList<AbstractDipole> tA;//a temp var for the componements
+        ArrayList<AbstractDipole> tA;//une pur les composants
 
-        //For all Edges :
+        //Pour chaque bord
         for (int i = 0;i<edges.length;i++) 
         {
             tE = edges[i];
             if (tE.beginsWith(v)) tV = tE.endVertex();
             else tV = tE.beginVertex();
 
-            //get the edges components begining with this vertex
+            //récupère les composants des bords commencant par ce sommet
             tA = tE.componentsFrom(v);
             for (int j=0;j<tA.size();j++)
             {
                 maps.add(new ComponentMap(tA.get(j),tV,true));
             }
-            //get edges ending with this vertex
+            //récupère les bords terminant par ce sommet
             tA = tE.componentsTo(v);
             for (int j=0;j<tA.size();j++)
             {

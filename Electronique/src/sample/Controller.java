@@ -25,9 +25,9 @@ public class Controller implements javafx.fxml.Initializable {
         anchorPane3.setPrefWidth(2000);
 
         // On charge les images des composants dans la zone de droite
-        AddComponant.addCourantGenerator(anchorPane2, anchorPane4, scrollPane);
-        AddComponant.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane);
-        AddComponant.addNode(anchorPane2, anchorPane4, scrollPane);
+        AddComponent.addCourantGenerator(anchorPane2, anchorPane4, scrollPane);
+        AddComponent.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane);
+        AddComponent.addNode(anchorPane2, anchorPane4, scrollPane);
 
 
     }

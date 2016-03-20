@@ -1,11 +1,16 @@
 package resolution;
 
 /**
+ * Classe définissant des équations et des méthodes de résolution
  * @author Rapĥaël
  */
 
 public class Equation {
-
+	
+/* ========================= */
+/* Déclaration des attributs */
+/* ========================= */
+	
     public int size;
     //Each Equation contains at most 3 variables, groupped in arrays {t0,t1,t2}, arrays stored in t (when we will have to index those, so put them in an array is necessry)
     //Each line in those arrays is structures as follows : {double coefficient, int line, int column} (the values are found in a square matrix
@@ -37,6 +42,10 @@ public class Equation {
     //variables name for print
     public char[] names;
 
+/* =========================== */
+/* Déclaration du constructeur */
+/* =========================== */
+    
     public Equation (double[][] tens,double[][] cour,double[][] admit, double cst,char[] v, double[] courantAlim)
     {
         size = tens.length;
@@ -54,7 +63,10 @@ public class Equation {
     }
 
 
-
+/* ======================== */
+/* Déclaration des méthodes */
+/* ======================== */
+    
     double[][] symetrise(boolean opposition, double[][] source) 
     {
         double[][] ret = new double[source.length][source[0].length];
@@ -103,7 +115,8 @@ public class Equation {
         //substitution dans les parametres réguliers
         double[][] m;
         double[][] cur;
-        if (coeff !=0) {
+        if (coeff !=0) 
+        {
             for (int t=0;t<3;t++)
             {//modifying each array of variable
                 //all we have to do is to add the array coefficients by coefficients (one multiplied by #coeff
@@ -195,7 +208,8 @@ public class Equation {
         for(int x=0;x<3;x++)
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    if (t[x][i][j] != 0) {
+                    if (t[x][i][j] != 0) 
+                    {
                         used = true;
                         return new int[]{x, i, j};
                     }
@@ -210,13 +224,15 @@ public class Equation {
         double coeff;
         if (id[0] == -1)
             return constante/ powerCurrents[id[2]];
-        else {
+        else 
+        {
             coeff = t[id[0]][id[1]][id[2]];
             return constante/coeff;
         }
     }
 
-    public double[] getEqPowerCurrents(int[] id) {
+    public double[] getEqPowerCurrents(int[] id) 
+    {
         double coeff;
         double[] ret = new double[powerCurrents.length];
 
@@ -279,7 +295,8 @@ public class Equation {
             double[][] c = t[typ];
             for(int i = 0;i<size;i++)
                 for (int j = 0; j < size; j++)
-                    if (c[i][j] != 0) {
+                    if (c[i][j] != 0) 
+                    {
                         if (sum) str += " + ";
                         else sum = true;
                         if (c[i][j] != 0) str += c[i][j] + "*" + names[typ] + "(" + i + "," + j + ")";

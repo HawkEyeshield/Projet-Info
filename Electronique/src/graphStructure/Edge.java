@@ -7,13 +7,19 @@ import components.Generator;
 import java.util.ArrayList;
 
 /**
- * @author Raphaël
- *
  * EDGE is the edge class in the graph. Its utility is to avoid the orientation problem, as we work in an undirected graph
- * To do this, it's gonna keep as attributes its two source and destination vertices vertices
+ * To do this, it's gonna keep as attributes its two source and destination vertices
+ * Classe pour définir un bord dans le graphe. Permet de s'émanciper du problème d'orientation puisque nous utilisons
+ * un graphe unidirectionnel. Pour ce faire, un bord conserve en attribut les sommets de départ et d'arrivée
+ * @author Raphaël
  */
 public class Edge 
 {
+	
+/* ========================= */
+/* Déclaration des attributs */
+/* ========================= */
+	
     private Vertex vDep;
     private Vertex vArr;
 
