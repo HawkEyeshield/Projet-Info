@@ -7,7 +7,8 @@ import test.test_extracteur;
  * @author François 
  */
 
-public class Main {
+public class Main 
+{
 
 	public static void main(String[] args) 
 	{

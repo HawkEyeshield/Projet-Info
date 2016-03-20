@@ -13,9 +13,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
+ * Classe déterminant le système d'équation associé à un graphe de composants
  * @author Raphaël
  */
-public class Extracteur {
+public class Extracteur 
+{
 
 /* ========================= */
 /* Déclaration des attributs */

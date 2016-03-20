@@ -5,7 +5,8 @@ package resolution;
  * @author Rapĥaël
  */
 
-public class Equation {
+public class Equation 
+{
 	
 /* ========================= */
 /* Déclaration des attributs */
