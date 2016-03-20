@@ -1,7 +1,7 @@
 package sample;
 
 /**
- * Created by tanguy on 09/03/16.
+ * Tanguy
  */
 public class TODO {
     //Classe débile pour les TODO

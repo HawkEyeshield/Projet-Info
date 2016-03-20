@@ -5,7 +5,7 @@ import javafx.scene.shape.Line;
 
 
 /**
- * Created by tanguy on 09/03/16.
+ * @author Tanguy
  * Permet de créer des liens entre les composants
  */
 public class AddLink {

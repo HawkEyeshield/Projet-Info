@@ -5,6 +5,7 @@ import resolution.Extracteur;
 import graphStructure.*;
 
 /**
+ * @author Raphaël
  Simple test de l'extracteur avec un pont de wheatstone equilibré;
  */
 
