@@ -4,7 +4,7 @@ import test.test_extracteur;
 
 
 /** Classe test_wheatstone du projet, boucle principale
- * @author CF 
+ * @author François 
  */
 
 public class Main {

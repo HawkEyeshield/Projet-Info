@@ -1,7 +1,7 @@
 package sample;
 
 /**
- * Created by tanguy on 04/03/16.
+ * @author Tanguy
  * Liste les composants que l'on utilisera
  */
 public enum Componant {

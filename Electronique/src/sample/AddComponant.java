@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 /**
- * Created by tanguy on 07/03/16.
+ * @author Tanguy
  * Permet d'ajouter et de déplacer les composants
  */
 public class AddComponant {
