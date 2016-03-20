@@ -221,6 +221,7 @@ public class Equation {
 
     public double getEqConstant(int[] id)
     {
+        System.out.println(id[0]+" "+id[1]+" "+id[2]);
         double coeff;
         if (id[0] == -1)
             return constante/ powerCurrents[id[2]];
@@ -304,7 +305,7 @@ public class Equation {
         }
         for (int k=0;k<powerCurrents.length;k++)
             if (powerCurrents[k] != 0)
-                str += " + " + powerCurrents + "*Ip"+k+" ";
+                str += " + " + powerCurrents[k] + "*Ip"+k+" ";
 
 
         str+= " = " + constante;//+" . Nb inconnues : "+nunk+", Utilise : "+used+", resolue : "+solved;

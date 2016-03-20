@@ -72,7 +72,7 @@ public class Graphe {
 	// par exemple pour un generateur de tension, fixer la tension a ces bornes ainsi que noter que la tension est connue
 	// on peut faire aussi de même pour la masse
 	
-	
+/*
 	/**
 	 * Fonction qui rend tous les liens existants entre i et j sous forme de tableau de Information
 	 * Ce tableau doit contenir toute les infos pour le calcul
@@ -80,7 +80,6 @@ public class Graphe {
 	 * @param j
 	 * @return
 	 * @throws IllegalStateException si i ou j sont pas des bonnes valeurs
-	 */
 	public Information[] getInfoNode(int i, int j) throws IllegalStateException{
 		
 		if (i<0 || i >= nbreNoeud|| j<0 || j >= nbreNoeud) throw new IllegalStateException("une des deux valeurs n'est pas dans le graphe");
@@ -101,4 +100,5 @@ public class Graphe {
 		}
 		return(a);
 	}	
+	*/
 }

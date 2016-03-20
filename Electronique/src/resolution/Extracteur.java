@@ -246,10 +246,12 @@ public class Extracteur {
         {
             eqCurrents = new double[nbNodes][nbNodes];
             equationCurrents = new double[nbGenerators];
-
+            System.out.println("new Vertex");
             ArrayList<ComponentMap> connections = graph.getConnectedComponents(vertice);//Getting all components connected to this vertex
+
             for (ComponentMap m : connections) 
             {//for each component connected
+                System.out.println(m.vertex().get()+" "+m.component().hashCode()+" "+m.incoming());
                 //Setting the signe of the coefficient, because components are oriented, as we set their current and voltage.
                 if (m.incoming()) signe = 1;
                 else signe = -1;
@@ -314,6 +316,7 @@ public class Extracteur {
                     {
                         vartab[d][vertice.get()][m.vertex().get()][0] = 1;
                         if (d == 2) signe = 1;
+                        else System.out.println(vertice.get()+" "+m.vertex().get()+" "+signe * det[d][1]);
                         vartab[d][vertice.get()][m.vertex().get()][1] = signe * det[d][1];
                     }
                 }
