@@ -1,6 +1,5 @@
 package main;
-import test.epreuveExtracteur;
-import test.test_extracteur;
+import test.wheatstone;
 
 
 /** Classe test_wheatstone du projet, boucle principale
@@ -11,7 +10,7 @@ public class Main {
 
 	public static void main(String[] args) 
 	{
-		new epreuveExtracteur();
+		new wheatstone();
 		/*
 		Admittance r1 = new Admittance("r1", 1, 0,100);
 		Admittance r2 = new Admittance("r2", 1, 0,200);

@@ -12,137 +12,135 @@ import java.util.Set;
 /**
  * @author Raphaël
  */
-public class CircuitGraph 
-{
-
+public class CircuitGraph {
+    //le graphe de base de la classe
     public SimpleGraph<Vertex, Edge> graph;
 
-    public CircuitGraph() 
-    {
+    public CircuitGraph() {//init du graphe
         graph = new SimpleGraph<Vertex, Edge>(Edge.class);
     }
 
-    //Procédure d'ajout de sommet
-    public void addVertex(Vertex newVertex)
-    {
+    //Ajout simple d'un sommet, sans verification d'existence préalable dans le graphe
+    public void addVertex(Vertex newVertex) {
         graph.addVertex(newVertex);
     }
 
     //Procédure d'ajout de composant
-    public void addComponent(Vertex src, Vertex dst, AbstractDipole composant)
-    {
-        boolean b = isComponentBetween(src,dst);
-        if (!b) 
-        {//if we need to create an edge
-            switch(composant.type()) 
-            {
+    public void addComponent(Vertex src, Vertex dst, AbstractDipole composant) {
+        //On commence par rechercher si une arete existe déjà entre les deux points
+        boolean b = isComponentBetween(src, dst);
+        if (!b) {//si on doit creer une arrete
+            switch (composant.type()) {//disjoinction du type de composant à creer
                 case ADMITTANCE:
-                    graph.addEdge(src, dst, new Edge(src,dst,(Admittance)composant));break;
+                    graph.addEdge(src, dst, new Edge(src, dst, (Admittance) composant));
+                    break;
                 case CURRENTGENERATOR:
-                    graph.addEdge(src, dst, new Edge(src,dst,(Generator)composant));break;
+                    graph.addEdge(src, dst, new Edge(src, dst, (Generator) composant));
+                    break;
                 case VOLTAGEGENERATOR:
-                    graph.addEdge(src, dst, new Edge(src,dst,(Generator)composant));break;
-                default:break;
+                    graph.addEdge(src, dst, new Edge(src, dst, (Generator) composant));
+                    break;
+                default:
+                    break;
             }
-        }
-        else 
-        {
-            Edge e = getEdge(src,dst);//getting the current edge
-            switch(composant.type()) 
-            {
-                case ADMITTANCE:
-                    e.addAdmittance(src,(Admittance)composant);break;//add the new admittance according to the source vertex
+        } else {//si une arrete existe deja
+            Edge e = getEdge(src, dst);//on la recupere
+            switch (composant.type()) {
+                case ADMITTANCE://on ajoute l'admittance en donnant en parametre le sommet de depart du composant (pour que le composant soit correctement orienté
+                    e.addAdmittance(src, (Admittance) composant);
+                    break;
                 case CURRENTGENERATOR:
-                    e.setGenerator(src, (Generator) composant);break;//Modify the generator according to the source vertex
+                    e.setGenerator(src, (Generator) composant);
+                    break;//On modifie le generateur, en coherence avec le sommet de départ du nouveau generateur
                 case VOLTAGEGENERATOR:
-                    e.setGenerator(src, (Generator) composant);break;//same thing
-                default:break;
+                    e.setGenerator(src, (Generator) composant);
+                    break;//meme combat
+                default:
+                    break;
             }
         }
     }
 
-    public Edge getEdge(Vertex src,Vertex dst) 
-    {
-        return graph.getEdge(src,dst);
+    //Fonction de recuperation de l'arrete reliant deux points (null si il n'en existe pas)
+    public Edge getEdge(Vertex src, Vertex dst) {
+        return graph.getEdge(src, dst);
     }
 
-    public boolean isComponentBetween(Vertex src,Vertex dst) 
-    {
-        if ((graph.getEdge(src,dst) != null)) return true;
+    //verificattion de l'existence d'une arrete entre deux sommets
+    public boolean isComponentBetween(Vertex src, Vertex dst) {
+        if ((graph.getEdge(src, dst) != null)) return true;
         return false;
     }
 
-    public Vertex[] getAllVertices()
-    {
+    //retourne tous les sommets du graphe
+    public Vertex[] getAllVertices() {
         Set<Vertex> set = graph.vertexSet();
         return set.toArray(new Vertex[set.size()]);
     }
 
-    public Edge[] getAllEdges()
-    {
+    //retourne toutes les arretes du graphe
+    public Edge[] getAllEdges() {
         Set<Edge> set = graph.edgeSet();
-    return set.toArray(new Edge[set.size()]);
-}
-
-    //Fonction de récupération des générateurs
-    public ArrayList<Generator> getAllGenerators()
-    {
-        ArrayList<Generator> s = new ArrayList<>();
-        Set<Edge> set = graph.edgeSet();
-        Edge[] d = set.toArray(new Edge[set.size()]);
-        for (int i = 0; i < d.length; i++) 
-        {
-            Generator g;
-            if ((g = d[i].generator()) != null) 
-            {
-                s.add(g);
-            }
-        }
-        return s;
+        return set.toArray(new Edge[set.size()]);
     }
 
-    private Edge[] edgesOf(Vertex v) 
-    {
+    //retourne tous les generteurs tous les générateurs
+    public ArrayList<Generator> getAllGenerators() {
+        ArrayList<Generator> ret = new ArrayList<>();
+        Generator g;
+        //recup de toutes les arretes
+        Edge[] d = getAllEdges();
+        //pour chaque arrete
+        for (Edge e:d)
+            if ((g = e.generator()) != null) //ajout du generateur eventuel
+                ret.add(g);
+        return ret;
+    }
+
+    //retourne toutes les arretes branchées sur un noeud (qu'il soit de depart ou d'arrivee)
+    private Edge[] edgesOf(Vertex v) {
         Set<Edge> set = graph.edgesOf(v);
         return set.toArray(new Edge[set.size()]);
 
     }
 
-    public boolean multipleAdmittances(Vertex v0,Vertex v1) 
-    {
+    //retourne l'existence d'admittance multiple entre les deux sommets v0 et v1
+    public boolean existMultiAdmittances(Vertex v0, Vertex v1) {
         Edge e = graph.getEdge(v0,v1);
-        if (e==null) return false;
+        if (e == null) return false;
         return e.AdmittancesNb() > 1;
     }
-    public ArrayList<ComponentMap> getConnectedComponents(Vertex v)
-    {
+
+    /*getCOnnectedComponents :
+    Renvoie tous les composants connectée à un sommets v sous la forme
+    ComponentMap(autre sommet du composant, composant, orientation)
+    orientation est un booleen representant "Le sommet v est le sommet de depart du composant"
+    */
+    public ArrayList<ComponentMap> getConnectedComponents(Vertex v) {
         ArrayList<ComponentMap> maps = new ArrayList<ComponentMap>();
-        //First : get all Edges.
+        //avant tout recuperer toutes les arretes
         Edge[] edges = edgesOf(v);
 
         //temp vars
-        Edge tE; //a temp var for the current edge
         Vertex tV;
         ArrayList<AbstractDipole> tA;//a temp var for the componements
 
-        //For all Edges :
-        for (int i = 0;i<edges.length;i++) 
-        {
-            tE = edges[i];
-            if (tE.beginsWith(v)) tV = tE.endVertex();
-            else tV = tE.beginVertex();
+        //pour chaque arrete
+        for (Edge edge : edges) {
 
-            //get the edges components begining with this vertex
-            tA = tE.componentsFrom(v);
-            for (int j=0;j<tA.size();j++)
-            {
-                maps.add(new ComponentMap(tA.get(j),tV,true));
+            //determiner le sommet opposé à v dans l'arrete
+            if (edge.beginsWith(v)) tV = edge.endVertex();
+            else tV = edge.beginVertex();
+
+            //1 : recuperation de tous les composant de l'arrete commencant par v
+            tA = edge.componentsFrom(v);
+            for (AbstractDipole dipole : tA) {
+                maps.add(new ComponentMap(dipole, tV, true));
             }
-            //get edges ending with this vertex
-            tA = tE.componentsTo(v);
-            for (int j=0;j<tA.size();j++)
-            {
-                maps.add(new ComponentMap(tA.get(j),tV,false));
+            //2 : recuperation de tous les composants de l'arrete finissant par v
+            tA = edge.componentsTo(v);
+            for (AbstractDipole dipole : tA) {
+                maps.add(new ComponentMap(dipole, tV, false));
             }
         }
         return maps;

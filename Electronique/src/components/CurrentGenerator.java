@@ -26,6 +26,7 @@ public class CurrentGenerator extends Generator
 		this.current = v;
 	}
 
+	//recuperation des parametres du generateur (seul le courant ets pertinent, donc fixé.
 	public double[][] getParameters() {
 		double[][] ret = new double[3][2];
 		if (determination) {
@@ -34,7 +35,7 @@ public class CurrentGenerator extends Generator
 		return ret;
 	}
 
-	//Recuperation deu courant
+	//Recuperation du courant
 	@Override
 	public double getCurrent() {
 		return this.current;
@@ -43,7 +44,6 @@ public class CurrentGenerator extends Generator
 
 	//fonctions de paramétrage des composants
 	//tension
-
 	@Override
 	public void setVoltage(double v) throws CurrentGeneratorError
 	{
@@ -60,7 +60,6 @@ public class CurrentGenerator extends Generator
 
 	//valeur caracteristique
 
-	//TODO Eventuellement parametrer la valeur caracteristique comme le courant délivré par le générateur, en discuter avec l'equipe.
 	@Override
 	public void setValue(double valeur) throws VoltageGeneratorError
 	{
