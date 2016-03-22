@@ -1,4 +1,4 @@
-package sample;
+package graphics;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
@@ -8,9 +8,11 @@ import javafx.scene.shape.Line;
  * @author Tanguy
  * Permet de créer des liens entre les composants
  */
-public class AddLink {
+public class AddLink 
+{
 
-    private class link{
+    private class link
+    {
         ImageView image1;
         char zone1;
         ImageView image2;

@@ -1,9 +1,10 @@
-package sample;
+package graphics;
 
 /**
- * Tanguy
+ * @author Tanguy
  */
-public class TODO {
+public class TODO 
+{
     //Classe débile pour les TODO
     //TODO
     /*

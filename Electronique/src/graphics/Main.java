@@ -1,4 +1,4 @@
-package sample;
+package graphics;
 
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -11,7 +11,8 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
-public class Main extends Application {
+public class Main extends Application 
+{
 
     @FXML
     private ImageView imageView;
@@ -20,7 +21,8 @@ public class Main extends Application {
      * start permet de lancer l'interface graphique
      */
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception
+    {
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         URL location = getClass().getResource("sample.fxml");
@@ -37,7 +39,8 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         launch(args);
     }
 }
