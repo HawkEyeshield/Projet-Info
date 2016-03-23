@@ -13,17 +13,23 @@ public class VoltageGenerator extends AbstractGenerator
 	/* ============================= */
 	
 	/**
-	 * Constructeur de générateurs de tension
-	 *
-	 * @param name       nom du générateur
-	 * @param firstLink  entier indiquant les liaions communes avec le premier lien
-	 * @param secondLink entier indiquant les liaisons communes avec le second lien
+	 * Constructeur de générateurs de tension, par défaut nulle
+	 * @param name : nom du générateur
+	 * @param firstLink : entier indiquant les liaions communes avec le premier lien
+	 * @param secondLink : entier indiquant les liaisons communes avec le second lien
 	 */
 	public VoltageGenerator(String name, int firstLink, int secondLink) 
 	{
 		super(name, Type.VOLTAGEGENERATOR, firstLink, secondLink);
 	}
-
+	
+	/**
+	 * Construxteur d'un générateur de tension de valeur fixée
+	 * @param name : nom du générateur
+	 * @param firstLink : entier indiquant les liaions communes avec le premier lien
+	 * @param secondLink : entier indiquant les liaisons communes avec le second lien
+	 * @param v : valeur de la tension
+	 */
 	public VoltageGenerator(String name, int firstLink, int secondLink, double v) 
 	{
 		super(name, Type.VOLTAGEGENERATOR, firstLink, secondLink);
