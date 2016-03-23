@@ -104,8 +104,7 @@ public class Solveur
             //1 : Determiner toutes les variables calculables, et recommencer tant que l'on en determine plus.
 
             printVariables();
-            while ((calculateVariables() != 0)&&(!updateNumberUnknown())) {}
-
+            while (calculateVariables() != 0) {}
             //On s'arrette si on a tout trouvé
             if (updateNumberUnknown()) break;//
             printVariables();
@@ -123,24 +122,27 @@ public class Solveur
         return true;
     }
 
-    /**fonction de calcul des variables determinables (genre a*Xij=b)*/
+     /*fonction de calcul des variables determinables (genre a*Xij=b)*/
     private int calculateVariables() {
         int cpt = 0;
-        for (int ind = 0; ind < nbEq; ind++) {//pour chaque equation
-            Equation eq = equations[ind];
-            if ((eq.nunk == 1) && (!eq.solved)) {//si elle peut etre resolue (plus qu'une variable non constante
-                int[] indices = eq.getFirstVariable();//on recupere les coordonnées de Xij
-                double value = eq.getEqConstant(indices);//on recupere b/a
-                replaceAll(indices, ind, value);//on injecte dans toutes les equations
-                eq.solved = true;//marquage de l'equation comme resolue
-                cpt++;
+        if (!updateNumberUnknown()) {
+            for (int ind = 0; ind < nbEq; ind++) {//pour chaque equation
+                Equation eq = equations[ind];
+                if ((eq.nunk == 1) && (!eq.solved) && (!eq.trivial)) {//si elle peut etre resolue (plus qu'une variable non constante
+                    int[] indices = eq.getFirstVariable();//on recupere les coordonnées de Xij
+                    double value = eq.getEqConstant(indices);//on recupere b/a
+                    replaceAll(indices, ind, value);//on injecte dans toutes les equations
+                    eq.solved = true;//marquage de l'equation comme resolue
+                    cpt++;
 
-                logn("Variable " + indices[0]+" "+indices[1]+" "+indices[2]+" remplacee");
-                printVariables();
-                printEquations();
+                    logn("Variable " + indices[0] + " " + indices[1] + " " + indices[2] + " remplacee");
+                    printVariables();
+                    printEquations();
+                }
             }
         }
         return cpt;
+
     }
 
     /**fonction de remplacement d'un variable dans toutes les equations*/
@@ -226,10 +228,10 @@ public class Solveur
                 variables[0][id[1]][id[2]] = new double[]{1, variables[1][id[1]][id[2]][1] * value};//Calcul I = U*Y
             }
         }
-        System.out.println("replaced");
+        logn("replaced");
         if (!fill) {//Ajout de la variable
             variables[id[0]][id[1]][id[2]] = new double[]{1, value};
-            System.out.println("Symetries made : "+makeSymetries());
+            logn("Symetries made : "+makeSymetries());
         }
         return true;
     }
@@ -240,7 +242,7 @@ public class Solveur
                 for (int j = 0; j <= i; j++) {
                     if (i == j) {
                         if (variables[x][i][j][1] != 0) {
-                            System.out.println("bad case");return false;/////////////////////////////////////////exception parametre pas � 0
+                            logn("bad case");return false;////////exception parametre pas � 0
                         }
                     } else {
                         if ((variables[x][i][j][0] == 1) && (variables[x][j][i][0] == 0)) {//if only [i,j] is known
@@ -259,7 +261,7 @@ public class Solveur
                                 return false;
                             }
                             if ((x != 2) && (variables[x][i][j][1] != -1 * variables[x][j][i][1])) {
-                                System.out.println("bad case : "+x+" " +i+" "+j);
+                                logn("bad case : "+x+" " +i+" "+j);
                                 return false;
                             }
                         }
@@ -346,26 +348,25 @@ public class Solveur
         NumberFormat nf = new DecimalFormat("0.00###");
         char[] aff = equations[0].names;
         for (int t = 0; t < 3; t++) {
-            System.out.print("\n" + aff[t] + "\n");
+            log("\n" + aff[t] + "\n");
             for (int i = 0; i < nbNodes; i++) {
                 for (int j = 0; j < nbNodes; j++) {
                     if (variables[t][i][j][0] == 1) {
-                        System.out.print(" " + nf.format(variables[t][i][j][1]) + " ");
-                    } else System.out.print(" x ");
+                        log(" " + nf.format(variables[t][i][j][1]) + " ");
+                    } else log(" x ");
                 }
-                System.out.println("");
+                logn("");
             }
         }
-        System.out.println("");
-        System.out.println("Courants Generateurs :");
+        logn("");
+        logn("Courants Generateurs :");
         for (double[] gen : powerCurrents) {
-            System.out.println("Generateur " + gen[0] + " : " + gen[1]);
+            logn("Generateur " + gen[0] + " : " + gen[1]);
         }
     }
 
 
     private void log(Object s) {
-        System.out.print(s);
     }
 
     private void logn(Object s) {
