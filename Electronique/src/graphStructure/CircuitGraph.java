@@ -44,7 +44,12 @@ public class CircuitGraph
         graph.addVertex(newVertex);
     }
 
-    /**Procédure d'ajout de composant*/
+    /**
+     * Procédure d'ajout de composant
+     * @param src : sommet source
+     * @param dst : sommet destination
+     * @param composant : composant entre ces sommets
+     */
     public void addComponent(Vertex src, Vertex dst, AbstractDipole composant) 
     {
         //On commence par rechercher si une arete existe déjà entre les deux points

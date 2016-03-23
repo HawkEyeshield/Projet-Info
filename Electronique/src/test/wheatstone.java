@@ -31,7 +31,7 @@ public class wheatstone {
         g.addVertex(v3);
 
 
-        //les divers composants sont ici ajoutés au graphe.
+        //les divers composants sont ici ajoutÃ©s au graphe.
         Admittance a;
 
         g.addComponent(v0, v3, new VoltageGenerator("E0", 0, 2, 10));
@@ -44,15 +44,16 @@ public class wheatstone {
 
 
 
-        //crï¿½ation de l'extracteur
+        //crÃ©ation de l'extracteur
         Extracteur e = new Extracteur(g);
 
         long t = System.currentTimeMillis();
+        
         //resolution du circuit
         e.extraction(false);
         System.out.println("temps d'execution : "+(System.currentTimeMillis()-t)+"ms");
-        //affichage du résultat
-
+        
+        //affichage du rÃ©sultat
         e.printVariables();
 
 
