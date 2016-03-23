@@ -9,15 +9,23 @@ import javafx.scene.layout.AnchorPane;
 /** Interface donnant les différentes fonctions utilisées dans l'interface
  * @author Tanguy 
  */
-public interface GraphicalFunctions 
+public class GraphicalFunctions
 {
+	/*Permet de définir dans quel etat on est a tout moment, d pour Drag and Drop,
+    l1 pour Lien et indique que aucun objet n'a été selectionner, l2 pour Lien et que un objet a déjà
+    ete selectionner et qu'on attend le second
+    */
+	public static String etat = "d";
+	public static ImageView premiereImageDuLien = new ImageView();
+	public static char orientationImage = 'r';
+
 	/**
 	 * Permet de faire apparaitre un generateur de tension
-	 * @param anchorPane3 Zone a l interieur du scrollPane
+	 * @param anchorPane2 Zone a l interieur du scrollPane
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addVoltageGenerator (AnchorPane anchorPane3, AnchorPane anchorPane4, ScrollPane scrollPane)
+	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
 	{
 		ImageView firstVoltageGenerator = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/Generateur de tension.png"); // On va la cherche au bonne endroit
@@ -37,28 +45,45 @@ public interface GraphicalFunctions
 			tensionGenerator.setImage(image);
 			tensionGenerator.setX(100);
 			tensionGenerator.setY(100);
-			anchorPane3.getChildren().add(tensionGenerator);
-			
+			anchorPane2.getChildren().add(tensionGenerator);
+
+			//Permet de creer un lien
+			tensionGenerator.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){
+					System.out.println("On a cliqué sur le second objet");
+					AddLink.addLink(premiereImageDuLien,tensionGenerator,orientationImage,'h', anchorPane2);
+				}
+				if (etat == "l1"){
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2";
+					orientationImage = 'h';
+					premiereImageDuLien = tensionGenerator;
+				}
+			});
+
+
            // Permet de deplacer le generateur de tension d'un point a un autre
 			tensionGenerator.setOnMouseDragged(event1 -> 
 			{
 				
-                // position de la souris
+                // position de l'image
 				double imagx = image.getWidth();
 				double imagy = image.getHeight();
 
-				
+				//System.out.println(imagx);
                 // on récupère la taille de la fenêtre
 				double x=event1.getSceneX();
 				double y=event1.getSceneY();
+				//System.out.println(x);
 				
                 // Permet de ne pas sortir du cadre
 				if(x < (imagx/2)) {x = (imagx/2);} // on evite de sortir du cadre a gauche
 				if(y < (65 + imagy/2)) {y = (65 + imagy/2);} // on evite de sortir du cadre en haut
 
-				double mx = anchorPane3.getWidth();
+				double mx = anchorPane2.getWidth();
 
-				double my = anchorPane3.getHeight();
+				double my = anchorPane2.getHeight();
 				if(x + imagx/2 > mx - 20) {x = mx - imagx/2 - 20;} // on evite de sortir du cadre a droite
 
 				/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
@@ -66,6 +91,9 @@ public interface GraphicalFunctions
 				if(y + imagy/2 > my - 20) {y = my - imagy/2 - 20;} // on evite de sortir du cadre en bas
 
 				tensionGenerator.relocate(x-imagx/2, y-imagy/2);
+				tensionGenerator.setX(x-imagx/2);
+				tensionGenerator.setY(y-imagy/2);
+				System.out.println(x-imagx/2);
 			});
 
 		});
@@ -110,7 +138,7 @@ public interface GraphicalFunctions
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
 				
-                // position de la souris
+                // taille de l'image
 				double imagx = image.getWidth();
 				double imagy = image.getHeight();
 
@@ -133,6 +161,8 @@ public interface GraphicalFunctions
 				if(y + imagy/2 > my - 20) {y = my - imagy/2 - 20;} // on evite de sortir du cadre en bas
 
 				courantGenerator.relocate(x-imagx/2, y-imagy/2);
+				courantGenerator.setX(x-imagx/2);
+				courantGenerator.setY(y-imagy/2);
 			});
 		});
 	}
@@ -195,6 +225,8 @@ public interface GraphicalFunctions
 				if(y + imagy/2 > my - 20) {y = my - imagy/2 - 20;} // on evite de sortir du cadre en bas
 
 				node.relocate(x-imagx/2, y-imagy/2);
+				node.setX(x-imagx/2);
+				node.setY(y-imagy/2);
 			});
 		});
 	}

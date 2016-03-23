@@ -8,14 +8,14 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements javafx.fxml.Initializable,GraphicalFunctions 
+public class Controller implements javafx.fxml.Initializable
 {
- 
+
+
     /** cette méthode avec l'implements permet de lancer une méthode au lancement du controller */
     @Override
     public void initialize(URL location, ResourceBundle resources) 
     {
-
         //Juste pour bien voir que le programme ce lance
 
         System.out.println("L'interface graphique est lancée");
@@ -30,6 +30,10 @@ public class Controller implements javafx.fxml.Initializable,GraphicalFunctions
         GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane);
         GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreeUnLien);
 
+        CreeUnLien.setOnMouseClicked(event -> {
+            GraphicalFunctions.etat = "l1";
+            System.out.println("On commence a creer un lien");
+        });
     }
 
     @FXML
