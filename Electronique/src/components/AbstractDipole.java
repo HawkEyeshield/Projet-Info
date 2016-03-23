@@ -8,34 +8,38 @@ import exceptions.AbstractDipoleError;
  */
 public abstract class AbstractDipole 
 {
-	/**
-	 * Nom donnée au composant pour affichage user-friendly
-	 */
+	/* ========================= */
+	/* Déclaration des attributs */
+	/* ========================= */
+	
+	/** Nom donnée au composant pour affichage user-friendly*/
 	protected String name;
 	
-	//Type de composant
-
-	private Type type;
+	/** Nature du composant */
+	protected Type type;
 	
-	//Entier indiquant à quels autres fils est relié le premier lien
+	/**Entier indiquant à quels autres fils est relié le premier lien*/
 	protected int firstLink;
 
-	//Entier indiquant à quels autres fils est relié le second lien
+	/**Entier indiquant à quels autres fils est relié le second lien*/
 	protected int secondLink;
 
-	//Courant par défaut traversant les composants
+	/**Courant par défaut traversant les composants*/
 	protected final double DEFAULT_CURRENT=0;
 
-	//Courant parcourant les dipôles
+	/**Courant parcourant les dipôles*/
 	protected double current;//=DEFAULT_CURRENT;
 
-	//double indiquant la différence de potentielle
+	/**double indiquant la différence de potentiel*/
 	protected double voltage;
 
-	//value caractéristique du composant
+	/**value caractéristique du composant*/
 	protected double value;
 	
 
+	/* =========================== */
+	/* Déclaration du constructeur */
+	/* =========================== */
 
 	/**
 	 * Constructeur de cette classe, les classes filles préciseront les autres paramètres dans leurs constructeurs respectifs
@@ -51,6 +55,11 @@ public abstract class AbstractDipole
 		this.secondLink = secondLink;
 	}
 
+	
+	/* ======================== */
+	/* Déclaration des méthodes */
+	/* ======================== */
+	
 	//Getters et Setters de name
 	public String getName()
 	{
@@ -67,10 +76,7 @@ public abstract class AbstractDipole
 		return(this.type);
 	}
 
-	/**
-	 * Getters de link
-	 * @return l'entier indiquant les liaisons communes
-	 */
+	// Getters de links
 	public int getFirstLink()
 	{
 		return this.firstLink;
@@ -81,11 +87,7 @@ public abstract class AbstractDipole
 	}
 
 
-	/**
-	 * Setters de link
-	 * @param l entier à renseigner pour indiquer les liaisons communes
-	 */
-
+	// Setters de links
 	public void setFirstLink(int l)
 	{
 		this.firstLink =l;
@@ -126,7 +128,8 @@ public abstract class AbstractDipole
 
 
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return name+" "+type;
 	}
 }

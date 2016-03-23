@@ -1,7 +1,7 @@
 package resolution;
 
 import components.Admittance;
-import components.Generator;
+import components.AbstractGenerator;
 import components.Type;
 import graphStructure.CircuitGraph;
 import graphStructure.Edge;
@@ -15,9 +15,12 @@ import java.util.ArrayList;
 /**
  * @author Raphaël
  */
-public class Extracteur {
-
-
+public class Extracteur 
+{
+	/* ========================= */
+	/* Déclaration des attributs */
+	/* ========================= */
+	
     private CircuitGraph graph;
     private int nbNodes;
     private int nbGenerators;
@@ -31,13 +34,20 @@ public class Extracteur {
     private boolean solved;
 
     private int[][] genVertices;
-
+    
+    /* =========================== */
+    /* Déclaration du constructeur */
+    /* =========================== */
+    
     public Extracteur(CircuitGraph g) {
         graph = g;
         solved = false;
     }
-
-
+    
+    /* ======================== */
+    /* Déclaration des méthodes */
+    /* ======================== */
+    
     private void log(Object s) {
         System.out.print(s);
     }
@@ -77,7 +87,7 @@ public class Extracteur {
         logn("Tout a l'air correct.\n\nRecherche des generateurs ... ");
 
         //Etape 1 : recuperation des generateurs
-        ArrayList<Generator> generateurs = graph.getAllGenerators();
+        ArrayList<AbstractGenerator> generateurs = graph.getAllGenerators();
         nbGenerators = generateurs.size();
         switch (nbGenerators) {
             case 0:
@@ -92,7 +102,7 @@ public class Extracteur {
 
         logn("Activation ...");
         //Step 3 : extinction de tous les générateurs et allumage du concerné.
-        for (Generator gen : generateurs) gen.turnOn();
+        for (AbstractGenerator gen : generateurs) gen.turnOn();
         logn("fait!");
 
 
@@ -171,7 +181,7 @@ public class Extracteur {
         int signe;//La variable de coefficients
         double[][] eqCurrents;//La matrice de courants pour les equations
         double[][] powerCurrents;
-        ArrayList<Generator> genOrder;
+        ArrayList<AbstractGenerator> genOrder;
 
 
         //Les tableaux de variables
@@ -237,7 +247,7 @@ public class Extracteur {
                 System.out.println(m.vertex().get() + " " + m.component().hashCode() + " " + m.incoming());
 
                 //init
-                Generator gen = null;
+                AbstractGenerator gen = null;
                 Type type = m.component().type();
                 //setting du signe de chaque composant (les composants sont orientés, dans la mesure ou on parametre une tension et un courant A LEURS BORNES
                 if (m.incoming()) signe = 1;
@@ -246,7 +256,7 @@ public class Extracteur {
 
                 //Ajout du generateur dans les tableaux
                 if ((type == Type.VOLTAGEGENERATOR) || (type == Type.CURRENTGENERATOR)) {
-                    gen = (Generator) m.component();
+                    gen = (AbstractGenerator) m.component();
                     previousIndex = genOrder.indexOf(gen);//on regarde si on a pas déja le générateur
                     if (previousIndex == -1) {//Si on ne l'a pas ajouté (pas trouvé dans l'arraylist des generateurs)
                         if (type == Type.CURRENTGENERATOR)//Si c'est un generateur de courant, on ajoute le courant donné dans le tableau des generateurs de courant
@@ -357,7 +367,7 @@ public class Extracteur {
 
     }
 
-    //fonction de somme de tableaux : ajoute AU PREMIER TABLEAU le second (ie la somme est faite sur le premier, le second est juste lu.
+    /**fonction de somme de tableaux : ajoute AU PREMIER TABLEAU le second (ie la somme est faite sur le premier, le second est juste lu.*/
     private void ajout(double[][][] b) {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < nbNodes; j++)

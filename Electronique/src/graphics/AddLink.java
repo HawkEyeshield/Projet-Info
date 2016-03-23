@@ -20,7 +20,8 @@ public class AddLink
         Line line1; //Line 1 est relie a l'image 1
         Line line2; //Line 2 est relié a l'image 2
 
-        public void Link(ImageView image1,ImageView image2, Line line1, Line line2, char zone1, char zone2) {
+        public void Link(ImageView image1,ImageView image2, Line line1, Line line2, char zone1, char zone2) 
+        {
             this.image1 = image1;
             this.image2 = image2;
             this.line1 = line1;

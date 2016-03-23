@@ -4,14 +4,22 @@ import exceptions.AdmittanceError;
 
 /**
  * Classe pour les résistances
- * @author François
+ * @author François, Raphaël
  */
 public class Admittance extends AbstractDipole
 {	
-	//tableau de fixation des parametres : false = non determiné, true = determiné.
-	//ordre des parametres : {Courant,Tension,Valeur}
+	/* ========================= */
+	/* Déclaration des attributs */
+	/* ========================= */
+	
+	/**tableau de fixation des parametres : false = non determiné, true = determiné.
+	 * ordre des parametres : {Courant,Tension,Valeur}*/
 	private boolean[] determination;
 
+	/* ============================= */
+	/* Déclaration des constructeurs */
+	/* ============================= */
+	
 	/**
 	 * Constructeur de resistances
 	 * @param name nom du la resistance
@@ -31,9 +39,14 @@ public class Admittance extends AbstractDipole
 		this.determination = new boolean[]{false,false,true};
 		this.value = v;
 	}
+	
+	/* ======================== */
+	/* Déclaration des méthodes */
+	/* ======================== */
 
 	//getter de determination
-	public boolean[] determination() {
+	public boolean[] determination() 
+	{
 		return determination;
 	}
 
@@ -41,7 +54,8 @@ public class Admittance extends AbstractDipole
 
 	//courant
 	@Override
-	public double getCurrent()	{
+	public double getCurrent()	
+	{
 		if (determination[0])
 			return this.current;
 		else return 0;
@@ -49,7 +63,8 @@ public class Admittance extends AbstractDipole
 
 	//tension
 	@Override
-	public double getVoltage() {
+	public double getVoltage() 
+	{
 		if (determination[1])
 			return this.voltage;
 		else return 0;
@@ -57,18 +72,23 @@ public class Admittance extends AbstractDipole
 
 	//valeur
 	@Override
-	public double getValue(){
+	public double getValue()
+	{
 		if (determination[2])
 			return this.value;
 		else return 0;
 	}
 
-	public double[][] getParameters() {
+	public double[][] getParameters() 
+	{
 		double [][] ret = new double[3][2];
-		for (int i=0;i<3;i++) {
-			if (determination[i]) {
+		for (int i=0;i<3;i++) 
+		{
+			if (determination[i]) 
+			{
 				ret[i][0] = 1;
-				switch(i) {
+				switch(i) 
+				{
 					case 0:
 						ret[i][1] = current;
 						break;
@@ -94,7 +114,8 @@ public class Admittance extends AbstractDipole
 	@Override
 	public void setCurrent(double c) throws AdmittanceError
 	{
-		if (!(determination[1]&&determination[2])) {
+		if (!(determination[1]&&determination[2])) 
+		{
 			this.current = c;
 			determination[0] = true;
 		}
@@ -105,7 +126,8 @@ public class Admittance extends AbstractDipole
 	@Override
 	public void setVoltage(double v) throws AdmittanceError
 	{
-		if (!(determination[0]&&determination[2])) {
+		if (!(determination[0]&&determination[2])) 
+		{
 			this.voltage = v;
 			determination[1] = true;
 		}
@@ -116,7 +138,8 @@ public class Admittance extends AbstractDipole
 	@Override
 	public void setValue(double valeur) throws AdmittanceError
 	{
-		if (!(determination[0]&&determination[1])) {
+		if (!(determination[0]&&determination[1])) 
+		{
 			this.value = valeur;
 			determination[2] = true;
 		}
