@@ -8,11 +8,16 @@ import java.util.Arrays;
 /**
  * @author Raphaël
  */
-public class Solveur {
-    //tableaux de controle des variables.[type][i][j][determined?,value]
+public class Solveur 
+{
+	/* ========================= */
+	/* Déclaration des attributs */
+	/* ========================= */
+	
+    /**tableaux de controle des variables.[type][i][j][determined?,value]*/
     private double[][][][] variables;
 
-    //equations : tableau des equations connues
+    /**equations : tableau des equations connues*/
     private Equation[] equations;
     //Ordre d'apparition des variables I U Y
 
@@ -24,7 +29,11 @@ public class Solveur {
     //private boolean[][] currentSubstituated;
 
     private double[][] powerCurrents;
-
+    
+    /* =========================== */
+    /* Déclaration du constructeur */
+    /* =========================== */
+    
     public Solveur(double[][][] volt, double[][][] curr, double[][][] adm, double[][] cg, Equation[] eq) {
 
 
@@ -68,6 +77,10 @@ public class Solveur {
         logn("parameters saved");
 
     }
+    
+    /* ======================== */
+    /* Déclaration des méthodes */
+    /* ======================== */
 
     //getter des courants generateurs
     public double[][] currGenerator() {
@@ -84,7 +97,7 @@ public class Solveur {
         return ret;
     }
 
-    //fonction de resolution du systeme à proprement parler
+    /**fonction de resolution du systeme à proprement parler*/
     public boolean resolution() {
         while (!updateNumberUnknown()) {
             logn("UNKNOWN" + nbUnknown);
@@ -110,7 +123,7 @@ public class Solveur {
         return true;
     }
 
-    //fonction de calcul des variables determinables (genre a*Xij=b)
+    /**fonction de calcul des variables determinables (genre a*Xij=b)*/
     private int calculateVariables() {
         int cpt = 0;
         for (int ind = 0; ind < nbEq; ind++) {//pour chaque equation
@@ -130,7 +143,7 @@ public class Solveur {
         return cpt;
     }
 
-    //fonction de remplacement d'un variable dans toutes les equations
+    /**fonction de remplacement d'un variable dans toutes les equations*/
     private boolean replaceAll(int[] id, int nb, double value) {
         /*
         int[3] id donne les coordonnees de la variable à remplacer dans le tableau des variables
@@ -171,7 +184,7 @@ public class Solveur {
         return true;
     }
 
-    //fonction d'ajout d'une valeur dans le tableau des valeurs
+    /**fonction d'ajout d'une valeur dans le tableau des valeurs*/
     private boolean setVariableValue(int[] id, double value, boolean fill) {
         //id : coordonnées de la variable à ajouter
         //value : la nouvelle valeur
@@ -257,7 +270,7 @@ public class Solveur {
         return true;
     }
 
-    //Fonction de substitution de variables
+    /**Fonction de substitution de variables*/
     private boolean substituateVariable() {
         //recuperation d'une equation substituable
         int ind = getSubstituableEquation();
@@ -279,7 +292,7 @@ public class Solveur {
 
     }
 
-    //Fonction de recuperation d'une variable substituable
+    /**Fonction de recuperation d'une variable substituable*/
     private int getSubstituableEquation() {
         int i = -1;
         boolean cur = isCurrentUnknown();//est ce qu'un courant est substituable
@@ -295,7 +308,7 @@ public class Solveur {
         return i;
     }
 
-    //retourne "est ce qu'il reste du courant à substituer"
+    /**retourne "est ce qu'il reste du courant à substituer"*/
     private boolean isCurrentUnknown() {
         boolean ret = false;
         for (int i = 0; i < nbEq; i++) {//Pour chaque equation
@@ -307,7 +320,8 @@ public class Solveur {
         }
         return ret;
     }
-    //Mise à jour de NbUnknown, retourne true si NbUnknown==0
+    
+    /**Mise à jour de NbUnknown, retourne true si NbUnknown==0*/
     private boolean updateNumberUnknown() {//returns if all variables are found
         int nb = 0;
         for (double[] d : powerCurrents)
@@ -320,14 +334,14 @@ public class Solveur {
         return nb == 0;
     }
 
-    //Affiche les equations
+    /**Affiche les equations*/
     public void printEquations() {
         logn("\nEquations\n");
         for (int i = 0; i < nbEq; i++) logn(equations[i]);
 
     }
 
-    //Affichage des variables
+    /**Affichage des variables*/
     public void printVariables() {
         NumberFormat nf = new DecimalFormat("0.00###");
         char[] aff = equations[0].names;

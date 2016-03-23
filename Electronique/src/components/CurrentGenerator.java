@@ -4,32 +4,44 @@ import exceptions.CurrentGeneratorError;
 import exceptions.VoltageGeneratorError;
 
 /**
- * Classe pour les générateurs de courant
+ * Classe pour les générateurs de courant, hérite de AbstractGenerator
  * @author François, Raphaël
  */
-public class CurrentGenerator extends Generator
+public class CurrentGenerator extends AbstractGenerator
 {
+	/* ============================ */
+	/* Déclaraion des constructeurs */
+	/* ============================ */
+	
 	/**
 	 * Constructeur de générateurs de tension
 	 * @param name nom du générateur
 	 * @param firstLink entier indiquant les liaions communes avec le premier lien
 	 * @param secondLink entier indiquant les liaisons communes avec le second lien
 	 */
-	public CurrentGenerator(String name, int firstLink, int secondLink) {
+	public CurrentGenerator(String name, int firstLink, int secondLink) 
+	{
 		super(name, Type.CURRENTGENERATOR, firstLink, secondLink);
 		determination = false;
 	}
 
-	public CurrentGenerator(String name, int firstLink, int secondLink, double v) {
+	public CurrentGenerator(String name, int firstLink, int secondLink, double v) 
+	{
 		super(name, Type.CURRENTGENERATOR, firstLink, secondLink);
 		determination = true;
 		this.current = v;
 	}
-
+	
+	/* ======================== */
+	/* Déclaration des méthodes */
+	/* ======================== */
+	
 	//recuperation des parametres du generateur (seul le courant ets pertinent, donc fixé.
-	public double[][] getParameters() {
+	public double[][] getParameters() 
+	{
 		double[][] ret = new double[3][2];
-		if (determination) {
+		if (determination) 
+		{
 			ret[0] = new double[]{1,current};
 		}
 		return ret;
@@ -37,7 +49,8 @@ public class CurrentGenerator extends Generator
 
 	//Recuperation du courant
 	@Override
-	public double getCurrent() {
+	public double getCurrent() 
+	{
 		return this.current;
 	}
 
@@ -67,4 +80,3 @@ public class CurrentGenerator extends Generator
 	}
 
 }
-

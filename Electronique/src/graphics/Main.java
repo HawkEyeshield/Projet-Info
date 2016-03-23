@@ -17,9 +17,7 @@ public class Main extends Application
     @FXML
     private ImageView imageView;
 
-    /**
-     * start permet de lancer l'interface graphique
-     */
+    /** start permet de lancer l'interface graphique */
     @Override
     public void start(Stage primaryStage) throws Exception
     {

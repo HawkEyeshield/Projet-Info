@@ -10,9 +10,8 @@ import java.util.ResourceBundle;
 
 public class Controller implements javafx.fxml.Initializable,GraphicalFunctions 
 {
-    /**
-     * la methode initialiez avec l'implements permet de lancer une méthode au lancement du controller
-     */
+ 
+    /** cette méthode avec l'implements permet de lancer une méthode au lancement du controller */
     @Override
     public void initialize(URL location, ResourceBundle resources) 
     {
