@@ -8,7 +8,7 @@ import graphStructure.Vertex;
 import resolution.Extracteur;
 
 /**
- * Classe définissant un test unitaire pour le pont de wheatstone
+ * Classe définissant un test pour le pont de wheatstone
  * @author Raphaël
  */
 public class Wheatstone extends AbstractUnit
