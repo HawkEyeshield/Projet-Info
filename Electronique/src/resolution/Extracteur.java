@@ -49,7 +49,7 @@ public class Extracteur
     /* ======================== */
     
     private void log(Object s) {
-        System.out.print(s);
+        System.out.print(s.toString());
     }
 
     private void logn(Object s) {
@@ -91,19 +91,19 @@ public class Extracteur
         nbGenerators = generateurs.size();
         switch (nbGenerators) {
             case 0:
-                logn("Vous me prenez pour un idiot? Il n'y a pas de generateur. Arret...\n");
+                logn("Vous me prenez pour un idiot? Il n'y a pas de generateur. Arret...");
                 break;
             case 1:
-                logn("1 generateur trouvé.\n");
+                logn("1 generateur trouvé.");
                 break;
             default:
-                logn(nbGenerators + " generateurs trouvés.\n");
+                logn(nbGenerators + " generateurs trouvés.");
         }
 
         logn("Activation ...");
         //Step 3 : extinction de tous les générateurs et allumage du concerné.
         for (AbstractGenerator gen : generateurs) gen.turnOn();
-        logn("fait!");
+        logn("fait!\n");
 
 
         //Variables pour l'extraction :
@@ -235,7 +235,7 @@ public class Extracteur
         //ETAPE 3 : recuperation des equations aux noeuds
         logn("Equation aux noeuds ...");
         for (Vertex vertice : vertices) {
-            System.out.println("new Vertex");
+            logn("Vertex "+ vertice.get());
 
             //initialisation
             eqCurrents = new double[nbNodes][nbNodes];
@@ -244,8 +244,6 @@ public class Extracteur
             connections = graph.getConnectedComponents(vertice);
 
             for (ComponentMap m : connections) {//pour chaque connection
-                System.out.println(m.vertex().get() + " " + m.component().hashCode() + " " + m.incoming());
-
                 //init
                 AbstractGenerator gen = null;
                 Type type = m.component().type();
@@ -341,12 +339,12 @@ public class Extracteur
         }
 
         //Resolution itself
-        logn("Fait.\n\nResolution....");
+        logn("Fait.\n\nEquations obtenues");
 
         //print des equations
-        for (Equation eq : equations) System.out.println(eq);
+        for (Equation eq : equations) logn(eq);
         logn("");
-
+        logn("Resolution....");
         //conversion en tableau d'equations
         Equation[] eq = equations.toArray(new Equation[equations.size()]);
 
@@ -356,14 +354,13 @@ public class Extracteur
             for (int i = 0; i < nbGenerators; i++) resultCurrents[i] = solveur.currGenerator()[i][1];
             //rapatriement resultats
             ajout(solveur.variables());
-            System.out.println("Systeme resolu.");
+            logn("Systeme resolu.\n");
             solved = true;
             return true;
         } else {
-            logn("Systeme inrésolvable. Arret...");
+            logn("Systeme inrésolvable. Arret...\n");
             return false;
         }
-
 
     }
 

@@ -1,4 +1,4 @@
-
+﻿
 .metadata
 bin/
 tmp/
@@ -51,3 +51,6 @@ local.properties
 .metadata/
 .metadata/*
 *.iml
+
+# IntelliJ environment
+.idea

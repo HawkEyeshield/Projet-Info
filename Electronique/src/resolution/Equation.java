@@ -147,13 +147,12 @@ public class Equation
         if ((type == -1) && (i == -1)) {//si on doit remplacer un courantAlim (j joue toujours le role d'indicatif).
             constante -= value * powerCurrents[j];
             powerCurrents[j] = 0;
-            return true;
         }
-
-        //Si on doit plutot remplacer une variable reguliere
-        double coeff = t[type][i][j];
-        constante -= coeff * value;
-        t[type][i][j] = 0;
+        else {//Si on doit plutot remplacer une variable reguliere
+            double coeff = t[type][i][j];
+            constante -= coeff * value;
+            t[type][i][j] = 0;
+        }
         update();
         return true;
     }

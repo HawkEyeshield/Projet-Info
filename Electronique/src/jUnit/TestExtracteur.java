@@ -23,33 +23,44 @@ public class TestExtracteur extends AbstractUnit
 	public void setUp() {
 		g = new CircuitGraph();
 
-		//les sommets du graphe sont définis ici.
+		//Les sommets du graphe sont definis ici.
 		Vertex v0 = new Vertex(0);
 		Vertex v1 = new Vertex(1);
 		Vertex v2 = new Vertex(2);
 
-
-		//Les sommets sont ici ajoutés aux graphe
+		//Les sommets sont ici ajoutes aux graphe
 		g.addVertex(v0);
 		g.addVertex(v1);
 		g.addVertex(v2);
 
-
-		//les divers composants sont ici ajoutés au graphe.
-		Admittance a;
-
+		//Ajout des generateurs
 		g.addComponent(v0, v2, new VoltageGenerator("E0", 0, 2, 10));
 
-		a = new Admittance("Y0", 0, 1);
-		try {a.setCurrent(5.0);}
-		catch (AdmittanceError e) {e.printStackTrace();return;}
-		g.addComponent(v0, v1, a);
+		//Ajout des composants
+		Admittance a;//init de la variable temporaire
 
-		a = new Admittance("Y0", 0, 1);
-		try {a.setVoltage(5.0);}
-		catch (AdmittanceError e) {e.printStackTrace();return;}
-		g.addComponent(v1, v2, a);
-		//g.addComponent(v1, v2, new Admittance("Y0", 0, 1, 1));
+		try {
+            /*procedure d'ajout d'un composant parametré :
+            a = new Admittance("Y0", 0, 1) :  creation d'un nouveau composant
+            a.setCurrent(5.0) : parametrage du courant (existe aussi en  tension, et admittance)
+            g.addComponent(v0, v1, a) : ajout du composant au graphe
+
+            Vous pouvez aussi utiliser cette commande si vous voulez directement parametrer directement l'admittance sans vous embetter :
+            g.addComponent(v0, v1, new Admittance("Y0", 0, 1,5)) //l'admittance parametree ets de 5 Mho
+            */
+
+			a = new Admittance("Y0", 0, 1);
+			a.setCurrent(5.0);
+			g.addComponent(v0, v1, a);
+
+			a = new Admittance("Y0", 0, 1);
+			a.setVoltage(5.0);
+			g.addComponent(v1, v2, a);
+
+		} catch (AdmittanceError e) {
+			e.printStackTrace();
+			return;
+		}
 		
 		e = new Extracteur(g);
 

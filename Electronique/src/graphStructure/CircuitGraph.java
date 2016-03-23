@@ -148,7 +148,7 @@ public class CircuitGraph
         return e.AdmittancesNb() > 1;
     }
 
-    /**getCOnnectedComponents :
+    /**getConnectedComponents :
     Renvoie tous les composants connectée à un sommets v sous la forme
     ComponentMap(autre sommet du composant, composant, orientation)
     orientation est un booleen representant "Le sommet v est le sommet de depart du composant"
