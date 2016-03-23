@@ -1,5 +1,6 @@
 package graphics;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,9 +39,6 @@ public interface GraphicalFunctions
 			tensionGenerator.setX(100);
 			tensionGenerator.setY(100);
 			anchorPane3.getChildren().add(tensionGenerator);
-
-
-
 
 			/*
             Permet de deplacer le generateur de tension d'un point a un autre
@@ -109,6 +107,11 @@ public interface GraphicalFunctions
 			anchorPane3.getChildren().add(courantGenerator);
 
 			/*
+			Permet de faire appaitre un lien entre deux objets
+			 */
+
+
+			/*
             Permet de deplacer le generateur de courant d'un point a un autre
 			 */
 			courantGenerator.setOnMouseDragged(event1 -> 
@@ -151,7 +154,7 @@ public interface GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addNode (AnchorPane anchorPane3, AnchorPane anchorPane4, ScrollPane scrollPane)
+	public static void addNode (AnchorPane anchorPane3, AnchorPane anchorPane4, ScrollPane scrollPane, Button CreeUnLien)
 	{
 		ImageView firstNode = new ImageView();
 		Image image2 = new Image("file:image/point.gif");
@@ -159,6 +162,10 @@ public interface GraphicalFunctions
 		firstNode.setX(10);
 		firstNode.setY(170);
 		anchorPane4.getChildren().add(firstNode);
+
+		CreeUnLien.setOnMouseClicked(event -> {
+			AddLink.addLink();
+		});
 
 		/*
         Permet de faire apparaitre un noeud

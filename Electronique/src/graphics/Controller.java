@@ -29,8 +29,7 @@ public class Controller implements javafx.fxml.Initializable,GraphicalFunctions
         // On charge les images des composants dans la zone de droite
         GraphicalFunctions.addCourantGenerator(anchorPane2, anchorPane4, scrollPane);
         GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane);
-        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane);
-
+        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreeUnLien);
 
     }
 
@@ -82,6 +81,9 @@ public class Controller implements javafx.fxml.Initializable,GraphicalFunctions
 
     @FXML
     private SplitPane splitPane;
+
+    @FXML
+    private Button CreeUnLien;
 
     @FXML
     private Button TensionAImposer;
