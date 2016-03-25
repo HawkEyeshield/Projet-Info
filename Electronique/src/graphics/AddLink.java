@@ -32,7 +32,7 @@ public class AddLink {
     }
 
     public static void addLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2, AnchorPane anchorPane2) {
-        double tailleXImage1 = premiereImageDuLien.getImage().getHeight() + 8;
+        double tailleXImage1 = premiereImageDuLien.getImage().getHeight();
         double tailleXImage2 = secondeImageDuLien.getImage().getHeight();
         double tailleYImage1 = premiereImageDuLien.getImage().getWidth();
         double tailleYImage2 = secondeImageDuLien.getImage().getWidth();
@@ -41,14 +41,19 @@ public class AddLink {
         double positionYImage1 = premiereImageDuLien.getY();
         double positionYImage2 = secondeImageDuLien.getY();
         if(positionXImage1 < positionXImage2 && orientationImage1 == 'h' && orientationImage2 == 'h'){
-            double a = positionXImage1 + tailleXImage1;
-            System.out.println(tailleXImage1);
-            System.out.println(positionXImage1);
-            System.out.println(a);
-            double b = positionYImage1 + tailleYImage1/2;
-            System.out.println();
+            double a = positionXImage1 + tailleXImage1 + 8; // Le +8 provient d'une erreur de mesure du logiciel concernat la taille de l'image
+            double b = positionYImage1 + tailleYImage1/2 - 4; // pareil pour le -4 (quoique peut être que l'image est juste pas centré en hauteur dans ce cas
             Line line1 = new Line(a,b,a + (positionXImage2-a)/2,b);
             anchorPane2.getChildren().add(line1);
+
+            double c = positionXImage2;
+            double d = positionYImage2 + tailleYImage2/2;
+            System.out.print(c);
+            Line line2 = new Line(c,d,a + (positionXImage2-a)/2,d);
+            anchorPane2.getChildren().add(line2);
+
+            Line line3 = new Line(a + (positionXImage2-a)/2,b, a + (positionXImage2-a)/2, d);
+            anchorPane2.getChildren().add(line3);
 
         }
         //link Link = new link(premiereImageDuLien, secondeImageDuLien, line1, line2, line3, orientationImage1, orientationImage1);
