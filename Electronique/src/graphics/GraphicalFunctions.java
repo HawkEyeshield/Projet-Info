@@ -93,9 +93,6 @@ public class GraphicalFunctions
 				tensionGenerator.relocate(x-imagx/2, y-imagy/2);
 				tensionGenerator.setX(x-imagx/2);
 				tensionGenerator.setY(y-imagy/2);
-
-
-				System.out.println(x-imagx/2);
 			});
 
 		});

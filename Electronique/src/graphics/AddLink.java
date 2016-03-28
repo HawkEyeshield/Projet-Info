@@ -48,7 +48,6 @@ public class AddLink {
 
             double c = positionXImage2;
             double d = positionYImage2 + tailleYImage2/2;
-            System.out.print(c);
             Line line2 = new Line(c,d,a + (positionXImage2-a)/2,d);
             anchorPane2.getChildren().add(line2);
 
