@@ -80,13 +80,19 @@ public class AddLink {
 
             Line line2 = new Line(centreXImage1,centreYImage1,centreXImage1,centreYImage2);
             anchorPane2.getChildren().add(line2);
+            //System.out.println(centreXImage1);
+            //System.out.println(centreYImage1);
+            System.out.println(centreXImage2);
+            //System.out.println(centreYImage2);
+            System.out.println(tailleXImage2);
+            //System.out.println(tailleYImage2);
         }
         if(orientationImage1 == 't' && orientationImage2 == 't'){
             Line line1 = new Line(centreXImage1,centreYImage1,centreXImage2,centreYImage2);
             anchorPane2.getChildren().add(line1);
         }
     }
-    public static void deleteLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2, AnchorPane anchorPane2) {
+    public static void deleteLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2) {
     }
 
 

@@ -28,7 +28,7 @@ public class GraphicalFunctions
 	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
 	{
 		ImageView firstVoltageGenerator = new ImageView(); // On créer un object de type ImageView
-		Image image1 = new Image("file:image/Generateur de tension.png"); // On va la cherche au bonne endroit
+		Image image1 = new Image("file:image/Generateur de tension h.png"); // On va la cherche au bonne endroit
 		firstVoltageGenerator.setImage(image1);
 		firstVoltageGenerator.setX(90);
 		firstVoltageGenerator.setY(80); // On définit la position
@@ -39,11 +39,15 @@ public class GraphicalFunctions
 		{
 			System.out.println("Un generateur de tension devrait apparaitre");
 			ImageView tensionGenerator = new ImageView();
-			Image image = new Image("file:image/Generateur de tension.png");
+			Image image = new Image("file:image/Generateur de tension h.png");
 			tensionGenerator.setImage(image);
 			tensionGenerator.setX(100);
 			tensionGenerator.setY(100);
 			anchorPane2.getChildren().add(tensionGenerator);
+
+			tensionGenerator.setLayoutX(50) ;
+			System.out.println(tensionGenerator.getLayoutX());
+			System.out.println(tensionGenerator.getLayoutY());
 
 			//Permet de creer un lien
 			tensionGenerator.setOnMouseClicked(event2 ->
@@ -102,7 +106,10 @@ public class GraphicalFunctions
 					tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
 					tensionGenerator.setX(x - imagx / 2);
 					tensionGenerator.setY(y - imagy / 2);
-					//AddLink.addLink(premiereImageDuLien,a.get,orientationImage1,orientationImage2,anchorPane2);
+					System.out.println(tensionGenerator.getX());
+					System.out.println(tensionGenerator.getY());
+					//AddLink.addLink(,anchorPane2);
+					//AddLink.deleteLink(premiereImageDuLien,a.get,orientationImage1,orientationImage2)
 				}
 			});
 
@@ -119,7 +126,7 @@ public class GraphicalFunctions
 	public static void addCourantGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
 	{
 		ImageView firstCourantGenerator = new ImageView();
-		Image image2 = new Image("file:image/Generateur de courant.png");
+		Image image2 = new Image("file:image/Generateur de courant v.png");
 		firstCourantGenerator.setImage(image2);
 		firstCourantGenerator.setX(10);
 		firstCourantGenerator.setY(80);
@@ -130,7 +137,7 @@ public class GraphicalFunctions
 		firstCourantGenerator.setOnMouseClicked(event -> {
 			System.out.println("Un generateur de courant devrait apparaitre");
 			ImageView courantGenerator = new ImageView();
-			Image image = new Image("file:image/Generateur de courant.png");
+			Image image = new Image("file:image/Generateur de courant v.png");
 			courantGenerator.setImage(image);
 			courantGenerator.setX(200);
 			courantGenerator.setY(100);
@@ -206,7 +213,7 @@ public class GraphicalFunctions
 	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button CreeUnLien)
 	{
 		ImageView firstNode = new ImageView();
-		Image image2 = new Image("file:image/point.gif");
+		Image image2 = new Image("file:image/Noeud.png");
 		firstNode.setImage(image2);
 		firstNode.setX(10);
 		firstNode.setY(170);
@@ -220,7 +227,7 @@ public class GraphicalFunctions
 		{
 			System.out.println("Un generateur de courant devrait apparaitre");
 			ImageView node = new ImageView();
-			Image image = new Image("file:image/point.gif");
+			Image image = new Image("file:image/Noeud.png");
 			node.setImage(image);
 			node.setX(300);
 			node.setY(100);
