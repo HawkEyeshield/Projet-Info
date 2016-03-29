@@ -28,13 +28,22 @@ public class Controller implements javafx.fxml.Initializable
         // On charge les images des composants dans la zone de droite
         GraphicalFunctions.addCourantGenerator(anchorPane2, anchorPane4, scrollPane);
         GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane);
-        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreeUnLien);
+        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreerUnLien);
 
-        CreeUnLien.setOnMouseClicked(event -> {
-            GraphicalFunctions.etat = "l1";
-            System.out.println("On commence a creer un lien");
+        CreerUnLien.setOnMouseClicked(event -> {
+            if(GraphicalFunctions.etat == "l1" || GraphicalFunctions.etat =="l2") {
+                GraphicalFunctions.etat = "d";
+                CreerUnLien.setText("Creer un lien");
+                GraphicalFunctions.etat = "d";
+            }
+            else{
+                GraphicalFunctions.etat = "l1";
+                System.out.println("On commence a creer un lien");
+                CreerUnLien.setText("Arreter de creer des liens");
+            }
         });
     }
+
 
     @FXML
     private MenuItem Delete;
@@ -86,7 +95,7 @@ public class Controller implements javafx.fxml.Initializable
     private SplitPane splitPane;
 
     @FXML
-    private Button CreeUnLien;
+    private Button CreerUnLien;
 
     @FXML
     private Button TensionAImposer;

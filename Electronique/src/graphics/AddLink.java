@@ -11,26 +11,29 @@ import javafx.scene.shape.Line;
  */
 public class AddLink {
 
-    private class link {
+
+    public static class link {
         ImageView image1;
         ImageView image2;
         char orientationImage1;
         char orientationImage2;
-        Line line1; //Line 1 est relie a l'image 1
-        Line line2; //Line 2 est relié a l'image 2
-        Line line3; //Line 3 fait le lien entre le lien 1 et 2
 
-        public void link(ImageView image1, ImageView image2, Line line1, Line line2, Line line3,char orientationImage1, char orientationImage2) {
+        public link(ImageView image1, ImageView image2, char orientationImage1, char orientationImage2) {
             this.image1 = image1;
             this.image2 = image2;
-            this.line1 = line1;
-            this.line2 = line2;
-            this.line3 = line3;
             this.orientationImage1 = orientationImage1;
             this.orientationImage2 = orientationImage2;
         }
     }
 
+    /**
+     * Permet de creer un lien entre deux images
+     * @param premiereImageDuLien
+     * @param secondeImageDuLien
+     * @param orientationImage1
+     * @param orientationImage2
+     * @param anchorPane2
+     */
     public static void addLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2, AnchorPane anchorPane2) {
         double tailleXImage1 = premiereImageDuLien.getImage().getHeight();
         double tailleXImage2 = secondeImageDuLien.getImage().getHeight();
@@ -40,22 +43,50 @@ public class AddLink {
         double positionXImage2 = secondeImageDuLien.getX();
         double positionYImage1 = premiereImageDuLien.getY();
         double positionYImage2 = secondeImageDuLien.getY();
-        if(positionXImage1 < positionXImage2 && orientationImage1 == 'h' && orientationImage2 == 'h'){
-            double a = positionXImage1 + tailleXImage1 + 8; // Le +8 provient d'une erreur de mesure du logiciel concernat la taille de l'image
-            double b = positionYImage1 + tailleYImage1/2 - 4; // pareil pour le -4 (quoique peut être que l'image est juste pas centré en hauteur dans ce cas
-            Line line1 = new Line(a,b,a + (positionXImage2-a)/2,b);
+        double centreXImage1 = positionXImage1 + tailleXImage1/2 ;
+        double centreYImage1 = positionYImage1 + tailleYImage1/2;
+        double centreXImage2 = positionXImage2 + tailleXImage2/2;
+        double centreYImage2 = positionYImage2 + tailleYImage2/2;
+        if( orientationImage1 == 'h' && orientationImage2 == 'h'){
+            Line line1 = new Line(centreXImage1,centreYImage1,( centreXImage1 + centreXImage2 )/2,centreYImage1);
             anchorPane2.getChildren().add(line1);
 
-            double c = positionXImage2;
-            double d = positionYImage2 + tailleYImage2/2;
-            Line line2 = new Line(c,d,a + (positionXImage2-a)/2,d);
+            Line line2 = new Line(centreXImage2,centreYImage2,(centreXImage1 + centreXImage2)/2,centreYImage2);
             anchorPane2.getChildren().add(line2);
 
-            Line line3 = new Line(a + (positionXImage2-a)/2,b, a + (positionXImage2-a)/2, d);
+            Line line3 = new Line((centreXImage1 + centreXImage2)/2,centreYImage1,(centreXImage1 + centreXImage2)/2, centreYImage2);
             anchorPane2.getChildren().add(line3);
-
         }
-        //link Link = new link(premiereImageDuLien, secondeImageDuLien, line1, line2, line3, orientationImage1, orientationImage1);
+        if( orientationImage1 == 'v' && orientationImage2 == 'v'){
+            Line line1 = new Line(centreXImage1,centreYImage1,centreXImage1,(centreYImage1 + centreYImage2)/2);
+            anchorPane2.getChildren().add(line1);
+
+            Line line2 = new Line(centreXImage2,centreYImage2,centreXImage2,(centreYImage1 + centreYImage2)/2);
+            anchorPane2.getChildren().add(line2);
+
+            Line line3 = new Line(centreXImage1,(centreYImage1 + centreYImage2)/2,centreXImage2,(centreYImage1 + centreYImage2)/2);
+            anchorPane2.getChildren().add(line3);
+        }
+        if((orientationImage1 == 'h' && orientationImage2 == 'v') || (orientationImage1 == 't' && orientationImage2 == 'v') || (orientationImage1 == 'h' && orientationImage2 == 't')){
+            Line line1 = new Line(centreXImage1,centreYImage1,centreXImage2,centreYImage1);
+            anchorPane2.getChildren().add(line1);
+
+            Line line2 = new Line(centreXImage2,centreYImage2,centreXImage2,centreYImage1);
+            anchorPane2.getChildren().add(line2);
+        }
+        if((orientationImage1 == 'v' && orientationImage2 == 'h') || (orientationImage1 == 't' && orientationImage2 == 'h') || (orientationImage1 == 'v' && orientationImage2 == 't')){
+            Line line1 = new Line(centreXImage2,centreYImage2,centreXImage1,centreYImage2);
+            anchorPane2.getChildren().add(line1);
+
+            Line line2 = new Line(centreXImage1,centreYImage1,centreXImage1,centreYImage2);
+            anchorPane2.getChildren().add(line2);
+        }
+        if(orientationImage1 == 't' && orientationImage2 == 't'){
+            Line line1 = new Line(centreXImage1,centreYImage1,centreXImage2,centreYImage2);
+            anchorPane2.getChildren().add(line1);
+        }
+    }
+    public static void deleteLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2, AnchorPane anchorPane2) {
     }
 
 
