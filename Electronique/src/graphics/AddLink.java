@@ -15,14 +15,24 @@ public class AddLink {
     public static class link {
         ImageView image1;
         ImageView image2;
+        ImageView zoneImage1;
+        ImageView zoneImage2;
+        Line lien1;
+        Line lien2;
+        Line lien3;
         char orientationImage1;
         char orientationImage2;
 
-        public link(ImageView image1, ImageView image2, char orientationImage1, char orientationImage2) {
+        public link(ImageView image1, ImageView image2,ImageView zoneImage1, ImageView zoneImage2, char orientationImage1, char orientationImage2, Line lien1, Line lien2,Line lien3) {
             this.image1 = image1;
             this.image2 = image2;
+            this.zoneImage1 = zoneImage1;
+            this.zoneImage2 = zoneImage2;
             this.orientationImage1 = orientationImage1;
             this.orientationImage2 = orientationImage2;
+            this.lien1 = lien1;
+            this.lien2 = lien2;
+            this.lien3 = lien3;
         }
     }
 
@@ -91,8 +101,10 @@ public class AddLink {
             Line line1 = new Line(centreXImage1,centreYImage1,centreXImage2,centreYImage2);
             anchorPane2.getChildren().add(line1);
         }
+        GraphicalFunctions.nombreDeLien += 1;
+        //GraphicalFunctions.boardOfLink[nombreDeLien] = new link();
     }
-    public static void deleteLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2) {
+    public static void deleteViewOfLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2) {
     }
 
 
