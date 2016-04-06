@@ -44,6 +44,7 @@ public class Breadboard
 	public void compute()
 	{
 		extractor.extraction(false);
+		extractor.printVariables();
 	}
 	
 	/** Méthode ajoutant des composants
