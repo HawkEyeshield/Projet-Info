@@ -34,7 +34,7 @@ public abstract class AbstractDipole
 	/**double indiquant la différence de potentiel*/
 	protected double voltage;
 
-	/**value caractéristique du composant*/
+	/**value caractéristique du composant, aussi bien la valeur d'une admittance que le courant ou la tension d'un générateur*/
 	protected double value;
 	
 

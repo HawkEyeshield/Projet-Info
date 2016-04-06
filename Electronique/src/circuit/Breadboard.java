@@ -6,6 +6,7 @@ import components.AbstractDipole;
 import components.Admittance;
 import components.CurrentGenerator;
 import components.VoltageGenerator;
+import resolution.Extracteur;
 import resolution.Solveur;
 
 /**
@@ -21,14 +22,18 @@ public class Breadboard
 	
 	/** liste des composants du circuit */
 	private ArrayList<AbstractDipole> components;
+	
+	/** extracteur résolvant le circuit */
+	private Extracteur extractor;
 
 /* =========================== */
 /* Déclaration du constructeur */
 /* =========================== */
 	
-	public Breadboard(ArrayList<AbstractDipole> components)
+	public Breadboard(ArrayList<AbstractDipole> components, Extracteur e)
 	{
 		this.components=components;
+		this.extractor=e;
 	}
 
 /* ======================== */
@@ -38,14 +43,13 @@ public class Breadboard
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
 	{
-		// TODO
+		extractor.extraction(false);
 	}
 	
 	/** Méthode ajoutant des composants
 	 * @param component : le composant à ajouter */
 	public void addComponent(AbstractDipole component)
 	{
-		// TODO
 		if(component instanceof CurrentGenerator)
 		{
 			components.add(new CurrentGenerator(component.getName(), component.getFirstLink(),component.getSecondLink()));
@@ -60,17 +64,21 @@ public class Breadboard
 		}
 	}
 	
-	/** Méthode ajoutant des liens entre composants
+	/** Méthode ajoutant des liens entre deux composants
 	 * @param a : premier composant
 	 * @param b : second composant */
 	public void addLink(AbstractDipole a, AbstractDipole b)
 	{
-		// TODO
+		b.setFirstLink(a.getSecondLink());
 	}
 	
 	public String toString()
 	{
-		// TODO
-		return "";
+		String string = "Connaissance actuelle du circuit : \n";
+		for(AbstractDipole a : components)
+		{
+			string+=a.toString() + "\n";
+		}
+		return string;
 	}
 }

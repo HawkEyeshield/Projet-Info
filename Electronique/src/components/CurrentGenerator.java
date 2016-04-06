@@ -31,6 +31,7 @@ public class CurrentGenerator extends AbstractGenerator
 		super(name, Type.CURRENTGENERATOR, firstLink, secondLink);
 		determination = true;
 		this.current = v;
+		this.value=v;
 	}
 	
 	/* ======================== */
@@ -69,15 +70,7 @@ public class CurrentGenerator extends AbstractGenerator
 	public void setCurrent(double c) throws VoltageGeneratorError
 	{
 		this.current = c;
+		this.value=c;
 		determination = true;
 	}
-
-	//valeur caracteristique
-
-	@Override
-	public void setValue(double valeur) throws VoltageGeneratorError
-	{
-		throw new VoltageGeneratorError("Un générateur de courant n'a pas de valeur caracteristique");
-	}
-
 }

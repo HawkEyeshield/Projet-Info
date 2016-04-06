@@ -35,6 +35,7 @@ public class VoltageGenerator extends AbstractGenerator
 	{
 		super(name, Type.VOLTAGEGENERATOR, firstLink, secondLink);
 		this.voltage = v;
+		this.value=v;
 	}
 	
 	/* ======================== */
@@ -73,15 +74,6 @@ public class VoltageGenerator extends AbstractGenerator
 	public void setVoltage(double v) throws VoltageGeneratorError 
 	{
 		this.voltage = v;
+		this.value=v;
 	}
-
-	//valeur caracteristique
-
-	//TODO Eventuellement parametrer la valeur caracteristique comme la tension délivrée par le générateur, en discuter avec l'equipe.
-	@Override
-	public void setValue(double valeur) throws VoltageGeneratorError 
-	{
-		throw new VoltageGeneratorError("Un générateur de tension n'a pas de valeur caracteristique");
-	}
-
 }

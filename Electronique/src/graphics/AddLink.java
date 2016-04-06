@@ -23,7 +23,8 @@ public class AddLink {
         char orientationImage1;
         char orientationImage2;
 
-        public link(ImageView image1, ImageView image2,ImageView zoneImage1, ImageView zoneImage2, char orientationImage1, char orientationImage2, Line lien1, Line lien2,Line lien3) {
+        public link(ImageView image1, ImageView image2,ImageView zoneImage1, ImageView zoneImage2, char orientationImage1, char orientationImage2, Line lien1, Line lien2,Line lien3) 
+        {
             this.image1 = image1;
             this.image2 = image2;
             this.zoneImage1 = zoneImage1;
@@ -104,7 +105,8 @@ public class AddLink {
         GraphicalFunctions.nombreDeLien += 1;
         //GraphicalFunctions.boardOfLink[nombreDeLien] = new link();
     }
-    public static void deleteViewOfLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2) {
+    public static void deleteViewOfLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2) 
+    {
     }
 
 
