@@ -1,6 +1,7 @@
 package components;
 
 import exceptions.AbstractDipoleError;
+import graphStructure.Vertex;
 
 /**
  * Classe abstraite définisant les dipôles 
@@ -18,11 +19,11 @@ public abstract class AbstractDipole
 	/** Nature du composant */
 	protected Type type;
 	
-	/**Entier indiquant à quels autres fils est relié le premier lien*/
-	protected int firstLink;
+	/**Sommet auquel est relié la première patte */
+	protected Vertex firstLink;
 
-	/**Entier indiquant à quels autres fils est relié le second lien*/
-	protected int secondLink;
+	/**Sommet auquel est remié la seconde patte */
+	protected Vertex secondLink;
 
 	/**Courant par défaut traversant les composants*/
 	protected final double DEFAULT_CURRENT=0;
@@ -43,11 +44,11 @@ public abstract class AbstractDipole
 
 	/**
 	 * Constructeur de cette classe, les classes filles préciseront les autres paramètres dans leurs constructeurs respectifs
-	 * @param name Nom à donner au composant 
-	 * @param firstLink Entier à renseigner pour savoir à quels autres liens est connecté le premier fil
-	 * @param secondLink Entier à renseigner pour savoir à quels autres liens est connecté le second fil
+	 * @param name : nom à donner au composant 
+	 * @param firstLink : Sommet auquel est relié la première patte
+	 * @param secondLink : Sommet auquel est relié la première patte
 	 */
-	public AbstractDipole(String name, Type type, int firstLink, int secondLink)
+	public AbstractDipole(String name, Type type, Vertex firstLink, Vertex secondLink)
 	{
 		this.name=name;
 		this.type=type;
@@ -77,22 +78,22 @@ public abstract class AbstractDipole
 	}
 
 	// Getters de links
-	public int getFirstLink()
+	public Vertex getFirstLink()
 	{
 		return this.firstLink;
 	}
-	public int getSecondLink()
+	public Vertex getSecondLink()
 	{
 		return this.secondLink;
 	}
 
 
 	// Setters de links
-	public void setFirstLink(int l)
+	public void setFirstLink(Vertex l)
 	{
 		this.firstLink =l;
 	}
-	public void setSecondLink(int l)
+	public void setSecondLink(Vertex l)
 	{
 		this.secondLink =l;
 	}

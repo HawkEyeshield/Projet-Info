@@ -1,5 +1,7 @@
 package components;
 
+import graphStructure.Vertex;
+
 /** Classe abstraite des générateurs, hérite de AbstractDipole
  * @author Raphaël
  */
@@ -23,10 +25,10 @@ public abstract class AbstractGenerator extends AbstractDipole
      * Constructeur de la classe abstraite pour générateurs
      * @param name : nom du générateur
      * @param t : type de composant
-     * @param first_link : premier lien
-     * @param second_link : second lien
+     * @param first_link : Sommet auquel est relié la première patte
+     * @param second_link : Sommet auquel est relié la première patte
      */
-    public AbstractGenerator(String name, Type t, int first_link, int second_link) 
+    public AbstractGenerator(String name, Type t, Vertex first_link, Vertex second_link) 
     {
         super(name, t, first_link, second_link);
     }

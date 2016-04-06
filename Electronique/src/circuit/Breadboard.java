@@ -3,6 +3,9 @@ package circuit;
 import java.util.ArrayList;
 
 import components.AbstractDipole;
+import components.Admittance;
+import components.CurrentGenerator;
+import components.VoltageGenerator;
 import resolution.Solveur;
 
 /**
@@ -18,9 +21,6 @@ public class Breadboard
 	
 	/** liste des composants du circuit */
 	private ArrayList<AbstractDipole> components;
-	
-	/** solveur du circuit*/
-	private Solveur solveur;
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -29,7 +29,6 @@ public class Breadboard
 	public Breadboard(ArrayList<AbstractDipole> components)
 	{
 		this.components=components;
-		// TODO : this.solveur=new Solveur(volt, curr, adm, cg, eq);
 	}
 
 /* ======================== */
@@ -38,6 +37,33 @@ public class Breadboard
 	
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
+	{
+		// TODO
+	}
+	
+	/** Méthode ajoutant des composants
+	 * @param component : le composant à ajouter */
+	public void addComponent(AbstractDipole component)
+	{
+		// TODO
+		if(component instanceof CurrentGenerator)
+		{
+			components.add(new CurrentGenerator(component.getName(), component.getFirstLink(),component.getSecondLink()));
+		}
+		else if(component instanceof VoltageGenerator)
+		{
+			components.add(new VoltageGenerator(component.getName(), component.getFirstLink(), component.getSecondLink()));
+		}
+		else if(component instanceof Admittance)
+		{
+			components.add(new Admittance(component.getName(), component.getFirstLink(), component.getSecondLink()));
+		}
+	}
+	
+	/** Méthode ajoutant des liens entre composants
+	 * @param a : premier composant
+	 * @param b : second composant */
+	public void addLink(AbstractDipole a, AbstractDipole b)
 	{
 		// TODO
 	}

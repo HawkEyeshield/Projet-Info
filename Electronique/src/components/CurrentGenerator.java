@@ -2,6 +2,7 @@ package components;
 
 import exceptions.CurrentGeneratorError;
 import exceptions.VoltageGeneratorError;
+import graphStructure.Vertex;
 
 /**
  * Classe pour les générateurs de courant, hérite de AbstractGenerator
@@ -15,17 +16,17 @@ public class CurrentGenerator extends AbstractGenerator
 	
 	/**
 	 * Constructeur de générateurs de tension
-	 * @param name nom du générateur
-	 * @param firstLink entier indiquant les liaions communes avec le premier lien
-	 * @param secondLink entier indiquant les liaisons communes avec le second lien
+	 * @param name : nom du générateur
+	 * @param firstLink : Sommet auquel est relié la première patte
+	 * @param secondLink : Sommet auquel est relié la première patte
 	 */
-	public CurrentGenerator(String name, int firstLink, int secondLink) 
+	public CurrentGenerator(String name, Vertex firstLink, Vertex secondLink) 
 	{
 		super(name, Type.CURRENTGENERATOR, firstLink, secondLink);
 		determination = false;
 	}
 
-	public CurrentGenerator(String name, int firstLink, int secondLink, double v) 
+	public CurrentGenerator(String name, Vertex firstLink, Vertex secondLink, double v) 
 	{
 		super(name, Type.CURRENTGENERATOR, firstLink, secondLink);
 		determination = true;

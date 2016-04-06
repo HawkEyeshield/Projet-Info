@@ -34,7 +34,7 @@ public class TestExtracteur extends AbstractUnit
 		g.addVertex(v2);
 
 		//Ajout des generateurs
-		g.addComponent(v0, v2, new VoltageGenerator("E0", 0, 2, 10));
+		g.addComponent(v0, v2, new VoltageGenerator("E0", v0, v2, 10));
 
 		//Ajout des composants
 		Admittance a;//init de la variable temporaire
@@ -49,11 +49,11 @@ public class TestExtracteur extends AbstractUnit
             g.addComponent(v0, v1, new Admittance("Y0", 0, 1,5)) //l'admittance parametree ets de 5 Mho
             */
 
-			a = new Admittance("Y0", 0, 1);
+			a = new Admittance("Y0", v0, v1);
 			a.setCurrent(5.0);
 			g.addComponent(v0, v1, a);
 
-			a = new Admittance("Y0", 0, 1);
+			a = new Admittance("Y0", v0, v1);
 			a.setVoltage(5.0);
 			g.addComponent(v1, v2, a);
 

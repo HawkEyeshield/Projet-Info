@@ -35,13 +35,13 @@ public class Wheatstone extends AbstractUnit
 		//les divers composants sont ici ajoutés au graphe.
 		//Admittance a;
 
-		g.addComponent(v0, v3, new VoltageGenerator("E0", 0, 2, 10));
+		g.addComponent(v0, v3, new VoltageGenerator("E0", v0, v3, 10));
 
-		g.addComponent(v0, v1, new Admittance("Y0", 0, 1, 1));
-		g.addComponent(v0, v2, new Admittance("Y0", 0, 1, 1));
-		g.addComponent(v1, v2, new Admittance("Y0", 0, 1, 1));
-		g.addComponent(v1, v3, new Admittance("Y0", 0, 1, 1));
-		g.addComponent(v2, v3, new Admittance("Y0", 0, 1, 1));
+		g.addComponent(v0, v1, new Admittance("Y0", v0, v1, 1));
+		g.addComponent(v0, v2, new Admittance("Y0", v0, v2, 1));
+		g.addComponent(v1, v2, new Admittance("Y0", v1, v2, 1));
+		g.addComponent(v1, v3, new Admittance("Y0", v1, v3, 1));
+		g.addComponent(v2, v3, new Admittance("Y0", v2, v3, 1));
 
 		//création de l'extracteur
 		e = new Extracteur(g);

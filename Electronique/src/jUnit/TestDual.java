@@ -33,9 +33,9 @@ public class TestDual extends AbstractUnit
 		//les divers composants sont ici ajoutés au graphe.
 		//Admittance a;
 
-		g.addComponent(v0, v1, new VoltageGenerator("E0", 0, 2, 10));
+		g.addComponent(v0, v1, new VoltageGenerator("E0", v0, v1, 10));
 
-		g.addComponent(v0, v1, new Admittance("Y0", 0, 1, 1));
+		g.addComponent(v0, v1, new Admittance("Y0", v0, v1, 1));
 
 
 		//création de l'extracteur
