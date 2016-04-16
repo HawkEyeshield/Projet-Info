@@ -17,13 +17,16 @@ public class GraphicalFunctions
     */
 	public static int maxLien = 1000;
 	public static String etat = "d"; // Permet de définir si on peut faire du drag and drop ou si on est entrain de créer des liens
-	public static ImageView premiereImageDuLien = new ImageView(); // Premiere image du lien que l'on va creer
-	public static char orientationImage = 'r'; // orientation de la premiere image du lien que l'on va creer
+	public static Component premiereImageDuLien; // Premiere image du lien que l'on va creer
 	public static int idVotalgeGenerator = 0; //Compte le nombre de generateur de tension
 	public static int idCourantgeGenerator = 0;// Compte le nombre de generateur de courant
 	public static int idNode = 0; // Compte  le nombre de noeud
 	public static AddLink.link [] boardOfLink = new AddLink.link[maxLien]; //tableau qui liste les liens
 	public static int nombreDeLien = 0; //Compte le nombre de lien
+	public static int linkArea;
+
+
+
 
 	/**
 	 * Permet de faire apparaitre un generateur de tension
@@ -52,7 +55,6 @@ public class GraphicalFunctions
 			tensionGenerator.setX(100);
 			tensionGenerator.setY(100);
 			anchorPane2.getChildren().add(tensionGenerator);
-			System.out.println("coucou");
 
 			ImageView linkArea1 = new ImageView();
 			Image square1 = new Image("file:image/LinkArea.png");
@@ -63,32 +65,49 @@ public class GraphicalFunctions
 			linkArea1.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
-			ImageView linkArea2 = new ImageView();
+			System.out.println(linkArea1.getFitHeight());
+
+			ImageView linkArea3 = new ImageView();
 			Image square2 = new Image("file:image/LinkArea.png");
-			linkArea2.setImage(square2);
-			linkArea2.setFitHeight(10);
-			linkArea2.setFitWidth(10);
-			linkArea2.setX(100 + image.getWidth());
-			linkArea2.setY(100 + image.getHeight()/2);
-			anchorPane2.getChildren().add(linkArea2);
+			linkArea3.setImage(square2);
+			linkArea3.setFitHeight(10);
+			linkArea3.setFitWidth(10);
+			linkArea3.setX(100 + image.getWidth());
+			linkArea3.setY(100 + image.getHeight()/2);
+			anchorPane2.getChildren().add(linkArea3);
 
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
+			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h');
 
 
 			//Permet de creer un lien
-			tensionGenerator.setOnMouseClicked(event2 ->
+			linkArea1.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,tensionGenerator,orientationImage,'h', anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentVoltageGenerator,1,linkArea ,anchorPane2);
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
 					System.out.println("On a cliqué sur le premier objet");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					orientationImage = 'h'; // h comme Horizontale pour savoir ou sont les fils du composant
-					premiereImageDuLien = tensionGenerator; // On enregistre l'image
+					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+					linkArea = 1;
+				}
+			});
+			linkArea3.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					AddLink.addLink(premiereImageDuLien,componentVoltageGenerator,3,linkArea ,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+					linkArea = 3;
 				}
 			});
 
@@ -134,9 +153,9 @@ public class GraphicalFunctions
 					linkArea1.relocate(tensionGenerator.getX() + image.getWidth(),tensionGenerator.getY()+ image.getHeight()/2);
 					linkArea1.setX(tensionGenerator.getX() + image.getWidth());
 					linkArea1.setY(tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea2.relocate(tensionGenerator.getX(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea2.setX(tensionGenerator.getX());
-					linkArea2.setY(tensionGenerator.getY()+ image.getHeight()/2);
+					linkArea3.relocate(tensionGenerator.getX(),tensionGenerator.getY()+ image.getHeight()/2);
+					linkArea3.setX(tensionGenerator.getX());
+					linkArea3.setY(tensionGenerator.getY()+ image.getHeight()/2);
 					//System.out.println(tensionGenerator.getX());
 					//System.out.println(tensionGenerator.getY());
 					//AddLink.addLink(,anchorPane2);
@@ -175,45 +194,61 @@ public class GraphicalFunctions
 			courantGenerator.setY(100);
 			anchorPane2.getChildren().add(courantGenerator);
 
-			ImageView linkArea1 = new ImageView();
-			Image square1 = new Image("file:image/LinkArea.png");
-			linkArea1.setImage(square1);
-			linkArea1.setFitHeight(10);
-			linkArea1.setFitWidth(10);
-			linkArea1.setX(200 + image.getWidth()/2);
-			linkArea1.setY(100);
-			anchorPane2.getChildren().add(linkArea1);
-
 			ImageView linkArea2 = new ImageView();
-			Image square2 = new Image("file:image/LinkArea.png");
-			linkArea2.setImage(square2);
+			Image square1 = new Image("file:image/LinkArea.png");
+			linkArea2.setImage(square1);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			System.out.println(image.getHeight());
-			System.out.println(image.getWidth());
 			linkArea2.setX(200 + image.getWidth()/2);
-			linkArea2.setY(100 + image.getHeight());
+			linkArea2.setY(100);
 			anchorPane2.getChildren().add(linkArea2);
+
+			ImageView linkArea4 = new ImageView();
+			Image square2 = new Image("file:image/LinkArea.png");
+			linkArea4.setImage(square2);
+			linkArea4.setFitHeight(10);
+			linkArea4.setFitWidth(10);
+			linkArea4.setX(200 + image.getWidth()/2);
+			linkArea4.setY(100 + image.getHeight());
+			anchorPane2.getChildren().add(linkArea4);
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v');
+
 
 			//Permet de creer un lien
-			courantGenerator.setOnMouseClicked(event2 ->
+			linkArea2.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,courantGenerator,orientationImage,'v', anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentCourantGenerator,2,linkArea, anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
 					System.out.println("On a cliqué sur le premier objet");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					orientationImage = 'v'; // h comme Horizontale pour savoir ou sont les fils du composant
-					premiereImageDuLien = courantGenerator; // On enregistre l'image
+					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+					linkArea = 2;
 				}
 			});
+			linkArea4.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					AddLink.addLink(premiereImageDuLien,componentCourantGenerator,4,linkArea, anchorPane2);
+
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+					linkArea = 4;
+				}
+			});
+
 			/*
             Permet de deplacer le generateur de courant d'un point a un autre
 			 */
@@ -255,12 +290,12 @@ public class GraphicalFunctions
 					courantGenerator.setX(x - imagx / 2);
 					courantGenerator.setY(y - imagy / 2);
 					System.out.println(courantGenerator.getId());
-					linkArea1.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY());
-					linkArea1.setX(courantGenerator.getX() + image.getWidth()/2);
-					linkArea1.setY(courantGenerator.getY());
-					linkArea2.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY() + image.getHeight());
+					linkArea2.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY());
 					linkArea2.setX(courantGenerator.getX() + image.getWidth()/2);
-					linkArea2.setY(courantGenerator.getY() + image.getHeight());
+					linkArea2.setY(courantGenerator.getY());
+					linkArea4.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY() + image.getHeight());
+					linkArea4.setX(courantGenerator.getX() + image.getWidth()/2);
+					linkArea4.setY(courantGenerator.getY() + image.getHeight());
 				}
 			});
 		});
@@ -333,22 +368,69 @@ public class GraphicalFunctions
 
 			node.setLayoutX(idNode);
 			idNode += 1;
+			Component componentNode = new Component(node,linkArea4,linkArea2,linkArea3,linkArea1,'t');
+
 
 
 			//Permet de creer un lien
-			node.setOnMouseClicked(event2 ->
+			linkArea1.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,node,orientationImage,'t', anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentNode,1,linkArea,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
 					System.out.println("On a cliqué sur le premier objet");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					orientationImage = 't'; // h comme Horizontale pour savoir ou sont les fils du composant
-					premiereImageDuLien = node; // On enregistre l'image
+					linkArea = 1;
+					premiereImageDuLien = componentNode; // On enregistre l'image
+				}
+			});
+			linkArea2.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					AddLink.addLink(premiereImageDuLien,componentNode,2,linkArea,anchorPane2);
+
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					linkArea = 2;
+					premiereImageDuLien = componentNode; // On enregistre l'image
+				}
+			});
+			linkArea3.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					AddLink.addLink(premiereImageDuLien,componentNode,3,linkArea,anchorPane2);
+
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					linkArea = 3;
+					premiereImageDuLien = componentNode; // On enregistre l'image
+				}
+			});
+			linkArea4.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					AddLink.addLink(premiereImageDuLien,componentNode,4,linkArea,anchorPane2);
+
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					linkArea = 4;
+					premiereImageDuLien = componentNode; // On enregistre l'image
 				}
 			});
 

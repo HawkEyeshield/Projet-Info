@@ -40,65 +40,108 @@ public class AddLink {
      * Permet de creer un lien entre deux images
      * @param premiereImageDuLien
      * @param secondeImageDuLien
-     * @param orientationImage1
-     * @param orientationImage2
      * @param anchorPane2
      */
-    public static void addLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2, AnchorPane anchorPane2) {
-        double tailleXImage1 = premiereImageDuLien.getImage().getHeight();
-        double tailleXImage2 = secondeImageDuLien.getImage().getHeight();
-        double tailleYImage1 = premiereImageDuLien.getImage().getWidth();
-        double tailleYImage2 = secondeImageDuLien.getImage().getWidth();
-        double positionXImage1 = premiereImageDuLien.getX();
-        double positionXImage2 = secondeImageDuLien.getX();
-        double positionYImage1 = premiereImageDuLien.getY();
-        double positionYImage2 = secondeImageDuLien.getY();
-        double centreXImage1 = positionXImage1 + tailleXImage1/2 ;
-        double centreYImage1 = positionYImage1 + tailleYImage1/2;
-        double centreXImage2 = positionXImage2 + tailleXImage2/2;
-        double centreYImage2 = positionYImage2 + tailleYImage2/2;
-        if( orientationImage1 == 'h' && orientationImage2 == 'h'){
-            Line line1 = new Line(centreXImage1,centreYImage1,( centreXImage1 + centreXImage2 )/2,centreYImage1);
+    public static void addLink(Component premiereImageDuLien,Component secondeImageDuLien, int linkAreaUsed1, int linkAreaUsed2, AnchorPane anchorPane2) {
+        /*double tailleXImage1 = premiereImageDuLien.object.getImage().getHeight();
+        double tailleXImage2 = secondeImageDuLien.object.getImage().getHeight();
+        double tailleYImage1 = premiereImageDuLien.object.getImage().getWidth();
+        double tailleYImage2 = secondeImageDuLien.object.getImage().getWidth();
+        double positionXImage1 = premiereImageDuLien.object.getX();
+        double positionXImage2 = secondeImageDuLien.object.getX();
+        double positionYImage1 = premiereImageDuLien.object.getY();
+        double positionYImage2 = secondeImageDuLien.object.getY();
+        double centreXLinkArea1 = positionXImage1 + tailleXImage1/2 ;
+        double centreYLinkArea1 = positionYImage1 + tailleYImage1/2;
+        double centreXLinkArea2 = positionXImage2 + tailleXImage2/2;
+        double centreYLinkArea2 = positionYImage2 + tailleYImage2/2;*/
+        double centreXLinkArea1 = 0;
+        double centreYLinkArea1 = 0;
+        double centreXLinkArea2 = 0;
+        double centreYLinkArea2 = 0;
+        if (linkAreaUsed1 == 1){
+            centreXLinkArea1 = premiereImageDuLien.square1.getX() + 5;
+            centreYLinkArea1 = premiereImageDuLien.square1.getY() + 5;
+        }
+        else if (linkAreaUsed1 == 2){
+            centreXLinkArea1 = premiereImageDuLien.square2.getX() + 5;
+            centreYLinkArea1 = premiereImageDuLien.square2.getY() + 5;
+        }
+        else if (linkAreaUsed1 == 3){
+            centreXLinkArea1 = premiereImageDuLien.square3.getX() + 5;
+            centreYLinkArea1 = premiereImageDuLien.square3.getY() + 5;
+        }
+        else if (linkAreaUsed1 == 4){
+            centreXLinkArea1 = premiereImageDuLien.square4.getX() + 5;
+            centreYLinkArea1 = premiereImageDuLien.square4.getY() + 5;
+        }
+        if (linkAreaUsed2 == 1){
+            centreXLinkArea2 = secondeImageDuLien.square1.getX() + 5;
+            centreYLinkArea2 = secondeImageDuLien.square1.getY() + 5;
+        }
+        else if (linkAreaUsed2 == 2){
+            centreXLinkArea2 = secondeImageDuLien.square2.getX() + 5;
+            centreYLinkArea2 = secondeImageDuLien.square2.getY() + 5;
+        }
+        else if (linkAreaUsed2 == 3){
+            centreXLinkArea2 = secondeImageDuLien.square3.getX() + 5;
+            centreYLinkArea2 = secondeImageDuLien.square3.getY() + 5;
+        }
+        else if (linkAreaUsed2 == 4){
+            centreXLinkArea2 = secondeImageDuLien.square4.getX() + 5;
+            centreYLinkArea2 = secondeImageDuLien.square4.getY() + 5;
+        }
+
+
+
+
+        if( premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'h'){
+            System.out.println("les deux h ca devrait faire quelques chose");
+            System.out.println(centreXLinkArea1);
+            System.out.println(centreXLinkArea2);
+            System.out.println(centreYLinkArea1);
+            System.out.println(centreYLinkArea2);
+            Line line1 = new Line(centreXLinkArea1,centreYLinkArea1,( centreXLinkArea1 + centreXLinkArea2 )/2,centreYLinkArea1);
             anchorPane2.getChildren().add(line1);
 
-            Line line2 = new Line(centreXImage2,centreYImage2,(centreXImage1 + centreXImage2)/2,centreYImage2);
+            Line line2 = new Line(centreXLinkArea2,centreYLinkArea2,(centreXLinkArea1 + centreXLinkArea2)/2,centreYLinkArea2);
             anchorPane2.getChildren().add(line2);
 
-            Line line3 = new Line((centreXImage1 + centreXImage2)/2,centreYImage1,(centreXImage1 + centreXImage2)/2, centreYImage2);
+            Line line3 = new Line((centreXLinkArea1 + centreXLinkArea2)/2,centreYLinkArea1,(centreXLinkArea1 + centreXLinkArea2)/2, centreYLinkArea2);
             anchorPane2.getChildren().add(line3);
         }
-        if( orientationImage1 == 'v' && orientationImage2 == 'v'){
-            Line line1 = new Line(centreXImage1,centreYImage1,centreXImage1,(centreYImage1 + centreYImage2)/2);
+        if( premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 'v'){
+            Line line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,(centreYLinkArea1 + centreYLinkArea1)/2);
             anchorPane2.getChildren().add(line1);
 
-            Line line2 = new Line(centreXImage2,centreYImage2,centreXImage2,(centreYImage1 + centreYImage2)/2);
+            Line line2 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,(centreYLinkArea1 + centreYLinkArea2)/2);
             anchorPane2.getChildren().add(line2);
 
-            Line line3 = new Line(centreXImage1,(centreYImage1 + centreYImage2)/2,centreXImage2,(centreYImage1 + centreYImage2)/2);
+            Line line3 = new Line(centreXLinkArea1,(centreYLinkArea1 + centreYLinkArea2)/2,centreXLinkArea2,(centreYLinkArea1 + centreYLinkArea2)/2);
             anchorPane2.getChildren().add(line3);
         }
-        if((orientationImage1 == 'h' && orientationImage2 == 'v') || (orientationImage1 == 't' && orientationImage2 == 'v') || (orientationImage1 == 'h' && orientationImage2 == 't')){
-            Line line1 = new Line(centreXImage1,centreYImage1,centreXImage2,centreYImage1);
+        if((premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'v') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'v') || (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 't')){
+            Line line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea2,centreYLinkArea1);
             anchorPane2.getChildren().add(line1);
 
-            Line line2 = new Line(centreXImage2,centreYImage2,centreXImage2,centreYImage1);
+            Line line2 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,centreYLinkArea1);
             anchorPane2.getChildren().add(line2);
         }
-        if((orientationImage1 == 'v' && orientationImage2 == 'h') || (orientationImage1 == 't' && orientationImage2 == 'h') || (orientationImage1 == 'v' && orientationImage2 == 't')){
-            Line line1 = new Line(centreXImage2,centreYImage2,centreXImage1,centreYImage2);
+        if((premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 't')){
+            Line line1 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea1,centreYLinkArea2);
             anchorPane2.getChildren().add(line1);
 
-            Line line2 = new Line(centreXImage1,centreYImage1,centreXImage1,centreYImage2);
+            Line line2 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,centreYLinkArea2);
             anchorPane2.getChildren().add(line2);
-            //System.out.println(centreXImage1);
-            //System.out.println(centreYImage1);
-            System.out.println(centreXImage2);
-            //System.out.println(centreYImage2);
-            System.out.println(tailleXImage2);
+            //System.out.println(centreXLinkArea1);
+            //System.out.println(centreYLinkArea1);
+            System.out.println(centreXLinkArea2);
+            //System.out.println(centreYLinkArea2);
+            //System.out.println(centreYLinkArea2);
             //System.out.println(tailleYImage2);
         }
-        if(orientationImage1 == 't' && orientationImage2 == 't'){
-            Line line1 = new Line(centreXImage1,centreYImage1,centreXImage2,centreYImage2);
+        if(premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 't'){
+            Line line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea2,centreYLinkArea2);
             anchorPane2.getChildren().add(line1);
         }
         GraphicalFunctions.nombreDeLien += 1;
