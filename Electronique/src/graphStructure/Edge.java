@@ -17,7 +17,7 @@ public class Edge
 	/* Déclaration des attributs */
 	/* ========================= */
 	
-    /**sommet de depart et d'arrivée*/
+    /**sommet de depart*/
     private Vertex vDep;
     
     /** sommet d'arrivée*/

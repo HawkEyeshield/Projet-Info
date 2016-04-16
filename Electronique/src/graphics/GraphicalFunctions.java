@@ -174,7 +174,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addCourantGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
+	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
 	{
 		ImageView firstCourantGenerator = new ImageView();
 		Image image2 = new Image("file:image/Generateur de courant v.png");

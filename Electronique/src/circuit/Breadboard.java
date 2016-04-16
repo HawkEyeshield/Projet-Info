@@ -3,6 +3,10 @@ package circuit;
 import java.util.ArrayList;
 
 import components.AbstractDipole;
+import components.Admittance;
+import components.CurrentGenerator;
+import components.VoltageGenerator;
+import resolution.Extracteur;
 import resolution.Solveur;
 
 /**
@@ -19,17 +23,17 @@ public class Breadboard
 	/** liste des composants du circuit */
 	private ArrayList<AbstractDipole> components;
 	
-	/** solveur du circuit*/
-	private Solveur solveur;
+	/** extracteur résolvant le circuit */
+	private Extracteur extractor;
 
 /* =========================== */
 /* Déclaration du constructeur */
 /* =========================== */
 	
-	public Breadboard(ArrayList<AbstractDipole> components)
+	public Breadboard(ArrayList<AbstractDipole> components, Extracteur e)
 	{
 		this.components=components;
-		// TODO : this.solveur=new Solveur(volt, curr, adm, cg, eq);
+		this.extractor=e;
 	}
 
 /* ======================== */
@@ -39,12 +43,43 @@ public class Breadboard
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
 	{
-		// TODO
+		extractor.extraction(false);
+		extractor.printVariables();
+	}
+	
+	/** Méthode ajoutant des composants
+	 * @param component : le composant à ajouter */
+	public void addComponent(AbstractDipole component)
+	{
+		if(component instanceof CurrentGenerator)
+		{
+			components.add(new CurrentGenerator(component.getName(), component.getFirstLink(),component.getSecondLink()));
+		}
+		else if(component instanceof VoltageGenerator)
+		{
+			components.add(new VoltageGenerator(component.getName(), component.getFirstLink(), component.getSecondLink()));
+		}
+		else if(component instanceof Admittance)
+		{
+			components.add(new Admittance(component.getName(), component.getFirstLink(), component.getSecondLink()));
+		}
+	}
+	
+	/** Méthode ajoutant des liens entre deux composants
+	 * @param a : premier composant
+	 * @param b : second composant */
+	public void addLink(AbstractDipole a, AbstractDipole b)
+	{
+		b.setFirstLink(a.getSecondLink());
 	}
 	
 	public String toString()
 	{
-		// TODO
-		return "";
+		String string = "Connaissance actuelle du circuit : \n";
+		for(AbstractDipole a : components)
+		{
+			string+=a.toString() + "\n";
+		}
+		return string;
 	}
 }

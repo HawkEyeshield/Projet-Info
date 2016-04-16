@@ -1,6 +1,7 @@
 package components;
 
 import exceptions.AdmittanceError;
+import graphStructure.Vertex;
 
 /**
  * Classe pour les résistances
@@ -26,7 +27,7 @@ public class Admittance extends AbstractDipole
 	 * @param firstLink : entier désignant les liaisons communes avec le premier lien
 	 * @param secondLink : entier désigant les liaisons communes avec le second lien
 	 */
-	public Admittance(String name, int firstLink, int secondLink)
+	public Admittance(String name, Vertex firstLink, Vertex secondLink)
 	{
 		super(name, Type.ADMITTANCE, firstLink, secondLink);
 		this.determination = new boolean[]{false,false,false};
@@ -36,11 +37,11 @@ public class Admittance extends AbstractDipole
 	/**
 	 * Constructeur de resistances avec choix de sa valeur
 	 * @param name : nom du la resistance
-	 * @param firstLink : entier désignant les liaisons communes avec le premier lien
-	 * @param secondLink : entier désigant les liaisons communes avec le second lien
+	 * @param firstLink : sommet désignant les liaisons communes avec le premier lien
+	 * @param secondLink : sommet désigant les liaisons communes avec le second lien
 	 * @param v : valeur de l'admittance
 	 */
-	public Admittance(String name, int firstLink, int secondLink, double v)
+	public Admittance(String name, Vertex firstLink, Vertex secondLink, double v)
 	{
 		super(name, Type.ADMITTANCE, firstLink, secondLink);
 		this.determination = new boolean[]{false,false,true};
