@@ -86,7 +86,7 @@ public class GraphicalFunctions
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentVoltageGenerator,1,linkArea ,anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,1,-1,anchorPane2);
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
@@ -100,7 +100,7 @@ public class GraphicalFunctions
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentVoltageGenerator,3,linkArea ,anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,3,-1,anchorPane2);
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
@@ -161,6 +161,9 @@ public class GraphicalFunctions
 					//AddLink.addLink(,anchorPane2);
 					//AddLink.deleteLink(premiereImageDuLien,a.get,orientationImage1,orientationImage2)
 					//System.out.println(tensionGenerator.getRotate());
+
+
+					AddLink.actualiseViewOfLink(componentVoltageGenerator,anchorPane2);
 				}
 			});
 
@@ -222,7 +225,7 @@ public class GraphicalFunctions
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentCourantGenerator,2,linkArea, anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentCourantGenerator,linkArea,2,-1,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
@@ -237,7 +240,7 @@ public class GraphicalFunctions
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
 					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentCourantGenerator,4,linkArea, anchorPane2);
+					AddLink.addLink(premiereImageDuLien,componentCourantGenerator,linkArea,4,-1,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
@@ -289,13 +292,14 @@ public class GraphicalFunctions
 					courantGenerator.relocate(x - imagx / 2, y - imagy / 2);
 					courantGenerator.setX(x - imagx / 2);
 					courantGenerator.setY(y - imagy / 2);
-					System.out.println(courantGenerator.getId());
 					linkArea2.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY());
 					linkArea2.setX(courantGenerator.getX() + image.getWidth()/2);
 					linkArea2.setY(courantGenerator.getY());
 					linkArea4.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY() + image.getHeight());
 					linkArea4.setX(courantGenerator.getX() + image.getWidth()/2);
 					linkArea4.setY(courantGenerator.getY() + image.getHeight());
+					AddLink.actualiseViewOfLink(componentCourantGenerator,anchorPane2);
+
 				}
 			});
 		});
@@ -330,13 +334,22 @@ public class GraphicalFunctions
 			node.setY(100);
 			anchorPane2.getChildren().add(node);
 
+			ImageView linkArea3 = new ImageView();
+			Image square3 = new Image("file:image/LinkArea.png");
+			linkArea3.setImage(square3);
+			linkArea3.setFitHeight(10);
+			linkArea3.setFitWidth(10);
+			linkArea3.setX(300 + image.getWidth());
+			linkArea3.setY(100  +image.getHeight()/2);
+			anchorPane2.getChildren().add(linkArea3);
+
 			ImageView linkArea1 = new ImageView();
 			Image square1 = new Image("file:image/LinkArea.png");
 			linkArea1.setImage(square1);
 			linkArea1.setFitHeight(10);
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(300 + image.getWidth());
-			linkArea1.setY(100  +image.getHeight()/2);
+			linkArea1.setX(300);
+			linkArea1.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
 			ImageView linkArea2 = new ImageView();
@@ -344,18 +357,9 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(300);
-			linkArea2.setY(100 + image.getHeight()/2);
+			linkArea2.setX(300 + image.getWidth()/2);
+			linkArea2.setY(100);
 			anchorPane2.getChildren().add(linkArea2);
-
-			ImageView linkArea3 = new ImageView();
-			Image square3 = new Image("file:image/LinkArea.png");
-			linkArea3.setImage(square3);
-			linkArea3.setFitHeight(10);
-			linkArea3.setFitWidth(10);
-			linkArea3.setX(300 + image.getWidth()/2);
-			linkArea3.setY(100);
-			anchorPane2.getChildren().add(linkArea3);
 
 			ImageView linkArea4 = new ImageView();
 			Image square4 = new Image("file:image/LinkArea.png");
@@ -368,7 +372,15 @@ public class GraphicalFunctions
 
 			node.setLayoutX(idNode);
 			idNode += 1;
-			Component componentNode = new Component(node,linkArea4,linkArea2,linkArea3,linkArea1,'t');
+			System.out.println(linkArea1.getX());
+			System.out.println(linkArea1.getY());
+			System.out.println(linkArea2.getX());
+			System.out.println(linkArea2.getY());
+			System.out.println(linkArea3.getX());
+			System.out.println(linkArea3.getY());
+			System.out.println(linkArea4.getX());
+			System.out.println(linkArea4.getY());
+			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t');
 
 
 
@@ -376,13 +388,13 @@ public class GraphicalFunctions
 			linkArea1.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentNode,1,linkArea,anchorPane2);
+					System.out.println("On a cliqué sur le second objet qui est 1");
+					AddLink.addLink(premiereImageDuLien,componentNode,linkArea,1,-1,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
-					System.out.println("On a cliqué sur le premier objet");
+					System.out.println("On a cliqué sur le premier objet qui est 1");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 1;
 					premiereImageDuLien = componentNode; // On enregistre l'image
@@ -391,13 +403,13 @@ public class GraphicalFunctions
 			linkArea2.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentNode,2,linkArea,anchorPane2);
+					System.out.println("On a cliqué sur le second objet qui est 2");
+					AddLink.addLink(premiereImageDuLien,componentNode,linkArea,2,-1,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
-					System.out.println("On a cliqué sur le premier objet");
+					System.out.println("On a cliqué sur le premier objet qui est 2");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 2;
 					premiereImageDuLien = componentNode; // On enregistre l'image
@@ -406,13 +418,13 @@ public class GraphicalFunctions
 			linkArea3.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentNode,3,linkArea,anchorPane2);
+					System.out.println("On a cliqué sur le second objet qui est 3");
+					AddLink.addLink(premiereImageDuLien,componentNode,linkArea,3,-1,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
-					System.out.println("On a cliqué sur le premier objet");
+					System.out.println("On a cliqué sur le premier objet qui est 3");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 3;
 					premiereImageDuLien = componentNode; // On enregistre l'image
@@ -421,13 +433,13 @@ public class GraphicalFunctions
 			linkArea4.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					System.out.println("On a cliqué sur le second objet");
-					AddLink.addLink(premiereImageDuLien,componentNode,4,linkArea,anchorPane2);
+					System.out.println("On a cliqué sur le second objet qui est 4");
+					AddLink.addLink(premiereImageDuLien,componentNode,linkArea,4,-1,anchorPane2);
 
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
-					System.out.println("On a cliqué sur le premier objet");
+					System.out.println("On a cliqué sur le premier objet qui est 4	");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 4;
 					premiereImageDuLien = componentNode; // On enregistre l'image
@@ -486,6 +498,9 @@ public class GraphicalFunctions
 					linkArea4.relocate(node.getX() + image.getWidth()/2,node.getY() + image.getHeight());
 					linkArea4.setX(node.getX() + image.getWidth()/2);
 					linkArea4.setY(node.getY() + image.getHeight());
+
+					AddLink.actualiseViewOfLink(componentNode,anchorPane2);
+
 				}
 			});
 		});
