@@ -5,6 +5,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 /** Interface donnant les différentes fonctions utilisées dans l'interface
  * @author Tanguy 
@@ -65,11 +66,9 @@ public class GraphicalFunctions
 			linkArea1.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
-			System.out.println(linkArea1.getFitHeight());
-
 			ImageView linkArea3 = new ImageView();
-			Image square2 = new Image("file:image/LinkArea.png");
-			linkArea3.setImage(square2);
+			Image square3 = new Image("file:image/LinkArea.png");
+			linkArea3.setImage(square3);
 			linkArea3.setFitHeight(10);
 			linkArea3.setFitWidth(10);
 			linkArea3.setX(100 + image.getWidth());
@@ -78,8 +77,19 @@ public class GraphicalFunctions
 
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
-			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h');
+			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h',"Generateur de tension " + idVotalgeGenerator, 10);
 
+			//Permet de voir le nom et la valeur
+
+            tensionGenerator.setOnMouseEntered(event3 -> {
+                Text informations = new Text("Nom : " + componentVoltageGenerator.name);
+                informations.setLayoutX(tensionGenerator.getX());
+                informations.setLayoutY(tensionGenerator.getY() + 65);
+                anchorPane2.getChildren().add(informations);
+                tensionGenerator.setOnMouseExited(event4 ->{
+                    anchorPane2.getChildren().remove(informations);
+                });
+            });
 
 			//Permet de creer un lien
 			linkArea1.setOnMouseClicked(event2 ->
@@ -150,17 +160,12 @@ public class GraphicalFunctions
 					tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
 					tensionGenerator.setX(x - imagx / 2);
 					tensionGenerator.setY(y - imagy / 2);
-					linkArea1.relocate(tensionGenerator.getX() + image.getWidth(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea1.setX(tensionGenerator.getX() + image.getWidth());
-					linkArea1.setY(tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea3.relocate(tensionGenerator.getX(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea3.setX(tensionGenerator.getX());
+					linkArea3.relocate(tensionGenerator.getX() + image.getWidth(),tensionGenerator.getY()+ image.getHeight()/2);
+					linkArea3.setX(tensionGenerator.getX() + image.getWidth());
 					linkArea3.setY(tensionGenerator.getY()+ image.getHeight()/2);
-					//System.out.println(tensionGenerator.getX());
-					//System.out.println(tensionGenerator.getY());
-					//AddLink.addLink(,anchorPane2);
-					//AddLink.deleteLink(premiereImageDuLien,a.get,orientationImage1,orientationImage2)
-					//System.out.println(tensionGenerator.getRotate());
+					linkArea1.relocate(tensionGenerator.getX(),tensionGenerator.getY()+ image.getHeight()/2);
+					linkArea1.setX(tensionGenerator.getX());
+					linkArea1.setY(tensionGenerator.getY()+ image.getHeight()/2);
 
 
 					AddLink.actualiseViewOfLink(componentVoltageGenerator,anchorPane2);
@@ -198,8 +203,8 @@ public class GraphicalFunctions
 			anchorPane2.getChildren().add(courantGenerator);
 
 			ImageView linkArea2 = new ImageView();
-			Image square1 = new Image("file:image/LinkArea.png");
-			linkArea2.setImage(square1);
+			Image square2 = new Image("file:image/LinkArea.png");
+			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
 			linkArea2.setX(200 + image.getWidth()/2);
@@ -207,8 +212,8 @@ public class GraphicalFunctions
 			anchorPane2.getChildren().add(linkArea2);
 
 			ImageView linkArea4 = new ImageView();
-			Image square2 = new Image("file:image/LinkArea.png");
-			linkArea4.setImage(square2);
+			Image square4 = new Image("file:image/LinkArea.png");
+			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
 			linkArea4.setX(200 + image.getWidth()/2);
@@ -217,8 +222,18 @@ public class GraphicalFunctions
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v');
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10);
 
+
+            courantGenerator.setOnMouseEntered(event3 -> {
+                Text informations = new Text("Nom : " + componentCourantGenerator.name);
+                informations.setLayoutX(courantGenerator.getX());
+                informations.setLayoutY(courantGenerator.getY() + 120);
+                anchorPane2.getChildren().add(informations);
+                courantGenerator.setOnMouseExited(event4 ->{
+                    anchorPane2.getChildren().remove(informations);
+                });
+            });
 
 			//Permet de creer un lien
 			linkArea2.setOnMouseClicked(event2 ->
@@ -298,6 +313,8 @@ public class GraphicalFunctions
 					linkArea4.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY() + image.getHeight());
 					linkArea4.setX(courantGenerator.getX() + image.getWidth()/2);
 					linkArea4.setY(courantGenerator.getY() + image.getHeight());
+
+
 					AddLink.actualiseViewOfLink(componentCourantGenerator,anchorPane2);
 
 				}
@@ -372,16 +389,17 @@ public class GraphicalFunctions
 
 			node.setLayoutX(idNode);
 			idNode += 1;
-			System.out.println(linkArea1.getX());
-			System.out.println(linkArea1.getY());
-			System.out.println(linkArea2.getX());
-			System.out.println(linkArea2.getY());
-			System.out.println(linkArea3.getX());
-			System.out.println(linkArea3.getY());
-			System.out.println(linkArea4.getX());
-			System.out.println(linkArea4.getY());
-			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t');
+			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0);
 
+			node.setOnMouseEntered(event3 -> {
+                Text informations = new Text("Nom : " + componentNode.name);
+                informations.setLayoutX(node.getX() + 40);
+                informations.setLayoutY(node.getY() + 50);
+                anchorPane2.getChildren().add(informations);
+                node.setOnMouseExited(event4 ->{
+                    anchorPane2.getChildren().remove(informations);
+                });
+            });
 
 
 			//Permet de creer un lien
@@ -486,15 +504,15 @@ public class GraphicalFunctions
 					node.setX(x - imagx / 2);
 					node.setY(y - imagy / 2);
 
-					linkArea2.relocate(node.getX(),node.getY() + image.getHeight()/2);
-					linkArea2.setX(node.getX());
-					linkArea2.setY(node.getY() + image.getHeight()/2);
-					linkArea1.relocate(node.getX() + image.getWidth(),node.getY() + image.getHeight()/2);
-					linkArea1.setX(node.getX() + image.getWidth());
+					linkArea1.relocate(node.getX(),node.getY() + image.getHeight()/2);
+					linkArea1.setX(node.getX());
 					linkArea1.setY(node.getY() + image.getHeight()/2);
-					linkArea3.relocate(node.getX() + image.getWidth()/2,node.getY());
-					linkArea3.setX(node.getX() + image.getWidth()/2);
-					linkArea3.setY(node.getY());
+					linkArea3.relocate(node.getX() + image.getWidth(),node.getY() + image.getHeight()/2);
+					linkArea3.setX(node.getX() + image.getWidth());
+					linkArea3.setY(node.getY() + image.getHeight()/2);
+					linkArea2.relocate(node.getX() + image.getWidth()/2,node.getY());
+					linkArea2.setX(node.getX() + image.getWidth()/2);
+					linkArea2.setY(node.getY());
 					linkArea4.relocate(node.getX() + image.getWidth()/2,node.getY() + image.getHeight());
 					linkArea4.setX(node.getX() + image.getWidth()/2);
 					linkArea4.setY(node.getY() + image.getHeight());

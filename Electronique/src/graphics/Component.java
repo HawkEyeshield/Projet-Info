@@ -12,12 +12,16 @@ public class Component {
     ImageView square3 = null;
     ImageView square4 = null;
     char orientation;
-    public Component(ImageView object,ImageView square1, ImageView square2,ImageView square3, ImageView square4, char orientation){
+    String name;
+    Double value;
+    public Component(ImageView object,ImageView square1, ImageView square2,ImageView square3, ImageView square4, char orientation,String name,double value){
         this.object = object;
         this.square1 = square1;
         this.square2 = square2;
         this.square3 = square3;
         this.square4 = square4;
         this.orientation = orientation;
+        this.name = name;
+        this.value = value;
     }
 }
