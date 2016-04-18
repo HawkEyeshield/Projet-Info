@@ -1,8 +1,8 @@
 package graphics;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 
 /**
@@ -33,10 +33,13 @@ public class AddLink {
     }
 
     /**
-     * Permet de creer un lien entre deux images
-     * @param premiereImageDuLien
-     * @param secondeImageDuLien
-     * @param anchorPane2
+     * Permet d'ajouter ou d'actualiser un lien aussi bien visuellement que dans la breadboard
+     * @param premiereImageDuLien Premier composant a relier
+     * @param secondeImageDuLien Second composant a relier
+     * @param linkAreaUsed1 Premiere zone a relier(1 pour a gauche, 2 pour en haut, 3 a droite et 4 en bas)
+     * @param linkAreaUsed2 Seconde zone a relier
+     * @param k Permet de savoir si il faut l'ajouter ou juste actualiser
+     * @param anchorPane2 Zone de travail
      */
     public static void addLink(Component premiereImageDuLien,Component secondeImageDuLien, int linkAreaUsed1, int linkAreaUsed2, int k, AnchorPane anchorPane2) {
 
@@ -83,63 +86,71 @@ public class AddLink {
 
         if((linkAreaUsed1 == 3 && linkAreaUsed2 == 1) || (linkAreaUsed1 == 1 && linkAreaUsed2 == 3)){
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1);
-            anchorPane2.getChildren().add(line1);
 
             line2 = new Line(centreXLinkArea2, centreYLinkArea2, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
-            anchorPane2.getChildren().add(line2);
 
             line3 = new Line((centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
-            anchorPane2.getChildren().add(line3);
         }
 
          else if (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'h') {
 
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1);
-            anchorPane2.getChildren().add(line1);
 
             line2 = new Line(centreXLinkArea2, centreYLinkArea2, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
-            anchorPane2.getChildren().add(line2);
 
             line3 = new Line((centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
-            anchorPane2.getChildren().add(line3);
         }
 
         else if (premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 'v') {
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, (centreYLinkArea1 + centreYLinkArea2) / 2);
-            anchorPane2.getChildren().add(line1);
 
             line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, (centreYLinkArea1 + centreYLinkArea2) / 2);
-            anchorPane2.getChildren().add(line2);
 
             line3 = new Line(centreXLinkArea1, (centreYLinkArea1 + centreYLinkArea2) / 2, centreXLinkArea2, (centreYLinkArea1 + centreYLinkArea2) / 2);
-            anchorPane2.getChildren().add(line3);
         }
 
         else if ((premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'v') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'v') || (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 't')) {
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
-            anchorPane2.getChildren().add(line1);
             line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
-            anchorPane2.getChildren().add(line2);
         }
         else if ((premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 't')) {
             line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
-            anchorPane2.getChildren().add(line1);
 
             line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
-            anchorPane2.getChildren().add(line2);
         }
         else if (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 't') {
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea2);
-            anchorPane2.getChildren().add(line1);
         }
 
-        if (k == -1){ //Si on ajoute un nouveau lien k = -1
-            GraphicalFunctions.boardOfLink[GraphicalFunctions.nombreDeLien] = new link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3);
-            System.out.println("on devrait rajouter un truc a la case "+ GraphicalFunctions.nombreDeLien);
-            GraphicalFunctions.nombreDeLien += 1;
-            //TODO ici mettre la fonction qui ajoute le lien dans la breadboard
+        if (k == -1) { //Si on ajoute un nouveau lien k = -1
+            boolean a = true; //Permet de véfifier si il n'existe pas déjà un lien qui part de cet endroit la.
+            for (int i = 0; i < GraphicalFunctions.nombreDeLien; i++) {
+                if ((premiereImageDuLien == GraphicalFunctions.boardOfLink[i].image1 && linkAreaUsed1 == GraphicalFunctions.boardOfLink[i].linkAreaUsed1) || (premiereImageDuLien == GraphicalFunctions.boardOfLink[i].image2 && linkAreaUsed1 == GraphicalFunctions.boardOfLink[i].linkAreaUsed2) || (secondeImageDuLien == GraphicalFunctions.boardOfLink[i].image1 && linkAreaUsed2 == GraphicalFunctions.boardOfLink[i].linkAreaUsed1) || (secondeImageDuLien == GraphicalFunctions.boardOfLink[i].image2 && linkAreaUsed2 == GraphicalFunctions.boardOfLink[i].linkAreaUsed2)) {
+                    a = false;//On indique qu'il ne faut pas afficher le lien, ni l'enregistrer et on affiche un message d'erreur
+                    Text informations = new Text("Mettre un noeud pour relier ces deux éléments");
+                    informations.setLayoutX(5);
+                    informations.setLayoutY(75);
+                    anchorPane2.getChildren().add(informations);
+                    informations.setOnMouseClicked(event ->{ //Permet d'enlever le message d'erreur si la personne clique dessus.
+                        anchorPane2.getChildren().remove(informations);
+                    });
+                    break; //On quitte la boucle pour eviter d'ecrire deux message d'erreur
+                }
+            }
+            if (a) {
+                anchorPane2.getChildren().add(line1);
+                anchorPane2.getChildren().add(line2);
+                anchorPane2.getChildren().add(line3);
+                GraphicalFunctions.boardOfLink[GraphicalFunctions.nombreDeLien] = new link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3);
+                System.out.println("on devrait rajouter un truc a la case " + GraphicalFunctions.nombreDeLien);
+                GraphicalFunctions.nombreDeLien += 1;
+                //TODO ici mettre la fonction qui ajoute le lien dans la breadboard
+            }
         }
-        else{ //Sinon c'est que c'est qu'il faut juste actualisé les liens
+        else{ //Sinon c'est que c'est qu'il faut juste actualiser les liens
+            anchorPane2.getChildren().add(line1);
+            anchorPane2.getChildren().add(line2);
+            anchorPane2.getChildren().add(line3);
             GraphicalFunctions.boardOfLink[k].lien1 = line1;
             GraphicalFunctions.boardOfLink[k].lien2 = line2;
             GraphicalFunctions.boardOfLink[k].lien3 = line3;
@@ -147,10 +158,14 @@ public class AddLink {
         }
 
     }
-    public static void deleteViewOfLink(ImageView premiereImageDuLien, ImageView secondeImageDuLien, char orientationImage1, char orientationImage2){
 
-    }
-
+    /**
+     * Actualise les liens entre les objets.
+     * L'idée est de regarder tous les liens existant avec la boucle et si il y a un lien qui est relier d'un cote a l'image alors on
+     * supprime les liens et on appel AddLink pour les remettre au bon endroit
+     * @param image objet que l'on deplace
+     * @param anchorPane2 zone ou l'on travail
+     */
     public static void actualiseViewOfLink(Component image, AnchorPane anchorPane2) {
         for (int i = 0; i < GraphicalFunctions.nombreDeLien;i++){
             if(GraphicalFunctions.boardOfLink[i].image1 == image || GraphicalFunctions.boardOfLink[i].image2 == image){

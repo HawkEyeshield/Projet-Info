@@ -49,20 +49,21 @@ public class GraphicalFunctions
         // Permet de faire apparaitre le generateur de tension dans la zone centrale en cliquant dans la zone des composants
 		firstVoltageGenerator.setOnMouseClicked(event ->
 		{
+            //Fait apparaitre différente image
 			System.out.println("Un generateur de tension devrait apparaitre");
 			ImageView tensionGenerator = new ImageView();
 			Image image = new Image("file:image/Generateur de tension h.png");
 			tensionGenerator.setImage(image);
-			tensionGenerator.setX(100);
-			tensionGenerator.setY(100);
+			tensionGenerator.setX(100);//valeur par default d'apparition
+			tensionGenerator.setY(100);//valeur par default d'apparition
 			anchorPane2.getChildren().add(tensionGenerator);
 
 			ImageView linkArea1 = new ImageView();
 			Image square1 = new Image("file:image/LinkArea.png");
 			linkArea1.setImage(square1);
-			linkArea1.setFitHeight(10);
+			linkArea1.setFitHeight(10);//On redimensionne
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(100);
+			linkArea1.setX(100); //Placer en fonction des valeurs par default
 			linkArea1.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
@@ -77,16 +78,16 @@ public class GraphicalFunctions
 
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
+            //On creer l'objet mais on ne l'ajoute pas encore a la breadboard
 			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h',"Generateur de tension " + idVotalgeGenerator, 10);
 
 			//Permet de voir le nom et la valeur
-
             tensionGenerator.setOnMouseEntered(event3 -> {
                 Text informations = new Text("Nom : " + componentVoltageGenerator.name);
                 informations.setLayoutX(tensionGenerator.getX());
                 informations.setLayoutY(tensionGenerator.getY() + 65);
                 anchorPane2.getChildren().add(informations);
-                tensionGenerator.setOnMouseExited(event4 ->{
+                tensionGenerator.setOnMouseExited(event4 ->{ //On le supprime quand la souris sort de la zone
                     anchorPane2.getChildren().remove(informations);
                 });
             });
@@ -121,6 +122,10 @@ public class GraphicalFunctions
 				}
 			});
 
+            //Permet de faire apparaitre un menu avec le clique droit
+            tensionGenerator.setOnMouseClicked(event4 -> {
+                System.out.println("coucou");
+            });
 
            // Permet de deplacer le generateur de tension d'un point a un autre
 			tensionGenerator.setOnMouseDragged(event1 -> 
@@ -134,7 +139,6 @@ public class GraphicalFunctions
 					// on récupère la taille de la fenêtre
 					double x = event1.getSceneX();
 					double y = event1.getSceneY();
-					//System.out.println(x);
 
 					// Permet de ne pas sortir du cadre
 					if (x < (imagx / 2)) {
@@ -157,6 +161,7 @@ public class GraphicalFunctions
 						y = my - imagy / 2 - 20;
 					} // on evite de sortir du cadre en bas
 
+                    //Ici on repositionne l'image est les 4 potentiel carré noir autour
 					tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
 					tensionGenerator.setX(x - imagx / 2);
 					tensionGenerator.setY(y - imagy / 2);
@@ -168,7 +173,7 @@ public class GraphicalFunctions
 					linkArea1.setY(tensionGenerator.getY()+ image.getHeight()/2);
 
 
-					AddLink.actualiseViewOfLink(componentVoltageGenerator,anchorPane2);
+					AddLink.actualiseViewOfLink(componentVoltageGenerator,anchorPane2); //On actualise les liens
 				}
 			});
 
