@@ -1,19 +1,20 @@
 package graphics;
 
-import java.util.ArrayList;
-
 import circuit.Breadboard;
 import components.AbstractDipole;
-import components.CurrentGenerator;
-import components.VoltageGenerator;
-import graphStructure.Vertex;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+
+//import java.awt.event.ActionEvent;
 
 /** Interface donnant les différentes fonctions utilisées dans l'interface
  * @author Tanguy 
@@ -150,7 +151,7 @@ public class GraphicalFunctions
         if (k == -1) { //Si on ajoute un nouveau lien k = -1
             boolean a = true; //Permet de véfifier si il n'existe pas déjà un lien qui part de cet endroit la.
             for (int i = 0; i < nombreDeLien; i++) {
-                if ((premiereImageDuLien == boardOfLink[i].image1 && linkAreaUsed1 == boardOfLink[i].linkAreaUsed1) || (premiereImageDuLien == boardOfLink[i].image2 && linkAreaUsed1 == boardOfLink[i].linkAreaUsed2) || (secondeImageDuLien == boardOfLink[i].image1 && linkAreaUsed2 == GraphicalFunctions.boardOfLink[i].linkAreaUsed1) || (secondeImageDuLien == boardOfLink[i].image2 && linkAreaUsed2 == boardOfLink[i].linkAreaUsed2)) {
+                if ((premiereImageDuLien == secondeImageDuLien) ||(premiereImageDuLien == boardOfLink[i].image1 && linkAreaUsed1 == boardOfLink[i].linkAreaUsed1) || (premiereImageDuLien == boardOfLink[i].image2 && linkAreaUsed1 == boardOfLink[i].linkAreaUsed2) || (secondeImageDuLien == boardOfLink[i].image1 && linkAreaUsed2 == GraphicalFunctions.boardOfLink[i].linkAreaUsed1) || (secondeImageDuLien == boardOfLink[i].image2 && linkAreaUsed2 == boardOfLink[i].linkAreaUsed2)) {
                     a = false;//On indique qu'il ne faut pas afficher le lien, ni l'enregistrer et on affiche un message d'erreur
                     Text informations = new Text("Mettre un noeud pour relier ces deux éléments");
                     informations.setLayoutX(5);
@@ -251,6 +252,8 @@ public class GraphicalFunctions
 			linkArea3.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
+
+
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
             //On creer l'objet mais on ne l'ajoute pas encore a la breadboard
@@ -301,57 +304,74 @@ public class GraphicalFunctions
 				}
 			});
 
-            //Permet de faire apparaitre un menu avec le clique droit
-            tensionGenerator.setOnMouseClicked(event4 -> {
-                System.out.println("coucou");
-            });
+			//Permet de faire apparaitre un menu avec le clique droit
+			tensionGenerator.setOnMousePressed(event4 -> {
+				if(event4.isSecondaryButtonDown()) {
+					System.out.println("coucou");
+
+					MenuButton barre = new MenuButton("coucou");
+                    MenuItem changeName = new MenuItem("Changer le nom");
+                    MenuItem changeValue = new MenuItem(("Changer la valeur"));
+                    MenuItem rotation = new MenuItem("effectuer une rotation");
+					barre.getItems().addAll(changeName,changeValue,rotation);
+					barre.setLayoutX(event4.getX());
+					barre.setLayoutY(event4.getY());
+					anchorPane2.getChildren().add(barre);
+                    changeName.setOnAction(event1 ->{
+                        System.out.println("on dervait pouvoir changer le nom");
+                    });
+                }
+			});
 
            // Permet de deplacer le generateur de tension d'un point a un autre
 			tensionGenerator.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d") { //En position Drag and Drop
-					// position de l'image
-					double imagx = image.getWidth();
-					double imagy = image.getHeight();
 
-					//System.out.println(imagx);
-					// on récupère la taille de la fenêtre
-					double x = event1.getSceneX();
-					double y = event1.getSceneY();
+				if (event1.isPrimaryButtonDown()) {
+					if (etat == "d") { //En position Drag and Drop
+						// position de l'image
+						double imagx = image.getWidth();
+						double imagy = image.getHeight();
 
-					// Permet de ne pas sortir du cadre
-					if (x < (imagx / 2)) {
-						x = (imagx / 2);
-					} // on evite de sortir du cadre a gauche
-					if (y < (65 + imagy / 2)) {
-						y = (65 + imagy / 2);
-					} // on evite de sortir du cadre en haut
+						//System.out.println(imagx);
+						// on récupère la taille de la fenêtre
+						double x = event1.getSceneX();
+						double y = event1.getSceneY();
 
-					double mx = anchorPane2.getWidth();
+						// Permet de ne pas sortir du cadre
+						if (x < (imagx / 2)) {
+							x = (imagx / 2);
+						} // on evite de sortir du cadre a gauche
+						if (y < (65 + imagy / 2)) {
+							y = (65 + imagy / 2);
+						} // on evite de sortir du cadre en haut
 
-					double my = anchorPane2.getHeight();
-					if (x + imagx / 2 > mx - 20) {
-						x = mx - imagx / 2 - 20;
-					} // on evite de sortir du cadre a droite
+						double mx = anchorPane2.getWidth();
+
+						double my = anchorPane2.getHeight();
+						if (x + imagx / 2 > mx - 20) {
+							x = mx - imagx / 2 - 20;
+						} // on evite de sortir du cadre a droite
 
 					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
 					 * c est a dire le centre x plus la largeur de l image divise par 2 */
-					if (y + imagy / 2 > my - 20) {
-						y = my - imagy / 2 - 20;
-					} // on evite de sortir du cadre en bas
+						if (y + imagy / 2 > my - 20) {
+							y = my - imagy / 2 - 20;
+						} // on evite de sortir du cadre en bas
 
-                    //Ici on repositionne l'image est les 4 potentiel carré noir autour
-					tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
-					tensionGenerator.setX(x - imagx / 2);
-					tensionGenerator.setY(y - imagy / 2);
-					linkArea3.relocate(tensionGenerator.getX() + image.getWidth(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea3.setX(tensionGenerator.getX() + image.getWidth());
-					linkArea3.setY(tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea1.relocate(tensionGenerator.getX(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea1.setX(tensionGenerator.getX());
-					linkArea1.setY(tensionGenerator.getY()+ image.getHeight()/2);
+						//Ici on repositionne l'image est les 4 potentiel carré noir autour
+						tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
+						tensionGenerator.setX(x - imagx / 2);
+						tensionGenerator.setY(y - imagy / 2);
+						linkArea3.relocate(tensionGenerator.getX() + image.getWidth(), tensionGenerator.getY() + image.getHeight() / 2);
+						linkArea3.setX(tensionGenerator.getX() + image.getWidth());
+						linkArea3.setY(tensionGenerator.getY() + image.getHeight() / 2);
+						linkArea1.relocate(tensionGenerator.getX(), tensionGenerator.getY() + image.getHeight() / 2);
+						linkArea1.setX(tensionGenerator.getX());
+						linkArea1.setY(tensionGenerator.getY() + image.getHeight() / 2);
 
-					actualiseViewOfLink(componentVoltageGenerator,anchorPane2); //On actualise les liens
+						actualiseViewOfLink(componentVoltageGenerator, anchorPane2); //On actualise les liens
+					}
 				}
 			});
 
@@ -456,9 +476,16 @@ public class GraphicalFunctions
             Permet de deplacer le generateur de courant d'un point a un autre
 			 */
 
+			//Permet de faire apparaitre un menu avec le clique droit
+			courantGenerator.setOnMousePressed(event4 -> {
+				if(event4.isSecondaryButtonDown()){
+					System.out.println("coucou");
+				}
+			});
+
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d") { //En position Drag and Drop
+				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					// taille de l'image
 					double imagx = image.getWidth();
 					double imagy = image.getHeight();
@@ -648,11 +675,25 @@ public class GraphicalFunctions
 				}
 			});
 
+            /*
+            //Test pour savoir si on peux faire tourner l'image
+            node.setOnMouseEntered(event5 ->{
+                node.setRotate(350);
+                System.out.println("ca devrait rotater");
+            });
+            */
+
+			//Permet de faire apparaitre un menu avec le clique droit
+			node.setOnMousePressed(event4 -> {
+				if(event4.isSecondaryButtonDown()){
+					System.out.println("coucou");
+				}
+			});
 			
             //Permet de deplacer le noeud d'un point a un autre
 			node.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d") { //En position Drag and Drop
+				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					//position de la souris
 					double imagx = image.getWidth();
 					double imagy = image.getHeight();

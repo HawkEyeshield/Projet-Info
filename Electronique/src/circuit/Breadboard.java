@@ -1,20 +1,19 @@
 package circuit;
 
-import java.util.ArrayList;
-
 import components.AbstractDipole;
-import components.Admittance;
-import components.CurrentGenerator;
-import components.VoltageGenerator;
 import graphStructure.CircuitGraph;
 import resolution.Extracteur;
-import resolution.Solveur;
+
+import java.util.ArrayList;
 
 /**
  * Classe pour une breadboard
  * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis le traduit sous forme de graphe pour la résolution
  * @author François
  */
+
+//TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichants
+
 public class Breadboard
 {
 
