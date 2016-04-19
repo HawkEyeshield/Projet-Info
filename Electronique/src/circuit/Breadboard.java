@@ -6,11 +6,13 @@ import components.AbstractDipole;
 import components.Admittance;
 import components.CurrentGenerator;
 import components.VoltageGenerator;
+import graphStructure.CircuitGraph;
 import resolution.Extracteur;
 import resolution.Solveur;
 
 /**
- * Classe pour une breadboard. Endroit fictif où le circuit est réalisé puis le traduit sous forme de graphe pour la résolution
+ * Classe pour une breadboard
+ * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis le traduit sous forme de graphe pour la résolution
  * @author François
  */
 public class Breadboard
@@ -22,18 +24,14 @@ public class Breadboard
 	
 	/** liste des composants du circuit */
 	private ArrayList<AbstractDipole> components;
-	
-	/** extracteur résolvant le circuit */
-	private Extracteur extractor;
 
 /* =========================== */
 /* Déclaration du constructeur */
 /* =========================== */
 	
-	public Breadboard(ArrayList<AbstractDipole> components, Extracteur e)
+	public Breadboard(ArrayList<AbstractDipole> components)
 	{
 		this.components=components;
-		this.extractor=e;
 	}
 
 /* ======================== */
@@ -43,8 +41,16 @@ public class Breadboard
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
 	{
-		extractor.extraction(false);
-		extractor.printVariables();
+		CircuitGraph g = new CircuitGraph();
+		for(int i=0;i<components.size();i++)
+		{
+			g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
+			g.addVertex(components.get(i).getFirstLink());
+			g.addVertex(components.get(i).getSecondLink());
+		}
+		Extracteur e = new Extracteur(g);
+		e.extraction(false);
+		e.printVariables();
 	}
 	
 	/** Méthode ajoutant des composants
