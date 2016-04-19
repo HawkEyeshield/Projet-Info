@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import circuit.Breadboard;
 import components.AbstractDipole;
+import components.CurrentGenerator;
 import components.VoltageGenerator;
+import graphStructure.Vertex;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -47,7 +49,12 @@ public class GraphicalFunctions
 	
 	public static int linkArea;
 	
+	/** Breadboard qui traduira le schéma interface en graphe pour le solveur
+	 * Permet également de donner à chaque composant les potentiels à ses pattes et les courants après résolution*/
 	private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
+	
+	/** Entier indiquant le numéro d'un sommet pour la création de composant*/
+	private static int vertexIndex=0;
 
 
 	/**
@@ -162,7 +169,7 @@ public class GraphicalFunctions
                 boardOfLink[nombreDeLien] = new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3);
                 System.out.println("on devrait rajouter un truc a la case " + nombreDeLien);
                 nombreDeLien += 1;
-                //TODO ici mettre la fonction qui ajoute le lien dans la breadboard
+                //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
                 // breadboard.addLink();
             }
         }
@@ -173,7 +180,7 @@ public class GraphicalFunctions
             boardOfLink[k].lien1 = line1;
             boardOfLink[k].lien2 = line2;
             boardOfLink[k].lien3 = line3;
-            //TODO mettre la fonction qui actualise le lien dans la breadboard
+            //TODO Pour Sterenn : mettre la fonction qui actualise le lien dans la breadboard
             // breadboard.addLink();
         }
 
@@ -248,6 +255,10 @@ public class GraphicalFunctions
 			idVotalgeGenerator += 1;
             //On creer l'objet mais on ne l'ajoute pas encore a la breadboard
 			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h',"Generateur de tension " + idVotalgeGenerator, 10);
+			
+			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
+			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
+			// vertexIndex+=2;
 
 			//Permet de voir le nom et la valeur
             tensionGenerator.setOnMouseEntered(event3 -> {
@@ -345,8 +356,6 @@ public class GraphicalFunctions
 			});
 
 		});
-		
-		// TODO breadboard.addComponent();
 	}
 	
 	/**
@@ -397,6 +406,9 @@ public class GraphicalFunctions
 			idCourantgeGenerator += 1;
 			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10);
 
+			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
+			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
+			//vertexIndex+=2;
 
             courantGenerator.setOnMouseEntered(event3 -> {
                 Text informations = new Text("Nom : " + componentCourantGenerator.name);
@@ -492,8 +504,6 @@ public class GraphicalFunctions
 				}
 			});
 		});
-		
-		// TODO breadboard.addComponent();
 	}
 
 	/**
@@ -511,7 +521,7 @@ public class GraphicalFunctions
 		firstNode.setY(170);
 		anchorPane4.getChildren().add(firstNode);
 
-
+		// TODO Pour Sterenn : voir comment l'ajout d'un noeud influence la breadboard et ses composants avec les vertex
 		
         //Permet de faire apparaitre un noeud
 

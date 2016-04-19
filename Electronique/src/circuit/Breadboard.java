@@ -41,6 +41,7 @@ public class Breadboard
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
 	{
+		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
 		CircuitGraph g = new CircuitGraph();
 		for(int i=0;i<components.size();i++)
 		{
@@ -54,9 +55,10 @@ public class Breadboard
 	}
 	
 	/** Méthode ajoutant des composants */
-	public void addComponent()
+	public void addComponent(AbstractDipole c)
 	{
-		// TODO
+		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
+		components.add(c);
 	}
 	
 	/** Méthode ajoutant des liens entre deux composants
@@ -64,6 +66,7 @@ public class Breadboard
 	 * @param b : second composant */
 	public void addLink(AbstractDipole a, AbstractDipole b)
 	{
+		// TODO Pour Sterenn : mettre en place les liens entre composants, voir si un ré-indexage des vertex serait nécessaire pour le solveur
 		b.setFirstLink(a.getSecondLink());
 	}
 	
