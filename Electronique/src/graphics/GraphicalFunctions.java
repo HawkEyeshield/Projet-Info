@@ -18,13 +18,28 @@ public class GraphicalFunctions
     ete selectionner et qu'on attend le second
     */
 	public static int maxLien = 1000;
-	public static String etat = "d"; // Permet de définir si on peut faire du drag and drop ou si on est entrain de créer des liens
-	public static Component premiereImageDuLien; // Premiere image du lien que l'on va creer
-	public static int idVotalgeGenerator = 0; //Compte le nombre de generateur de tension
-	public static int idCourantgeGenerator = 0;// Compte le nombre de generateur de courant
-	public static int idNode = 0; // Compte  le nombre de noeud
-	public static Link [] boardOfLink = new Link[maxLien]; //tableau qui liste les liens
-	public static int nombreDeLien = 0; //Compte le nombre de lien
+	
+	/** Permet de définir si on peut faire du drag and drop ou si on est entrain de créer des liens*/
+	public static String etat = "d";
+	
+	/** Premiere image du lien que l'on va creer*/
+	public static Component premiereImageDuLien;
+	
+	/**Compte le nombre de generateur de tension*/
+	public static int idVotalgeGenerator = 0; 
+	
+	/** Compte le nombre de generateur de courant*/
+	public static int idCourantgeGenerator = 0;
+	
+	/**Compte  le nombre de noeud*/
+	public static int idNode = 0; 
+	
+	/**tableau qui liste les liens*/
+	public static Link [] boardOfLink = new Link[maxLien];
+	
+	/**Compte le nombre de lien*/
+	public static int nombreDeLien = 0; 
+	
 	public static int linkArea;
 
 
