@@ -53,22 +53,10 @@ public class Breadboard
 		e.printVariables();
 	}
 	
-	/** Méthode ajoutant des composants
-	 * @param component : le composant à ajouter */
-	public void addComponent(AbstractDipole component)
+	/** Méthode ajoutant des composants */
+	public void addComponent()
 	{
-		if(component instanceof CurrentGenerator)
-		{
-			components.add(new CurrentGenerator(component.getName(), component.getFirstLink(),component.getSecondLink()));
-		}
-		else if(component instanceof VoltageGenerator)
-		{
-			components.add(new VoltageGenerator(component.getName(), component.getFirstLink(), component.getSecondLink()));
-		}
-		else if(component instanceof Admittance)
-		{
-			components.add(new Admittance(component.getName(), component.getFirstLink(), component.getSecondLink()));
-		}
+		// TODO
 	}
 	
 	/** Méthode ajoutant des liens entre deux composants

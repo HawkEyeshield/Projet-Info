@@ -1,5 +1,10 @@
 package graphics;
 
+import java.util.ArrayList;
+
+import circuit.Breadboard;
+import components.AbstractDipole;
+import components.VoltageGenerator;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -41,6 +46,8 @@ public class GraphicalFunctions
 	public static int nombreDeLien = 0; 
 	
 	public static int linkArea;
+	
+	private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
 
 
 	/**
@@ -156,6 +163,7 @@ public class GraphicalFunctions
                 System.out.println("on devrait rajouter un truc a la case " + nombreDeLien);
                 nombreDeLien += 1;
                 //TODO ici mettre la fonction qui ajoute le lien dans la breadboard
+                // breadboard.addLink();
             }
         }
         else{ //Sinon c'est que c'est qu'il faut juste actualiser les liens
@@ -166,6 +174,7 @@ public class GraphicalFunctions
             boardOfLink[k].lien2 = line2;
             boardOfLink[k].lien3 = line3;
             //TODO mettre la fonction qui actualise le lien dans la breadboard
+            // breadboard.addLink();
         }
 
     }
@@ -336,7 +345,8 @@ public class GraphicalFunctions
 			});
 
 		});
-
+		
+		// TODO breadboard.addComponent();
 	}
 	
 	/**
@@ -482,6 +492,8 @@ public class GraphicalFunctions
 				}
 			});
 		});
+		
+		// TODO breadboard.addComponent();
 	}
 
 	/**
