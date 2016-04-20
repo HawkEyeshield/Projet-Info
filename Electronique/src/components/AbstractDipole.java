@@ -25,6 +25,9 @@ public abstract class AbstractDipole
 	/**Sommet auquel est remié la seconde patte */
 	protected Vertex secondLink;
 
+	/**Indice du dipole dans l'arrete ou il sera mis */
+	public int index;
+
 	/**Courant par défaut traversant les composants*/
 	protected final double DEFAULT_CURRENT=0;
 

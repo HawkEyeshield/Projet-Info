@@ -149,32 +149,27 @@ public class Edge
     public ArrayList<AbstractDipole> componentsTo(Vertex dst) 
     {
         ArrayList<AbstractDipole> a;
-        if (dst == vArr) 
-        {//si src est le sommet de depart, on retourne les admittances dans le sens direct, et eventuellement le generateur
+        if (dst == vArr) {//si src est le sommet de depart, on retourne les admittances dans le sens direct, et eventuellement le generateur
             a = new ArrayList<>(directAdmittances);
-            if ((genAtDep) && (generator != null)) 
-            {
+            if ((genAtDep) && (generator != null))
                 a.add(generator);
-            }
-        } 
+        }
         else 
         {//sinon, les admittances dans le sens indirect, et eventuellement le generateur
             a = new ArrayList<>(indirectAdmittances);
-            if ((!genAtDep) && (generator != null)) 
-            {
+            if ((!genAtDep) && (generator != null))
                 a.add(generator);
-            }
         }
         return a;
     }
 
-    /**retourne "L'arrete commence par v"*/
+    /**retourne "L'arrete commence par value"*/
     public boolean beginsWith(Vertex v) 
     {
         return vDep == v;
     }
 
-    /**retourne "L'arrete finit par v"*/
+    /**retourne "L'arrete finit par value"*/
     public boolean endsWith(Vertex v) 
     {
         return vArr == v;

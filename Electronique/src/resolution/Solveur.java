@@ -1,9 +1,11 @@
 
 package resolution;
 
+import components.Couple;
+import components.Tableau;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
 
 /**
  * @author Raphaël
@@ -14,12 +16,12 @@ public class Solveur
 	/* Déclaration des attributs */
 	/* ========================= */
 	
-    /**tableaux de controle des variables.[type][i][j][determined?,value]*/
-    private double[][][][] variables;
+    /**tableaux de controle des vars.[type][i][j][determined?,value]*/
+    private Tableau<Couple>[] vars;
 
     /**equations : tableau des equations connues*/
     private Equation[] equations;
-    //Ordre d'apparition des variables I U Y
+    //Ordre d'apparition des vars I U Y
 
     //grandeurs relatives aux parametres : nombre de noeurs, d'equations, et d'inconnues.
     private int nbNodes;
@@ -34,43 +36,50 @@ public class Solveur
     /* Déclaration du constructeur */
     /* =========================== */
     
-    public Solveur(double[][][] volt, double[][][] curr, double[][][] adm, double[][] cg, Equation[] eq) {
+    public Solveur(Tableau<Couple> volt, Tableau<Couple> curr, Tableau<Couple> adm, double[][] cg, Equation[] eq) {
+        //currents : matrice de tableaux contenant les courants passant à travers les composants entre i et j -> double[nV][nV][][2]
+        //voltages : matrice de tableaux contenant la tension entre i et j (tj la meme) -> double[nV][nV][1][2]
+        //admittances : matrice de tableaux contenant l'admittance des composants entre i et j -> double[nV][nV][][2]
 
 
-        nbNodes = volt.length;
+        nbNodes = volt.size();
 
-        variables = new double[][][][]{curr, volt, adm};
+        vars = (Tableau<Couple>[]) new Tableau[]{curr, volt, adm};
         equations = eq;
         nbEq = eq.length;
 
         powerCurrents = cg;
         printVariables();
 
-        //currentsSubstituated = new boolean[nbNodes][nbNodes];
+        //TODO faire une verification de la taille egale des tableaux symetriques!!
 
-        for (int k = 0; k < 3; k++)
+        //currentsSubstituated = new boolean[nbNodes][nbNodes];
+        //determination de toutes les valeurs par la loi d'ohm
+        for (int c = 0; c < 3; c++)
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
-                    if (variables[k][i][j][0] == 1)
-                        setVariableValue(new int[]{k, i, j}, variables[k][i][j][1], true);
+                    for (int k = 0; k < vars[c].size(i, j); k++)
+                        if (vars[c].get(i, j, k).found)
+                            setVariableValue(new int[]{c, i, j, k}, vars[c].get(i,j,k).value, true);//TODO modifier SetVariableValue
 
-        //###############################################################################################################tester la validit� des donn�es en entr�e : taille des tableaux, format des admittances, symetrie des courants tension, etc..
-
-        //symetrisation des  tableaux de variables.
+        //symetrisation des  tableaux de vars.
         makeSymetries();
 
-        //remplacement de toutes les variables connues dans les equations
-        for (int x = 0; x < 3; x++)
+        //TODO progression
+
+        //remplacement de toutes les vars connues dans les equations
+        for (int c = 0; c < 3; c++)
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
-                    if (variables[x][i][j][0] == 1)
-                        replaceAll(new int[]{x, i, j}, -1, variables[x][i][j][1]);
+                    for (int k = 0; k< vars[c].size(i,j); k++)
+                        if (vars[c].get(i, j, k).found)
+                            replaceAll(new int[]{c, i, j}, -1, vars[c].get(i,j,k).value);//TODO replaceAll
 
         //Remplacement des courants generateurs
         for (double[] d : powerCurrents)
             if (d[0] == 1)
                 for (int ind = 0; ind < nbEq; ind++)
-                    equations[ind].replace(-1, -1, 0, d[1]);
+                    equations[ind].replace(-1, -1, 0, -1, d[1]);//TODO adapter  : passer un tableau d'indices
 
         //init du nombre d'inconnuess
         updateNumberUnknown();
@@ -87,13 +96,17 @@ public class Solveur
         return powerCurrents;
     }
 
-    //getter des variables (SANS les doubles de determination : on obtient var[type][i][j] = valeur). Pour APRES la resolution.
-    public double[][][] variables() {
-        double[][][] ret = new double[3][nbNodes][nbNodes];
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < nbNodes; j++)
-                for (int k = 0; k < nbNodes; k++)
-                    ret[i][j][k] = variables[i][j][k][1];
+    //getter des vars
+    public Tableau<Double>[] variables() {
+        Tableau<Double>[] ret = (Tableau<Double>[])new Tableau[3];
+        for (int c = 0; c < 3; c++) {
+            ret[c] = new Tableau<>(nbNodes);
+            for (int i = 0; i < nbNodes; i++)
+                for (int j = 0; j < nbNodes; j++)
+                    for (int k = 0; k< vars[c].size(i,j); k++)
+                        if (vars[c].get(i, j, k).found)
+                            ret[c].get(i,j).add(vars[c].get(i, j, k).value);
+        }
         return ret;
     }
 
@@ -101,7 +114,7 @@ public class Solveur
     public boolean resolution() {
         while (!updateNumberUnknown()) {
             logn("UNKNOWN" + nbUnknown);
-            //1 : Determiner toutes les variables calculables, et recommencer tant que l'on en determine plus.
+            //1 : Determiner toutes les vars calculables, et recommencer tant que l'on en determine plus.
 
             printVariables();
             while (calculateVariables() != 0) {}
@@ -111,7 +124,7 @@ public class Solveur
 
             //Si on a pas tout determiné, on injecte une eqution
             if (!substituateVariable()) {
-                //si on a plus de variables à injecter, le systeme n'est pas solvable
+                //si on a plus de vars à injecter, le systeme n'est pas solvable
                 logn("not solvable");
                 return false;
             }
@@ -122,7 +135,7 @@ public class Solveur
         return true;
     }
 
-     /*fonction de calcul des variables determinables (genre a*Xij=b)*/
+     /*fonction de calcul des vars determinables (genre a*Xij=b)*/
     private int calculateVariables() {
         int cpt = 0;
         if (!updateNumberUnknown()) {
@@ -148,7 +161,7 @@ public class Solveur
     /**fonction de remplacement d'un variable dans toutes les equations*/
     private boolean replaceAll(int[] id, int nb, double value) {
         /*
-        int[3] id donne les coordonnees de la variable à remplacer dans le tableau des variables
+        int[3] id donne les coordonnees de la variable à remplacer dans le tableau des vars
         //nb donne l'indice de l'equation d'oigine de la variable, pour qu'elle ne soit pas elle aussi modifiée (ce serait malpropre dans le log)
         */
 
@@ -160,7 +173,7 @@ public class Solveur
         //toVoltage : si on doit switcher, est ce qu'on doit faire apparaitre une tension
         boolean toVoltage = false;
 
-        //determination des deux variables precedentes : si on trouve une tension ou une admittance, on va pouvoir switcher
+        //determination des deux vars precedentes : si on trouve une tension ou une admittance, on va pouvoir switcher
         if (id[0] == 1) {//tension determinée
             div = true;
             toVoltage = false;//tension connue -> on fait apparaitre une admittance
@@ -177,9 +190,9 @@ public class Solveur
 
         for (int x = 0; x < nbEq; x++) {//pour chaque equation
             if (nb != x) {//si on est pas sur l'equation source de la variable
-                equations[x].replace(id[0], id[1], id[2], value);//on remplace
+                equations[x].replace(id[0], id[1], id[2], id[3], value);//on remplace
                 if (div) {//et on switch le courant si necessaire
-                    equations[x].eliminateCurrent(toVoltage, id[1], id[2], value);
+                    equations[x].eliminateCurrent(toVoltage, id[1], id[2], id[3], value);
                 }
             }
         }
@@ -190,48 +203,58 @@ public class Solveur
     private boolean setVariableValue(int[] id, double value, boolean fill) {
         //id : coordonnées de la variable à ajouter
         //value : la nouvelle valeur
-        //fill : vrai si la valeur est deja connue : au debut du programme, on doit s'assurer que les variables sont dans un etat stable (genre (U,Y) connu -> I connu
-        //pour cela, on re-set les variables une par une, et si fill est à false, la fonction retournera une erreur si la variable à remlacer est deja connue.
+        //fill : vrai si la valeur est deja connue : au debut du programme, on doit s'assurer que les vars sont dans un etat stable (genre (U,Y) connu -> I connu
+        //pour cela, on re-set les vars une par une, et si fill est à false, la fonction retournera une erreur si la variable à remlacer est deja connue.
 
 
         //modif des courants generateurs
         if ((id[0] == -1) && (id[1] == -1)) {
-            if (powerCurrents[id[2]][0] == 0) powerCurrents[id[2]] = new double[]{1, value};//cas ou la valeur n'est pas determinee
-            else if ((powerCurrents[id[2]][1] == value)&&(fill))return false;//cas ou la valeur est determinee
+            if (powerCurrents[id[2]][0] == 0)
+                powerCurrents[id[2]] = new double[]{1, value};//cas ou la valeur n'est pas determinee
+            else if ((powerCurrents[id[2]][1] == value) && (fill)) return false;//cas ou la valeur est determinee
             return true;
         }
         //modif des vrariables regulieres
-        if (variables[id[0]][id[1]][id[2]][0] == 1) {// if the value is already determined
-            if ((variables[id[0]][id[1]][id[2]][1] != value)||(fill)) return false;
+        if (vars[id[0]].get(id[1], id[1], id[2]).found) {// if the value is already determined//TODO REFAIRE LES ID!!!!!
+            if ((vars[id[0]].get(id[1], id[1], id[2]).value != value) || (fill)) return false;
         }
+
+        Tableau<Couple> I = vars[0];
+        Tableau<Couple> U = vars[1];
+        Tableau<Couple> Y = vars[2];
+
+        int[] idU = new int[]{id[1], id[2], 0};//ID pour les tensions
+        int[] idO = new int[]{id[1], id[2], id[3]};//id pour Other( admittances, tensions);
+
         if (id[0] == 0) {//Courant trouve
-            if ((variables[1][id[1]][id[2]][0] == 0) && (variables[2][id[1]][id[2]][0] == 1) && (variables[2][id[1]][id[2]][1] != 0)) {//Tension inconnue - Admittance connue et PAS à 0
-                variables[1][id[1]][id[2]] = new double[]{1, value / variables[2][id[1]][id[2]][1]};//Calcul U=I/Y
+            if ((!U.get(idU).found) && (Y.get(idO).found) && (Y.get(idO).value != 0)) {//Tension inconnue - Admittance connue et PAS à 0
+                U.get(idU).set(true, value / Y.get(idO).value);//Calcul U=I/Y
             }
-            if ((variables[1][id[1]][id[2]][0] == 1) && (variables[2][id[1]][id[2]][0] == 0) && (variables[1][id[1]][id[2]][1] != 0)) {//Tension connue et PAS à 0 - Admittance inconnue
-                variables[1][id[1]][id[2]] = new double[]{1, value / variables[1][id[1]][id[2]][1]};//Calcul Y = I/U
+            if ((U.get(idU).found) && (U.get(idU).value != 0) && (!Y.get(idO).found)) {//Tension connue et PAS à 0 - Admittance inconnue
+                U.get(idU).set(true, value / U.get(idU).value);//Calcul Y = I/U
             }
-        }
-        if (id[0] == 1) {//if we have found a voltage
-            if ((variables[0][id[1]][id[2]][0] == 0) && (variables[2][id[1]][id[2]][0] == 1)) {//Courant inconnu - admittance connue
-                variables[0][id[1]][id[2]] = new double[]{1, value * variables[2][id[1]][id[2]][1]};//Calcul I = Y*U
+        } else if (id[0] == 1) {//if we have found a voltage
+            for (int l = 0; l < I.size(id[1], id[2]); l++) {//pour chaque composant parallele entre id[1] et id[2]
+                idO[2] = l;
+                if ((!I.get(idO).found) && (Y.get(idO).found)) {//Courant inconnu - admittance connue
+                    I.get(idO).set(true, value * Y.get(idO).value);//Calcul I = Y*U
+                }
+                if ((I.get(idO).found) && (!Y.get(idO).found) && (value != 0)) {//Courant connu - Admittance inconnue ET Tension PAS à 0
+                    Y.get(idO).set(true, I.get(idO).value / value);//Calcul Y = I/U
+                }
             }
-            if ((variables[0][id[1]][id[2]][0] == 1) && (variables[2][id[1]][id[2]][0] == 0) && (value != 0)) {//Courant connu - Admittance inconnue ET Tension PAS à 0
-                variables[2][id[1]][id[2]] = new double[]{1, variables[0][id[1]][id[2]][1] / value};//Calcul Y = I/U
+        } else if (id[0] == 2) {//if we have found an admittance
+            if ((!U.get(idU).found) && (I.get(idO).found) && (value != 0)) {//Tension inconnue - Courant connu ET Admittance PAS à 0
+                U.get(idU).set(true, Y.get(idO).value / value);//Calcul U = I/Y
             }
-        }
-        if (id[0] == 2) {//if we have found an admittance
-            if ((variables[1][id[1]][id[2]][0] == 0) && (variables[0][id[1]][id[2]][0] == 1) && (value != 0)) {//Tension inconnue - Courant connu ET Admittance PAS à 0
-                variables[1][id[1]][id[2]] = new double[]{1, variables[2][id[1]][id[2]][1] / value};//Calcul U = I/Y
-            }
-            if ((variables[1][id[1]][id[2]][0] == 1) && (variables[0][id[1]][id[2]][0] == 0)) {//Tension connue - Courant Inconnu
-                variables[0][id[1]][id[2]] = new double[]{1, variables[1][id[1]][id[2]][1] * value};//Calcul I = U*Y
+            if ((U.get(idU).found) && (!I.get(idO).found)) {//Tension connue - Courant Inconnu
+                I.get(idO).set(true, U.get(idU).value * value);//Calcul I = U*Y
             }
         }
         logn("replaced");
         if (!fill) {//Ajout de la variable
-            variables[id[0]][id[1]][id[2]] = new double[]{1, value};
-            logn("Symetries made : "+makeSymetries());
+            vars[id[0]].get(id[1], id[2], id[3]).set(true, value);
+            logn("Symetries made : " + makeSymetries());
         }
         return true;
     }
@@ -241,28 +264,28 @@ public class Solveur
             for (int i = 0; i < nbNodes; i++) {
                 for (int j = 0; j <= i; j++) {
                     if (i == j) {
-                        if (variables[x][i][j][1] != 0) {
+                        if (vars[x].size(i,j) != 1) {//si il y a un composant entre i et i :
                             logn("bad case");return false;////////exception parametre pas � 0
                         }
                     } else {
-                        if ((variables[x][i][j][0] == 1) && (variables[x][j][i][0] == 0)) {//if only [i,j] is known
-                            if (x == 2) variables[x][j][i] = new double[]{1, variables[x][i][j][1]};
-                            else variables[x][j][i] = new double[]{1, -1 * variables[x][i][j][1]};
-                            continue;
-                        }
+                        for (int l = 0;l<vars[x].size(i,j);l++){
 
-                        if ((variables[x][j][i][0] == 1) && (variables[x][i][j][0] == 0)) {//if only [j,i] is known
-                            if (x == 2) variables[x][i][j] = new double[]{1, variables[x][j][i][1]};
-                            else variables[x][i][j] = new double[]{1, -1 * variables[x][j][i][1]};
-                            continue;
-                        }
-                        if ((variables[x][j][i][0] == 1) && (variables[x][i][j][0] == 1)) {
-                            if ((x == 2) && (variables[2][i][j][1] != variables[2][j][i][1])) {
-                                return false;
+                            if ((vars[x].get(i,j,l).found) && (!vars[x].get(j,i,l).found)) {//if only [i,j] is known
+                                if (x == 2) vars[2].get(j, i, l).set(true,vars[2].get(i, j, l).value);
+                                else vars[x].get(j,i,l).set(true,-1*vars[x].get(i,j,l).value);
                             }
-                            if ((x != 2) && (variables[x][i][j][1] != -1 * variables[x][j][i][1])) {
-                                logn("bad case : "+x+" " +i+" "+j);
-                                return false;
+
+                            else if ((!vars[x].get(i,j,l).found) && (vars[x].get(j,i,l).found)) {//if only [j,i] is known
+                                if (x == 2) vars[2].get(i,j,l).set(true,vars[2].get(j,i,l).value);
+                                else vars[x].get(i,j,l).set(true,-vars[x].get(j,i,l).value);
+                            }
+                            else if ((vars[x].get(i,j,l).found) && (vars[x].get(j,i,l).found)) {
+                                if ((x == 2) && (vars[2].get(i,j,l).value != vars[2].get(j,i,l).value)) {
+                                    return false;
+                                }
+                                if ((x != 2) && (vars[x].get(i,j,l).value != -1*vars[x].get(j,i,l).value)) {
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -272,7 +295,7 @@ public class Solveur
         return true;
     }
 
-    /**Fonction de substitution de variables*/
+    /**Fonction de substitution de vars*/
     private boolean substituateVariable() {
         //recuperation d'une equation substituable
         int ind = getSubstituableEquation();
@@ -281,7 +304,7 @@ public class Solveur
 
         Equation eq = equations[ind];
         int[] id = eq.getFirstVariable();
-        double[][][] equivalent = eq.getEquivalent(id);//recuperation de l'equivalent
+        Tableau<Double>[] equivalent = eq.getEquivalent(id);//recuperation de l'equivalent
         double cst = eq.getEqConstant(id);//constante
         double[] pwcur = eq.getEqPowerCurrents(id);//courantsAlim
         eq.used = true;//marquage de l'equation comme utilisée
@@ -289,7 +312,7 @@ public class Solveur
         //substitution
         for (int i = 0; i < nbEq; i++)
             if (i != ind)
-                equations[i].substituate(id[0], id[1], id[2], equivalent, cst, pwcur);
+                equations[i].substituate(id[0], id[1], id[2], id[3], equivalent, cst, pwcur);
         return true;
 
     }
@@ -324,14 +347,15 @@ public class Solveur
     }
     
     /**Mise à jour de NbUnknown, retourne true si NbUnknown==0*/
-    private boolean updateNumberUnknown() {//returns if all variables are found
+    private boolean updateNumberUnknown() {//returns if all vars are found
         int nb = 0;
         for (double[] d : powerCurrents)
             if (d[0] == 0) nb++;
-        for (int k = 0; k < 3; k++)
+        for (int c = 0; c < 3; c++)
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
-                    if (variables[k][i][j][0] == 0) nb++;
+                    for (int k = 0;k<vars[k].size(i, j);k++)
+                        if (!vars[k].get(i, j, k).found) nb++;
         nbUnknown = nb;
         return nb == 0;
     }
@@ -343,7 +367,7 @@ public class Solveur
 
     }
 
-    /**Affichage des variables*/
+    /**Affichage des vars*/
     public void printVariables() {
         NumberFormat nf = new DecimalFormat("0.00###");
         char[] aff = equations[0].names;
@@ -351,9 +375,12 @@ public class Solveur
             log("\n" + aff[t] + "\n");
             for (int i = 0; i < nbNodes; i++) {
                 for (int j = 0; j < nbNodes; j++) {
-                    if (variables[t][i][j][0] == 1) {
-                        log(" " + nf.format(variables[t][i][j][1]) + " ");
-                    } else log(" x ");
+                    log("(");
+                    for (int l = 0; l < vars[t].size(i, j); l++)
+                        if (vars[t].get(i,j,l).found) {
+                            log(" " + nf.format(vars[t].get(i,j,l).value) + " ");
+                        } else log(" x ");
+                    log(")");
                 }
                 logn("");
             }

@@ -1,8 +1,6 @@
 package resolution;
 
-import components.Admittance;
-import components.AbstractGenerator;
-import components.Type;
+import components.*;
 import graphStructure.CircuitGraph;
 import graphStructure.Edge;
 import graphStructure.Vertex;
@@ -11,6 +9,8 @@ import graphStructure.ComponentMap;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
+import java.util.function.Supplier;
 
 /**
  * @author Raphaël
@@ -26,8 +26,8 @@ public class Extracteur
     private int nbGenerators;
 
     private double[] resultCurrents;
-    private double[][][] resultVariables;
-    private double[][][][] varFix;
+    private Tableau<Double>[] resultVariables;
+    private Tableau<Couple>[] varFix;
 
     private char[] st;
 
@@ -116,12 +116,21 @@ public class Extracteur
 
         //initialisation des tableaux de resultats :
         resultCurrents = new double[nbGenerators];
-        resultVariables = new double[3][nbNodes][nbNodes];
+        resultVariables = (Tableau<Double>[]) new Tableau[3];
 
         //Tableaux des variables fixees
-        varFix = new double[3][nbNodes][nbNodes][2];
+        varFix = (Tableau<Couple>[]) new Tableau[3];//TODO voir si on peut pas supprier VarFix vu qu'on fait tout d'un coup
         int s;
 
+        int[][] sizes = new int[nbNodes][nbNodes];
+        int b,l,n;
+        for (Edge e : graph.getAllEdges()) {
+            b = e.beginVertex().get();
+            l = e.endVertex().get();
+            n = e.AdmittancesNb()+1;//add the generator
+            sizes[b][l] = n;
+            sizes[l][b] = n;
+        }
 
         //Recuperation des variables fixees
         Vertex dep, arr;
@@ -133,16 +142,17 @@ public class Extracteur
             for (Admittance a : e.directAdmittances) {
                 double[][] det = a.getParameters();
                 for (int d = 0; d < 3; d++) {
+                    varFix[d] = new Tableau<Couple>(nbNodes,sizes,()->new Couple(false,0.0)) ;
                     s = 1;//les composants sont orientés en direct -> le signe vaut 1
                     if (det[d][0] == 1) {//pour chaque parametre fixe
                         //marquage de la determination du parametre
-                        varFix[d][dep.get()][arr.get()][0] = 1;
-                        varFix[d][arr.get()][dep.get()][0] = 1;
+                        varFix[d].get(dep.get(),arr.get(),a.index).found = true;
+                        varFix[d].get(arr.get(),dep.get(),a.index).found = true;
                         //on ajoute la valeur fixe en direct
-                        varFix[d][dep.get()][arr.get()][1] = s * det[d][1];
+                        varFix[d].get(dep.get(),arr.get(),a.index).value = s * det[d][1];
                         if (d == 2) s = -1;//on inverse l'inversion dans le cas de l'admittance qui est symetrique.
                         //on ajoute la valeur fixe inverse, en opposant la valeur
-                        varFix[d][arr.get()][dep.get()][1] = -s * det[d][1];
+                        varFix[d].get(arr.get(),dep.get(),a.index).value = -s * det[d][1];
                     }
                 }
             }
@@ -153,13 +163,13 @@ public class Extracteur
                     s = -1;//les composants sont orientés en indirect -> le signe vaut -1
                     if (det[d][0] == 1) {//pour chaque parametre fixe
                         //marquage de la determination du parametre
-                        varFix[d][dep.get()][arr.get()][0] = 1;
-                        varFix[d][arr.get()][dep.get()][0] = 1;
+                        varFix[d].get(dep.get(),arr.get(),a.index).found = true;
+                        varFix[d].get(arr.get(),dep.get(),a.index).found = true;
                         //on ajoute la valeur fixe en inverse
-                        varFix[d][arr.get()][dep.get()][1] = s * det[d][1];
+                        varFix[d].get(arr.get(),dep.get(),a.index).value = s * det[d][1];
                         if (d == 2) s = 1;////on inverse l'opposition dans le cas de l'admittance qui est symetrique.
                         //on ajoute la valeur fixe inverse, en opposant la valeur
-                        varFix[d][dep.get()][arr.get()][1] = -s * det[d][1];
+                        varFix[d].get(dep.get(),arr.get(),a.index).value = -s * det[d][1];
                     }
                 }
             }
@@ -169,56 +179,47 @@ public class Extracteur
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < nbNodes; j++) {
                 for (int k = 0; k < nbNodes; k++) {
-                    if (varFix[i][j][k][0] == 1)
-                        resultVariables[i][j][k] = varFix[i][j][k][1];
+                    for (int ll = 0; ll < nbNodes; ll++) {
+                        if (varFix[i].get(j, k, ll).found)
+                            resultVariables[i].get(j,k).set(ll,varFix[i].get(j,k,ll).value);
+                    }
                 }
             }
         }
-
         //Variables temporaires, pour la boucle de résolution
 
         ArrayList<Equation> equations;//La liste des equations;
         int signe;//La variable de coefficients
-        double[][] eqCurrents;//La matrice de courants pour les equations
+        Tableau<Double> eqCurrents;//La matrice de courants pour les equations
         double[][] powerCurrents;
         ArrayList<AbstractGenerator> genOrder;
 
 
-        //Les tableaux de variables
-        double[][][] voltages;
-        double[][][] admittances;
-        double[][][] currents;
 
 
         //Etape 2 : Initialisation des tableaux de parametres
-
         equations = new ArrayList<>();
-        voltages = new double[nbNodes][nbNodes][2];//pas besoin d'initialiser, car les tensions existent sans dipole.
-        for (double[][] x : voltages) {
-            for (double[] y : x) y[0] = 0;
-        }
 
-        currents = new double[nbNodes][nbNodes][2];//There we need to initialise, as current do not exist without a dipole
-        for (double[][] x : currents) {
-            for (double[] y : x) y[0] = 1;
-        }
 
-        admittances = new double[nbNodes][nbNodes][2];
-        for (double[][] x : admittances) {
-            for (double[] y : x) y[0] = 1;
-        }
+        //Tableaux de Variables, plus initialisation
+        Tableau<Couple> voltages = new Tableau<>(nbNodes, sizes, ()->(new Couple(false,0.0)));//pas besoin d'initialiser, car les tensions existent sans dipole.
 
-        double[][][][] vartab = new double[][][][]{currents, voltages, admittances};
+        Tableau<Couple> currents = new Tableau<>(nbNodes, sizes, ()->(new Couple(true,0.0)));//There we need to initialise, as current do not exist without a dipole
+
+        Tableau<Couple> admittances = new Tableau<>(nbNodes, sizes, ()->(new Couple(true,0.0)));
+
+        Tableau<Couple>[] vartab = (Tableau<Couple>[])new Tableau[]{currents, voltages, admittances};
 
 
         //Vartab : [current, voltage, admittance]
         genVertices = new int[nbGenerators][2];
 
-        for (int tp = 0; tp < nbNodes; tp++) {
-            for (int dd = 0; dd < 3; dd++) {
-                vartab[dd][tp][tp] = new double[]{1, 0};
-            }
-        }
+        //Init des diagonales
+        for (int tp = 0; tp < nbNodes; tp++)
+            for (int dd = 0; dd < 3; dd++)
+                vartab[dd].get(tp,tp).add(new Couple(true,0.0));
+
+
 
         powerCurrents = new double[nbGenerators][2];
         genOrder = new ArrayList<>();
@@ -238,7 +239,7 @@ public class Extracteur
             logn("Vertex "+ vertice.get());
 
             //initialisation
-            eqCurrents = new double[nbNodes][nbNodes];
+            eqCurrents = new Tableau<Double>(nbNodes, sizes, () -> 0.0);
             equationCurrents = new double[nbGenerators];
             //recuperation de tous les composants connectes à vertice
             connections = graph.getConnectedComponents(vertice);
@@ -251,6 +252,8 @@ public class Extracteur
                 if (m.incoming()) signe = 1;
                 else signe = -1;
 
+                int x = vertice.get();
+                int y = m.vertex().get();
 
                 //Ajout du generateur dans les tableaux
                 if ((type == Type.VOLTAGEGENERATOR) || (type == Type.CURRENTGENERATOR)) {
@@ -262,8 +265,8 @@ public class Extracteur
                         genOrder.add(gen);//on ajoute le generateur
 
                         //on map le generateur, pour avoir la correspondance indice - (sommetdepart/sommetarrivée)
-                        if (m.incoming()) genVertices[iGen] = new int[]{vertice.get(), m.vertex().get()};
-                        else genVertices[iGen] = new int[]{m.vertex().get(), vertice.get()};
+                        if (m.incoming()) genVertices[iGen] = new int[]{x, y};
+                        else genVertices[iGen] = new int[]{y, x};
 
                         previousIndex = iGen;//la variable est utilisée juste après
                         iGen++;
@@ -275,9 +278,14 @@ public class Extracteur
                 switch (m.component().type()) {
                     case ADMITTANCE:
                         //Il y a un composant regulier entre les deux sommets => un courant et une admittance peuvent exister
-                        currents[vertice.get()][m.vertex().get()][0] = 0;
-                        admittances[vertice.get()][m.vertex().get()][0] = 0;
-                        eqCurrents[vertice.get()][m.vertex().get()] = 1;//ajout du courant traversant le composant concerné à l'equation
+                        //todo : initialiser l'arrayList jusqu'à l'index donné par le composant pour pouvoir le remplir (--')
+                        int index = m.component().index;//decarer avant la boucle
+                        //todo on initialise a (true, 0)
+                        for (int i = currents.size(x,y); i<=index;i++) currents.get(x,y).add(new Couple(true,0.0));
+                        for (int i = currents.size(y,x); i<=index;i++) currents.get(y,x).add(new Couple(true,0.0));
+                        currents.get(x,y,index).found = false;
+                        admittances.get(x,y,index).found = false;
+                        eqCurrents.get(x,y).set(m.component().index,1.0);//ajout du courant traversant le composant concerné à l'equation
                         /*Remarque
                             pas besoin de se preoccuper du signe ici, car on a pas de parametre fixé.
                             On a juste ajouté le courant ORIENTE allant de vertice a m.vertex donc par definition de ecoefficient 1.
@@ -285,18 +293,19 @@ public class Extracteur
                         break;
                     //Cette partie ne REMPLACE PAS LES VALEURS, ce travail est laissé au solveur.
 
-                    //Todo : verifier si les valeurs des generateurs sont bien remplac�es dans cette partie ET dans la partie recup des valeurs, et si c'est le cas, simplifier.
                     case VOLTAGEGENERATOR://Un generateur de tension determine la tension entre deux sommets;
-                        voltages[vertice.get()][m.vertex().get()][0] = 1;
+                        voltages.get(x,y,0).found = true;
                         if (gen.isActive()) {//pas d'erreur, en effet, on a traité le cas du generateur plus haut et on a initialisé gen à ce moment la.
-                            voltages[vertice.get()][m.vertex().get()][1] = signe * gen.getVoltage();//Si le generateur n'est pas actif, le voltage sera parametre à 0;
+                            voltages.get(x,y,0).value = signe * gen.getVoltage();//Si le generateur n'est pas actif, le voltage sera parametre à 0;
                         }
                         break;
 
                     case CURRENTGENERATOR://Un generateur de courant determine le courant passant entre deux points
-                        currents[vertice.get()][m.vertex().get()][0] = 0;
+                        currents.get(x,y,0).found = true;
+                        //TODO probleme avant on initialisait a false => soit j'ai fait de la merde, soit je vais faire de la merde
+                        //TODO probleme avant on initialisait a false => soit j'ai fait de la merde, soit je vais faire de la merde
                         if (gen.isActive()) {//pas d'erreur, en effet, on a traité le cas du generateur plus haut et on a initialisé gen à ce moment la.
-                            currents[vertice.get()][m.vertex().get()][1] = signe * gen.getCurrent();//Si le generateur n'est pas actif, le courant sera parametre à 0;
+                            currents.get(x,y,0).value  = signe * gen.getCurrent();//Si le generateur n'est pas actif, le courant sera parametre à 0;
                         }
                         break;
                 }
@@ -305,35 +314,41 @@ public class Extracteur
                 double[][] det = m.component().getParameters();
                 for (int d = 0; d < 3; d++) {//pour chaque parametre determinable
                     if (det[d][0] == 1) {//si il est effectivement determiné
-                        vartab[d][vertice.get()][m.vertex().get()][0] = 1;//mise à 1 de la determination dans vartab
-
+                        vartab[d].get(x,y,m.component().index).found = true;//mise à 1 de la determination dans vartab//TODO variabiliser m.component
                         if (d == 2) signe = 1;//si le parametre est une admittance, la valeur ne depend pas du sens
 
                         //sinon, on met le parametre en memoire, en coherence avec l'orientation du composant
-                        vartab[d][vertice.get()][m.vertex().get()][1] = signe * det[d][1];
+                        vartab[d].get(x,y,m.component().index).value = signe * det[d][1];
                     }
                 }
             }
 
             //ajout de l'equation
-            Equation eq = new Equation(new double[nbNodes][nbNodes], eqCurrents, new double[nbNodes][nbNodes], 0, st, equationCurrents);
+            Tableau<Double> t0 = new Tableau<>(nbNodes, () -> 0.0);
+            Tableau<Double> t1 = new Tableau<>(nbNodes, () -> 0.0);
+
+            Equation eq = new Equation(t0, eqCurrents, t1, 0, st, equationCurrents);
             equations.add(eq);
         }
 
         //ETAPE 5 : Equations aux mailles
         logn("Fait. \n\nEquations aux mailles ...");
-        double[][] volt;
+        Tableau<Double> volt;
         for (int p = 0; p < nbNodes - 2; p++) {//Premiers point des cycle;
             for (int f = p + 2; f < nbNodes; f++) {//points de fin des mailles
-                volt = new double[nbNodes][nbNodes];
+                volt = new Tableau<Double>(nbNodes, ()->0.0);
                 for (int r = 0; r <= f - p; r++)
-                    volt[r + p][p + (r + 1) % (f - p + 1)] = 1;
+                    volt.get(r + p,p + (r + 1) % (f - p + 1)).set(0,1.0);
                 /*remarque :
                     Je sais que la formule est vomitive, mais pinaillez pas... elle est bonne...
                     vous pouvez toujours essayer de la redemontrer si vous voulez, moi j'ai la flemme de le faire en commentaire...
                  */
 
-                Equation eq = new Equation(volt, new double[nbNodes][nbNodes], new double[nbNodes][nbNodes], 0, st, new double[nbGenerators]);
+                //ajout de l'equation
+                Tableau<Double> t0 = new Tableau<>(nbNodes, () -> 0.0);
+                Tableau<Double> t1 = new Tableau<>(nbNodes, () -> 0.0);
+
+                Equation eq = new Equation(volt, t0, t1, 0, st, new double[nbGenerators]);
                 equations.add(eq);
             }
         }
@@ -365,12 +380,13 @@ public class Extracteur
     }
 
     /**fonction de somme de tableaux : ajoute AU PREMIER TABLEAU le second (ie la somme est faite sur le premier, le second est juste lu.*/
-    private void ajout(double[][][] b) {
+    private void ajout(Tableau<Double>[] b) {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < nbNodes; j++)
                 for (int k = 0; k < nbNodes; k++)
-                    if (varFix[i][j][k][0] == 0)
-                        resultVariables[i][j][k] = resultVariables[i][j][k] + b[i][j][k];
+                    for (int l = 0; l< nbNodes; l++)
+                        if (!varFix[i].get(j,k,l).found)
+                            resultVariables[i].get(j,k).set(l,resultVariables[i].get(j,k,l) + b[i].get(j,k,l));
     }
 
 
@@ -380,13 +396,16 @@ public class Extracteur
             return;
         }
         NumberFormat nf = new DecimalFormat("0.00###");
-        for (int t = 0; t < 3; t++) {
-            System.out.print("\n" + st[t] + "\n");
-            for (int i = 0; i < nbNodes; i++) {
-                for (int j = 0; j < nbNodes; j++) {
-                    System.out.print(" " + nf.format(resultVariables[t][i][j]) + " ");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("\n" + st[i] + "\n");
+            for (int j = 0; j < nbNodes; j++) {
+                for (int k = 0; k < nbNodes; k++) {
+                    System.out.println("(");
+                    for (int l = 0; l < nbNodes; l++) {
+                        System.out.print(" " + nf.format(resultVariables[i].get(j, k, l)) + " ");
+                    }
+                    System.out.println(")");
                 }
-                System.out.println("");
             }
         }
         System.out.println("");

@@ -211,7 +211,7 @@ public class GraphicalFunctions
             line3 = new Line((centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
         }
 
-        else if (premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 'v') {
+        else if (premiereImageDuLien.orientation == 'value' && secondeImageDuLien.orientation == 'value') {
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, (centreYLinkArea1 + centreYLinkArea2) / 2);
 
             line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, (centreYLinkArea1 + centreYLinkArea2) / 2);
@@ -219,11 +219,11 @@ public class GraphicalFunctions
             line3 = new Line(centreXLinkArea1, (centreYLinkArea1 + centreYLinkArea2) / 2, centreXLinkArea2, (centreYLinkArea1 + centreYLinkArea2) / 2);
         }
 
-        else if ((premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'v') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'v') || (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 't')) {
+        else if ((premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'value') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'value') || (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 't')) {
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
             line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
         }
-        else if ((premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 'v' && secondeImageDuLien.orientation == 't')) {
+        else if ((premiereImageDuLien.orientation == 'value' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 'value' && secondeImageDuLien.orientation == 't')) {
             line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
 
             line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
@@ -524,7 +524,7 @@ public class GraphicalFunctions
 	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
 	{
 		ImageView firstCourantGenerator = new ImageView();
-		Image image2 = new Image("file:image/Generateur de courant v.png");
+		Image image2 = new Image("file:image/Generateur de courant value.png");
 		firstCourantGenerator.setImage(image2);
 		firstCourantGenerator.setX(10);
 		firstCourantGenerator.setY(80);
@@ -535,7 +535,7 @@ public class GraphicalFunctions
 		firstCourantGenerator.setOnMouseClicked(event -> {
 			System.out.println("Un generateur de courant devrait apparaitre");
 			ImageView courantGenerator = new ImageView();
-			Image image = new Image("file:image/Generateur de courant v.png");
+			Image image = new Image("file:image/Generateur de courant value.png");
 			courantGenerator.setImage(image);
 			courantGenerator.setX(200);
 			courantGenerator.setY(100);
@@ -561,7 +561,7 @@ public class GraphicalFunctions
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10);
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'value',"Generateur de courant " + idCourantgeGenerator,10);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));

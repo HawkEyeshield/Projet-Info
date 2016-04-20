@@ -1,5 +1,10 @@
 package resolution;
 
+import components.Couple;
+import components.Tableau;
+
+import java.util.function.DoubleUnaryOperator;
+
 /**
  * Classe définissant une équation, utilisée par la suite par le solveur et l'extracteur
  * @author Rapĥaël
@@ -19,7 +24,7 @@ public class Equation
     Ces matrices sont triangulaires inerieures strictes, pour plus de clarté dans les equations (on aura dont Xij avec j<i)*/
     
     /** tableau de courant, tension, admittance*/
-    private double[][][] t;
+    private Tableau<Double>[] t;
 
     /**La constante est la somme des parametres connus*/
     public double constante;
@@ -49,38 +54,39 @@ public class Equation
     /* Déclaration du constructeur */
     /* =========================== */
     
-    public Equation(double[][] tens, double[][] cour, double[][] admit, double cst, char[] v, double[] courantAlim) {
-        size = tens.length;
+    public Equation(Tableau tens, Tableau cour,Tableau admit, double cst, char[] v, double[] courantAlim) {
+        size = tens.size();
         constante = cst;
         names = v;
         powerCurrents = courantAlim;
 
         used = false;
         solved = false;
-        t = new double[][][]{symetrise(true, cour), symetrise(true, tens), symetrise(false, admit)};
+        t = (Tableau<Double>[])new Tableau[]{symetrise(true, cour), symetrise(true, tens), symetrise(false, admit)};
         update();
     }
 
     /**fonction de triangularisation des matrices : passage des coefficients sur le triangle inferieur strict.*/
-    double[][] symetrise(boolean opposition, double[][] source) {
-        double[][] ret = new double[source.length][source[0].length];
+    Tableau symetrise(boolean opposition, Tableau<Double> source) {
+        Tableau ret = new Tableau<Double>(source.size());
         for (int k = 0; k < 3; k++) {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < i; j++) {
-                    if (opposition) {//si on doit symetriser
-                        ret[i][j] = source[i][j] - source[j][i];
-                        ret[j][i] = 0;
-                    } else {
-                        ret[i][j] = source[i][j] + source[j][i];
-                        ret[j][i] = 0;
-                    }
+                    for (int l = 0; l < source.size(i, j); l++)
+                        if (opposition) {//si on doit symetriser
+                            ret.get(i,j).add(source.get(i,j,l) - source.get(j,i,l));
+                            ret.get(i,j).add(0);
+                        } else {
+                            ret.get(i,j).add(source.get(i,j,l) + source.get(j,i,l));
+                            ret.get(i,j).add(0);
+                        }
                 }
             }
         }
         return ret;
     }
 
-    boolean substituate(int type, int i, int j, double[][][] mod, double cst, double[] curr) {
+    boolean substituate(int type, int i, int j, int k, Tableau<Double>[] mod, double cst, double[] curr) {
         //mod_x (x in [|1;3|] donne l'equivalent de la variable substituée dans la base des autres parametres ohmiques
         //cst est la constante à ajouter
 
@@ -92,24 +98,25 @@ public class Equation
 
         double coeff;
         if (type != -1) {
-            if (mod[type][i][j] != 0)
+            if (mod[type].get(i,j,k) != 0)//si on reintroduit de la variable injectée
                 return false; //###################################################################### d�clencher une exception
             //##############################################################################################################verifier que la substitution ne fait pas intervenir le parametre qu'elle substitue
-            coeff = t[type][i][j];
+            coeff = t[type].get(i,j,k);
         } else coeff = powerCurrents[j];
 
         //substitution dans les parametres réguliers
-        double[][] m;
-        double[][] cur;
+        Tableau<Double> m;
+        Tableau<Double> act;
         if (coeff != 0) {
-            for (int t = 0; t < 3; t++) {//modification de chaque tableau de variables
+            for (int c = 0; c < 3; c++) {//modification de chaque tableau de variables
                 //ajout terme a terme des tableaux
-                cur = this.t[t];
-                m = mod[t];
+                act = t[c];
+                m = mod[c];
                 //
                 for (int x = 0; x < size; x++)
                     for (int y = 0; y < size; y++) //par colonne
-                        cur[x][y] += coeff * m[x][y];//somme des coefficients
+                        for (int z = 0;z<act.size(x,y);z++)
+                            act.get(x,y).set(z,act.get(x,y,z)+coeff * m.get(x,y,z));//somme des coefficients
             }
         }
 
@@ -120,7 +127,7 @@ public class Equation
         for (int ca = 0; ca < powerCurrents.length; ca++) powerCurrents[ca] += coeff * curr[ca];
 
         //mise à 0 du parametre substitué
-        if (type != -1) t[type][i][j] = 0;//parametre regulier
+        if (type != -1) t[type].get(i,j).set(k,0.0);//parametre regulier
         else powerCurrents[j] = 0;//courantAlim
 
         update();
@@ -128,30 +135,30 @@ public class Equation
     }
 
     /**fonction d'elimination du courant (changement en U ou en Y dependant de  I = U*Y et de la connaissance de la tension ou de l'admittance asociée*/
-    public void eliminateCurrent(boolean replaceByVoltage, int i, int j, double value) {
-        double coeff = t[0][i][j];
+    public void eliminateCurrent(boolean replaceByVoltage, int i, int j, int k, double value) {
+        double coeff = t[0].get(i,j,k);
         if (coeff != 0) {
             if (replaceByVoltage) {//Si on doit faire apparaitre une tension
-                t[1][i][j] += value * coeff;
-                t[0][i][j] = 0;
+                t[1].get(i,j).set(k,t[1].get(i,j,k)+value*coeff);
+                t[0].get(i,j).set(k,0.0);
             } else {//Si on doit faire apparaitre une admittance
-                t[2][i][j] += value * coeff;
-                t[0][i][j] = 0;
+                t[2].get(i,j).set(k,t[2].get(i,j,k)+value*coeff);
+                t[0].get(i,j).set(k,0.0);
             }
         }
     }
 
     /**fonction de remplacement d'une variable par sa valeur determinée*/
-    public boolean replace(int type, int i, int j, double value) {
+    public boolean replace(int type, int i, int j, int k, double value) {
         //type : -1 powercurrent; 0 : cournat; 1 : tension; 2 : admittance
         if ((type == -1) && (i == -1)) {//si on doit remplacer un courantAlim (j joue toujours le role d'indicatif).
             constante -= value * powerCurrents[j];
             powerCurrents[j] = 0;
         }
         else {//Si on doit plutot remplacer une variable reguliere
-            double coeff = t[type][i][j];
+            double coeff = t[type].get(i,j,k);
             constante -= coeff * value;
-            t[type][i][j] = 0;
+            t[type].get(i,j).set(k,0.0);
         }
         update();
         return true;
@@ -173,11 +180,12 @@ public class Equation
             if (a != 0) cpt++;
 
         //Parametres  reguliers
-        for (int x = 0; x < 3; x++)
+        for (int c = 0; c < 3; c++)
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    if (t[x][i][j] != 0)
-                        cpt++;
+                    for (int k= 0;k<t[c].size(i,j);k++)
+                        if (t[c].get(i,j,k) != 0)
+                            cpt++;
         nunk = cpt;
     }
 
@@ -186,12 +194,13 @@ public class Equation
         //d'abord les variables regulieres
         int[] ret = new int[]{-1, -1, -1};
 
-        for (int x = 0; x < 3; x++)
+        for (int c = 0; c < 3; c++)
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    if (t[x][i][j] != 0) //trouvé
-                        //on marque l'equation comme utilisée
-                        ret = new int[]{x, i, j};
+                    for (int k= 0;k<t[c].size(i,j);k++)
+                        if (t[c].get(i,j,k) != 0) //trouvé
+                            //on marque l'equation comme utilisée
+                            ret = new int[]{c, i, j, k};
 
         // et si on a pas trouvé, les courants generateurs
         for (int j = 0; j < powerCurrents.length; j++)
@@ -207,7 +216,7 @@ public class Equation
         double coeff;//le coefficient de ladite variable
 
         if (id[0] == -1) coeff = powerCurrents[id[2]];
-        else coeff = t[id[0]][id[1]][id[2]];
+        else coeff = t[id[0]].get(id[1],id[2],id[3]);
 
         return constante / coeff;
     }
@@ -222,7 +231,7 @@ public class Equation
 
         //coeff
         if (b) coeff = powerCurrents[id[2]];
-        else coeff = t[id[0]][id[1]][id[2]];
+        else coeff = t[id[0]].get(id[1],id[2],id[3]);
 
         //ajout des lignes
         for (int i = 0; i < powerCurrents.length; i++) ret[i] = -powerCurrents[i] / coeff;
@@ -232,22 +241,25 @@ public class Equation
     }
 
     /**fonction de recuperation des variables regulieres equivalentes à une variable (reguliere ou non)*/
-    public double[][][] getEquivalent(int[] id) {
+    public Tableau<Double>[] getEquivalent(int[] id) {
         //init des variables
-        double[][][] ret = new double[3][size][size];
+        Tableau<Double>[] ret = new Tableau[3];
         double coeff;
 
         //determination du coeff;
         if ((id[0] == -1)) coeff = powerCurrents[id[2]];
-        else coeff = t[id[0]][id[1]][id[2]];
+        else coeff = t[id[0]].get(id[1], id[2], id[3]);
 
         //completion du tableau de retour
-        for (int x = 0; x < 3; x++)
+        for (int c = 0; c < 3; c++) {
+            ret[c] = new Tableau<>(size);
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    if ((x == id[0]) && (i == id[1]) && (j == id[2]))//si on est à la variable à equivalenter
-                        ret[x][i][j] = 0;
-                    else ret[x][i][j] = -t[x][i][j] / coeff;
+                    for (int k = 0; k < size; k++)
+                        if ((c == id[0]) && (i == id[1]) && (j == id[2]) &&(k==id[3]))//si on est à la variable à equivalenter
+                            ret[c].get(i,j).set(k,0.0);
+                        else ret[c].get(i,j).set(k, -t[c].get(i,j,k) / coeff);
+        }
         return ret;
     }
 
@@ -255,7 +267,8 @@ public class Equation
     public boolean isCurrentPresent() {
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++) //si on arrive à un coeff non nul, on retourne true
-                if (t[0][i][j] != 0) return true;
+                for (int k = 0; k < size; k++) //si on arrive à un coeff non nul, on retourne true
+                    if (t[0].get(i,j,k) != 0) return true;
         return false;
     }
 
@@ -264,13 +277,15 @@ public class Equation
         String str = "";
         boolean sum = false;
         for (int typ = 0; typ < 3; typ++) {
-            double[][] c = t[typ];
+            Tableau<Double> c = t[typ];
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    if (c[i][j] != 0) {
-                        if (sum) str += " + ";
-                        else sum = true;
-                        if (c[i][j] != 0) str += c[i][j] + "*" + names[typ] + "(" + i + "," + j + ")";
+                    for (int k = 0; k < size; k++) {
+                        if (c.get(i,j,k) != 0) {
+                            if (sum) str += " + ";
+                            else sum = true;
+                            str += c.get(i,j,k) + "*" + names[typ] + "(" + i + "," + j + ","+ k + ")";
+                        }
                     }
         }
         for (int k = 0; k < powerCurrents.length; k++)
