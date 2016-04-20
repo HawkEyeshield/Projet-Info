@@ -1,3 +1,5 @@
+
+
 package graphics;
 
 import circuit.Breadboard;
@@ -556,7 +558,7 @@ public class GraphicalFunctions
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'value',"Generateur de courant " + idCourantgeGenerator,10);
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
