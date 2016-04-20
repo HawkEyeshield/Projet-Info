@@ -27,7 +27,7 @@ public class Controller implements javafx.fxml.Initializable
 
         // On charge les images des composants dans la zone de droite
         GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane);
-        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane);
+        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane);
         GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreerUnLien);
 
         CreerUnLien.setOnMouseClicked(event -> {

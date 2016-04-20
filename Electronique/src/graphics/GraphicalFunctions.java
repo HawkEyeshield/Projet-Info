@@ -1,19 +1,18 @@
 package graphics;
 
-import java.util.ArrayList;
-
 import circuit.Breadboard;
 import components.AbstractDipole;
-import components.CurrentGenerator;
-import components.VoltageGenerator;
-import graphStructure.Vertex;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.geometry.Side;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+
+//import java.awt.event.ActionEvent;
 
 /** Interface donnant les différentes fonctions utilisées dans l'interface
  * @author Tanguy 
@@ -42,10 +41,11 @@ public class GraphicalFunctions
 	public static int idNode = 0; 
 	
 	/**tableau qui liste les liens*/
-	public static Link [] boardOfLink = new Link[maxLien];
+	public  static ArrayList<Link> arrayListOfLink = new ArrayList<Link>();
+	//public static Link [] boardOfLink = new Link[maxLien];
 	
 	/**Compte le nombre de lien*/
-	public static int nombreDeLien = 0; 
+	//public static int nombreDeLien = 0;
 	
 	public static int linkArea;
 	
@@ -117,6 +117,86 @@ public class GraphicalFunctions
             line3 = new Line((centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
         }
 
+		else if((linkAreaUsed1 == 2 && linkAreaUsed2 == 4) || (linkAreaUsed1 == 4 && linkAreaUsed2 == 2)){
+
+			line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,(centreYLinkArea1+centreYLinkArea2)/2);
+
+			line2 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,(centreYLinkArea2 + centreYLinkArea1)/2);
+
+			line3 = new Line(centreXLinkArea2,(centreYLinkArea2 + centreYLinkArea1)/2,centreXLinkArea1,(centreYLinkArea1+centreYLinkArea2)/2);
+		}
+
+		else if((linkAreaUsed1 == 1 && linkAreaUsed2 == 2) || (linkAreaUsed1 == 3 && linkAreaUsed2 == 2) ){
+			line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
+			line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
+		}
+
+		else if((linkAreaUsed1 == 2 && linkAreaUsed2 == 1) || (linkAreaUsed1 == 2 && linkAreaUsed2 == 3)){
+			line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
+			line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
+		}
+
+		else if(linkAreaUsed1 == 1 && linkAreaUsed2 == 1){
+			if(centreXLinkArea1 < centreXLinkArea2){
+				line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1 - 30,centreYLinkArea1);
+				line2 = new Line(centreXLinkArea1 - 30, centreYLinkArea1,centreXLinkArea1 - 30,centreYLinkArea2);
+				line3 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea1 - 30,centreYLinkArea2);
+			}
+			else{
+				line1 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2 - 30,centreYLinkArea2);
+				line2 = new Line(centreXLinkArea2 - 30, centreYLinkArea2,centreXLinkArea2 - 30,centreYLinkArea1);
+				line3 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea2 - 30,centreYLinkArea1);
+			}
+		}
+
+		else if(linkAreaUsed1 == 2 && linkAreaUsed2 == 2){
+			if(centreYLinkArea1 < centreYLinkArea2){
+				line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,centreYLinkArea1 - 30);
+				line2 = new Line(centreXLinkArea1, centreYLinkArea1 - 30,centreXLinkArea2,centreYLinkArea1 - 30);
+				line3 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,centreYLinkArea1 - 30);
+			}
+			else{
+				line1 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,centreYLinkArea2 - 30);
+				line2 = new Line(centreXLinkArea2, centreYLinkArea2 - 30,centreXLinkArea1,centreYLinkArea2 - 30);
+				line3 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,centreYLinkArea2 - 30);
+			}
+		}
+
+		else if(linkAreaUsed1 == 3 && linkAreaUsed2 == 3){
+			if(centreXLinkArea1 > centreXLinkArea2){
+				line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1 + 30,centreYLinkArea1);
+				line2 = new Line(centreXLinkArea1 + 30, centreYLinkArea1,centreXLinkArea1 + 30,centreYLinkArea2);
+				line3 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea1 + 30,centreYLinkArea2);
+			}
+			else{
+				line1 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2 + 30,centreYLinkArea2);
+				line2 = new Line(centreXLinkArea2 + 30, centreYLinkArea2,centreXLinkArea2 + 30,centreYLinkArea1);
+				line3 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea2 + 30,centreYLinkArea1);
+			}
+		}
+
+		else if(linkAreaUsed1 == 4 && linkAreaUsed2 == 4){
+			if(centreYLinkArea1 > centreYLinkArea2){
+				line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,centreYLinkArea1 + 30);
+				line2 = new Line(centreXLinkArea1, centreYLinkArea1 + 30,centreXLinkArea2,centreYLinkArea1 + 30);
+				line3 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,centreYLinkArea1 + 30);
+			}
+			else{
+				line1 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,centreYLinkArea2 + 30);
+				line2 = new Line(centreXLinkArea2, centreYLinkArea2 + 30,centreXLinkArea1,centreYLinkArea2 + 30);
+				line3 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,centreYLinkArea2 + 30);
+			}
+		}
+
+		else if((linkAreaUsed1 == 1 && linkAreaUsed2 == 4) || (linkAreaUsed1 == 4 && linkAreaUsed2 == 1)){
+			if(centreXLinkArea1 < centreYLinkArea1) {
+				line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
+
+				line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
+			}
+		}
+
+		/*
          else if (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'h') {
 
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1);
@@ -146,11 +226,11 @@ public class GraphicalFunctions
         else if (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 't') {
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea2);
         }
-
+		*/
         if (k == -1) { //Si on ajoute un nouveau lien k = -1
             boolean a = true; //Permet de véfifier si il n'existe pas déjà un lien qui part de cet endroit la.
-            for (int i = 0; i < nombreDeLien; i++) {
-                if ((premiereImageDuLien == boardOfLink[i].image1 && linkAreaUsed1 == boardOfLink[i].linkAreaUsed1) || (premiereImageDuLien == boardOfLink[i].image2 && linkAreaUsed1 == boardOfLink[i].linkAreaUsed2) || (secondeImageDuLien == boardOfLink[i].image1 && linkAreaUsed2 == GraphicalFunctions.boardOfLink[i].linkAreaUsed1) || (secondeImageDuLien == boardOfLink[i].image2 && linkAreaUsed2 == boardOfLink[i].linkAreaUsed2)) {
+            for (int i = 0; i < arrayListOfLink.size(); i++) {
+                if ((premiereImageDuLien == secondeImageDuLien) ||(premiereImageDuLien == arrayListOfLink.get(i).image1 && linkAreaUsed1 == arrayListOfLink.get(i).linkAreaUsed1) || (premiereImageDuLien == arrayListOfLink.get(i).image2 && linkAreaUsed1 == arrayListOfLink.get(i).linkAreaUsed2) || (secondeImageDuLien == arrayListOfLink.get(i).image1 && linkAreaUsed2 == arrayListOfLink.get(i).linkAreaUsed1) || (secondeImageDuLien == arrayListOfLink.get(i).image2 && linkAreaUsed2 == arrayListOfLink.get(i).linkAreaUsed2)) {
                     a = false;//On indique qu'il ne faut pas afficher le lien, ni l'enregistrer et on affiche un message d'erreur
                     Text informations = new Text("Mettre un noeud pour relier ces deux éléments");
                     informations.setLayoutX(5);
@@ -166,9 +246,8 @@ public class GraphicalFunctions
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
-                boardOfLink[nombreDeLien] = new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3);
-                System.out.println("on devrait rajouter un truc a la case " + nombreDeLien);
-                nombreDeLien += 1;
+                arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
+                System.out.println("on devrait rajouter un truc a la case " + arrayListOfLink.size());
                 //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
                 // breadboard.addLink();
             }
@@ -177,9 +256,9 @@ public class GraphicalFunctions
             anchorPane2.getChildren().add(line1);
             anchorPane2.getChildren().add(line2);
             anchorPane2.getChildren().add(line3);
-            boardOfLink[k].lien1 = line1;
-            boardOfLink[k].lien2 = line2;
-            boardOfLink[k].lien3 = line3;
+			arrayListOfLink.get(k).lien1 = line1;
+			arrayListOfLink.get(k).lien2 = line2;
+			arrayListOfLink.get(k).lien3 = line3;
             //TODO Pour Sterenn : mettre la fonction qui actualise le lien dans la breadboard
             // breadboard.addLink();
         }
@@ -194,15 +273,27 @@ public class GraphicalFunctions
      * @param anchorPane2 zone ou l'on travail
      */
     public static void actualiseViewOfLink(Component image, AnchorPane anchorPane2) {
-        for (int i = 0; i < nombreDeLien;i++){
-            if(boardOfLink[i].image1 == image || boardOfLink[i].image2 == image){
-                anchorPane2.getChildren().remove(boardOfLink[i].lien1);
-                anchorPane2.getChildren().remove(boardOfLink[i].lien2);
-                anchorPane2.getChildren().remove(boardOfLink[i].lien3);
-                addLink(boardOfLink[i].image1,boardOfLink[i].image2,boardOfLink[i].linkAreaUsed1,boardOfLink[i].linkAreaUsed2,i, anchorPane2);
+        for (int i = 0; i < arrayListOfLink.size();i++){
+            if(arrayListOfLink.get(i).image1 == image || arrayListOfLink.get(i).image2 == image){
+                anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
+                anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien2);
+                anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien3);
+                addLink(arrayListOfLink.get(i).image1,arrayListOfLink.get(i).image2,arrayListOfLink.get(i).linkAreaUsed1,arrayListOfLink.get(i).linkAreaUsed2,i, anchorPane2);
             }
         }
     }
+
+	public  static void deleteComponent(Component composant, AnchorPane anchorPane2){
+		//TODO supprimer le composant de la breadboard et les liens qui existe avec lui !
+		for ( int i =0 ; i < arrayListOfLink.size(); i++){
+			if(arrayListOfLink.get(i).image1 == composant || arrayListOfLink.get(i).image2 == composant){
+				anchorPane2.getChildren().removeAll(arrayListOfLink.get(i).lien1,arrayListOfLink.get(i).lien2,arrayListOfLink.get(i).lien3);
+				anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
+				arrayListOfLink.set(i,new Link());
+			}
+		}
+		arrayListOfLink.remove(new Link());
+	}
 
 	/**
 	 * Permet de faire apparaitre un generateur de tension
@@ -210,7 +301,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
+	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane)
 	{
 		ImageView firstVoltageGenerator = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/Generateur de tension h.png"); // On va la cherche au bonne endroit
@@ -251,9 +342,11 @@ public class GraphicalFunctions
 			linkArea3.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
+
+
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
-            //On creer l'objet mais on ne l'ajoute pas encore a la breadboard
+            //On creer l'objet
 			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h',"Generateur de tension " + idVotalgeGenerator, 10);
 			
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
@@ -262,7 +355,7 @@ public class GraphicalFunctions
 
 			//Permet de voir le nom et la valeur
             tensionGenerator.setOnMouseEntered(event3 -> {
-                Text informations = new Text("Nom : " + componentVoltageGenerator.name);
+                Text informations = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value);
                 informations.setLayoutX(tensionGenerator.getX());
                 informations.setLayoutY(tensionGenerator.getY() + 65);
                 anchorPane2.getChildren().add(informations);
@@ -301,57 +394,116 @@ public class GraphicalFunctions
 				}
 			});
 
-            //Permet de faire apparaitre un menu avec le clique droit
-            tensionGenerator.setOnMouseClicked(event4 -> {
-                System.out.println("coucou");
-            });
+			//Menu qui s'affiche quand on effectue un clic droit sur l'objet
+
+			ContextMenu menu = new ContextMenu();
+			MenuItem rotation = new MenuItem("Effectuer une rotation");
+			MenuItem changeValue = new MenuItem("Changer de valeur");
+			MenuItem delete = new MenuItem("Supprimer le composant");
+			MenuItem changeName = new MenuItem("Changer le nom");
+
+			delete.setOnAction(event1 -> {
+				deleteComponent(componentVoltageGenerator,anchorPane2);
+			});
+
+			changeName.setOnAction(event1 -> {
+				TextField zonePourChangerName = new TextField("Entrer votre valeur");
+				zonePourChangerName.setLayoutX(menu.getX());
+				zonePourChangerName.setLayoutY(menu.getY());
+				anchorPane2.getChildren().add(zonePourChangerName);
+				zonePourChangerName.setOnAction(event8 ->{
+					String a = zonePourChangerName.getText();
+					if (a.equals("Tanguy")) {
+						System.out.println("Excellent choix !");
+					}
+					componentVoltageGenerator.name = a;
+					//TODO Actualiser le nom dans la breadboard
+					anchorPane2.getChildren().remove(zonePourChangerName);
+
+				});
+			});
+
+			changeValue.setOnAction(event1 ->{
+				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+				zonePourChangerValeur.setLayoutX(menu.getX());
+				zonePourChangerValeur.setLayoutY(menu.getY());
+				anchorPane2.getChildren().add(zonePourChangerValeur);
+				zonePourChangerValeur.setOnAction(event8 ->{
+					String a = zonePourChangerValeur.getText();
+					double x;
+					try {x = Double.parseDouble(a);
+						componentVoltageGenerator.value = x;
+						//TODO Actualiser la valeur dans la breadboard
+						anchorPane2.getChildren().remove(zonePourChangerValeur);
+					}
+					catch(NumberFormatException erreur){
+						System.out.println("ERREUR");
+						zonePourChangerValeur.setText("Entrer une valeur correct");
+					}
+				});
+			});
+
+
+
+
+			menu.getItems().addAll(changeName,changeValue,rotation,delete);
+
+
+			tensionGenerator.setOnContextMenuRequested(event11 ->{
+				menu.show(tensionGenerator, Side.BOTTOM,0,0);
+			});
+
+
 
            // Permet de deplacer le generateur de tension d'un point a un autre
 			tensionGenerator.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d") { //En position Drag and Drop
-					// position de l'image
-					double imagx = image.getWidth();
-					double imagy = image.getHeight();
 
-					//System.out.println(imagx);
-					// on récupère la taille de la fenêtre
-					double x = event1.getSceneX();
-					double y = event1.getSceneY();
+				if (event1.isPrimaryButtonDown()) {
+					if (etat == "d") { //En position Drag and Drop
+						// position de l'image
+						double imagx = image.getWidth();
+						double imagy = image.getHeight();
 
-					// Permet de ne pas sortir du cadre
-					if (x < (imagx / 2)) {
-						x = (imagx / 2);
-					} // on evite de sortir du cadre a gauche
-					if (y < (65 + imagy / 2)) {
-						y = (65 + imagy / 2);
-					} // on evite de sortir du cadre en haut
+						//System.out.println(imagx);
+						// on récupère la taille de la fenêtre
+						double x = event1.getSceneX();
+						double y = event1.getSceneY();
 
-					double mx = anchorPane2.getWidth();
+						// Permet de ne pas sortir du cadre
+						if (x < (imagx / 2)) {
+							x = (imagx / 2);
+						} // on evite de sortir du cadre a gauche
+						if (y < (65 + imagy / 2)) {
+							y = (65 + imagy / 2);
+						} // on evite de sortir du cadre en haut
 
-					double my = anchorPane2.getHeight();
-					if (x + imagx / 2 > mx - 20) {
-						x = mx - imagx / 2 - 20;
-					} // on evite de sortir du cadre a droite
+						double mx = anchorPane2.getWidth();
+
+						double my = anchorPane2.getHeight();
+						if (x + imagx / 2 > mx - 20) {
+							x = mx - imagx / 2 - 20;
+						} // on evite de sortir du cadre a droite
 
 					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
 					 * c est a dire le centre x plus la largeur de l image divise par 2 */
-					if (y + imagy / 2 > my - 20) {
-						y = my - imagy / 2 - 20;
-					} // on evite de sortir du cadre en bas
+						if (y + imagy / 2 > my - 20) {
+							y = my - imagy / 2 - 20;
+						} // on evite de sortir du cadre en bas
 
-                    //Ici on repositionne l'image est les 4 potentiel carré noir autour
-					tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
-					tensionGenerator.setX(x - imagx / 2);
-					tensionGenerator.setY(y - imagy / 2);
-					linkArea3.relocate(tensionGenerator.getX() + image.getWidth(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea3.setX(tensionGenerator.getX() + image.getWidth());
-					linkArea3.setY(tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea1.relocate(tensionGenerator.getX(),tensionGenerator.getY()+ image.getHeight()/2);
-					linkArea1.setX(tensionGenerator.getX());
-					linkArea1.setY(tensionGenerator.getY()+ image.getHeight()/2);
+						//Ici on repositionne l'image est les 4 potentiel carré noir autour
+						tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
+						tensionGenerator.setX(x - imagx / 2);
+						tensionGenerator.setY(y - imagy / 2);
+						linkArea3.relocate(tensionGenerator.getX() + image.getWidth(), tensionGenerator.getY() + image.getHeight() / 2);
+						linkArea3.setX(tensionGenerator.getX() + image.getWidth());
+						linkArea3.setY(tensionGenerator.getY() + image.getHeight() / 2);
+						linkArea1.relocate(tensionGenerator.getX(), tensionGenerator.getY() + image.getHeight() / 2);
+						linkArea1.setX(tensionGenerator.getX());
+						linkArea1.setY(tensionGenerator.getY() + image.getHeight() / 2);
 
-					actualiseViewOfLink(componentVoltageGenerator,anchorPane2); //On actualise les liens
+						actualiseViewOfLink(componentVoltageGenerator, anchorPane2); //On actualise les liens
+					}
 				}
 			});
 
@@ -456,9 +608,16 @@ public class GraphicalFunctions
             Permet de deplacer le generateur de courant d'un point a un autre
 			 */
 
+			//Permet de faire apparaitre un menu avec le clique droit
+			courantGenerator.setOnMousePressed(event4 -> {
+				if(event4.isSecondaryButtonDown()){
+					System.out.println("coucou");
+				}
+			});
+
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d") { //En position Drag and Drop
+				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					// taille de l'image
 					double imagx = image.getWidth();
 					double imagy = image.getHeight();
@@ -648,11 +807,25 @@ public class GraphicalFunctions
 				}
 			});
 
+            /*
+            //Test pour savoir si on peux faire tourner l'image
+            node.setOnMouseEntered(event5 ->{
+                node.setRotate(350);
+                System.out.println("ca devrait rotater");
+            });
+            */
+
+			//Permet de faire apparaitre un menu avec le clique droit
+			node.setOnMousePressed(event4 -> {
+				if(event4.isSecondaryButtonDown()){
+					System.out.println("coucou");
+				}
+			});
 			
             //Permet de deplacer le noeud d'un point a un autre
 			node.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d") { //En position Drag and Drop
+				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					//position de la souris
 					double imagx = image.getWidth();
 					double imagy = image.getHeight();

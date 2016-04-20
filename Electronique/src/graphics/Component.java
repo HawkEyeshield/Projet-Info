@@ -2,7 +2,7 @@ package graphics;
 
 import javafx.scene.image.ImageView;
 
-/**
+/** Composant avec ces zones de liens et les valeurs necessaire et les noms
  * Created by tanguy on 15/04/16.
  */
 public class Component {
