@@ -73,15 +73,15 @@ public class Extracteur
         }
 
         //Etape 0 : verification qu'il n'y ait pas d'admittances paralleles
-        logn("Verification des composants paralleles...");
-        for (int i = 0; i < nbNodes; i++) {
+        logn("PAS DE Verification des composants paralleles...");
+        /*for (int i = 0; i < nbNodes; i++) {
             for (int j = 0; j < i; j++) {
                 if (graph.existMultiAdmittances(vertices[i], vertices[j])) {
                     logn("Deux Admittances sont connectees en parallele, je ne peux résoudre ce systeme pour l'instant.");
                     return false;
                 }
             }
-        }
+        }*/
         logn("Fait\n");
 
         logn("Tout a l'air correct.\n\nRecherche des generateurs ... ");
@@ -114,15 +114,18 @@ public class Extracteur
         //le solveur
         Solveur solveur;
 
-        //initialisation des tableaux de resultats :
+        //tailles des tableaux à manipuler
+        int[][] sizes = new int[nbNodes][nbNodes];
+        for (int i = 0;i<nbNodes;i++)
+            for (int j = 0;j<nbNodes;j++)
+                sizes[i][j] = 1;
+
+        //tableaux de données
         resultCurrents = new double[nbGenerators];
         resultVariables = (Tableau<Double>[]) new Tableau[3];
-
-        //Tableaux des variables fixees
         varFix = (Tableau<Couple>[]) new Tableau[3];//TODO voir si on peut pas supprier VarFix vu qu'on fait tout d'un coup
-        int s;
 
-        int[][] sizes = new int[nbNodes][nbNodes];
+
         int b,l,n;
         for (Edge e : graph.getAllEdges()) {
             b = e.beginVertex().get();
@@ -131,6 +134,14 @@ public class Extracteur
             sizes[b][l] = n;
             sizes[l][b] = n;
         }
+
+        //init
+        for (int i = 0;i<3;i++) {
+            resultVariables[i] = new Tableau<Double>(nbNodes, sizes, ()->0.0);//TODO virer le nbNodes en pram qui fait doublon avec sizes
+            varFix[i] = new Tableau<Couple>(nbNodes, sizes, ()->new Couple(false,0.0));
+        }
+        int s;
+
 
         //Recuperation des variables fixees
         Vertex dep, arr;
@@ -142,7 +153,6 @@ public class Extracteur
             for (Admittance a : e.directAdmittances) {
                 double[][] det = a.getParameters();
                 for (int d = 0; d < 3; d++) {
-                    varFix[d] = new Tableau<Couple>(nbNodes,sizes,()->new Couple(false,0.0)) ;
                     s = 1;//les composants sont orientés en direct -> le signe vaut 1
                     if (det[d][0] == 1) {//pour chaque parametre fixe
                         //marquage de la determination du parametre
@@ -179,9 +189,9 @@ public class Extracteur
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < nbNodes; j++) {
                 for (int k = 0; k < nbNodes; k++) {
-                    for (int ll = 0; ll < nbNodes; ll++) {
+                    for (int ll = 0; ll < sizes[j][k]; ll++) {
                         if (varFix[i].get(j, k, ll).found)
-                            resultVariables[i].get(j,k).set(ll,varFix[i].get(j,k,ll).value);
+                            resultVariables[i].get(j, k).set(ll, varFix[i].get(j, k, ll).value);
                     }
                 }
             }
@@ -202,9 +212,9 @@ public class Extracteur
 
 
         //Tableaux de Variables, plus initialisation
-        Tableau<Couple> voltages = new Tableau<>(nbNodes, sizes, ()->(new Couple(false,0.0)));//pas besoin d'initialiser, car les tensions existent sans dipole.
+        Tableau<Couple> voltages = new Tableau<>(nbNodes, ()->(new Couple(false,0.0)));//pas besoin d'initialiser, car les tensions existent sans dipole.
 
-        Tableau<Couple> currents = new Tableau<>(nbNodes, sizes, ()->(new Couple(true,0.0)));//There we need to initialise, as current do not exist without a dipole
+        Tableau<Couple> currents = new Tableau<>(nbNodes, sizes, ()->(new Couple(true,0.0)));//There we need to initialise, as current does not exist without a dipole
 
         Tableau<Couple> admittances = new Tableau<>(nbNodes, sizes, ()->(new Couple(true,0.0)));
 
@@ -214,10 +224,10 @@ public class Extracteur
         //Vartab : [current, voltage, admittance]
         genVertices = new int[nbGenerators][2];
 
-        //Init des diagonales
-        for (int tp = 0; tp < nbNodes; tp++)
-            for (int dd = 0; dd < 3; dd++)
-                vartab[dd].get(tp,tp).add(new Couple(true,0.0));
+        for (int c = 0;c<3;c++)
+            for (int i = 0;i<nbNodes;i++)
+                voltages.get(i,i,0).found = true;
+
 
 
 
@@ -281,11 +291,9 @@ public class Extracteur
                         //todo : initialiser l'arrayList jusqu'à l'index donné par le composant pour pouvoir le remplir (--')
                         int index = m.component().index;//decarer avant la boucle
                         //todo on initialise a (true, 0)
-                        for (int i = currents.size(x,y); i<=index;i++) currents.get(x,y).add(new Couple(true,0.0));
-                        for (int i = currents.size(y,x); i<=index;i++) currents.get(y,x).add(new Couple(true,0.0));
                         currents.get(x,y,index).found = false;
                         admittances.get(x,y,index).found = false;
-                        eqCurrents.get(x,y).set(m.component().index,1.0);//ajout du courant traversant le composant concerné à l'equation
+                        eqCurrents.get(x,y).set(m.component().index, 1.0);//ajout du courant traversant le composant concerné à l'equation
                         /*Remarque
                             pas besoin de se preoccuper du signe ici, car on a pas de parametre fixé.
                             On a juste ajouté le courant ORIENTE allant de vertice a m.vertex donc par definition de ecoefficient 1.
@@ -325,7 +333,7 @@ public class Extracteur
 
             //ajout de l'equation
             Tableau<Double> t0 = new Tableau<>(nbNodes, () -> 0.0);
-            Tableau<Double> t1 = new Tableau<>(nbNodes, () -> 0.0);
+            Tableau<Double> t1 = new Tableau<>(nbNodes, sizes, () -> 0.0);
 
             Equation eq = new Equation(t0, eqCurrents, t1, 0, st, equationCurrents);
             equations.add(eq);
@@ -345,8 +353,8 @@ public class Extracteur
                  */
 
                 //ajout de l'equation
-                Tableau<Double> t0 = new Tableau<>(nbNodes, () -> 0.0);
-                Tableau<Double> t1 = new Tableau<>(nbNodes, () -> 0.0);
+                Tableau<Double> t0 = new Tableau<>(nbNodes, sizes, () -> 0.0);
+                Tableau<Double> t1 = new Tableau<>(nbNodes, sizes, () -> 0.0);
 
                 Equation eq = new Equation(volt, t0, t1, 0, st, new double[nbGenerators]);
                 equations.add(eq);
@@ -364,11 +372,13 @@ public class Extracteur
         Equation[] eq = equations.toArray(new Equation[equations.size()]);
 
         //creation du solveir
+
+
         solveur = new Solveur(voltages, currents, admittances, powerCurrents, eq);
         if (solveur.resolution()) {
             for (int i = 0; i < nbGenerators; i++) resultCurrents[i] = solveur.currGenerator()[i][1];
             //rapatriement resultats
-            ajout(solveur.variables());
+            resultVariables = solveur.variables();
             logn("Systeme resolu.\n");
             solved = true;
             return true;
@@ -400,12 +410,13 @@ public class Extracteur
             System.out.print("\n" + st[i] + "\n");
             for (int j = 0; j < nbNodes; j++) {
                 for (int k = 0; k < nbNodes; k++) {
-                    System.out.println("(");
-                    for (int l = 0; l < nbNodes; l++) {
+                    System.out.print("(");
+                    for (int l = 0; l < resultVariables[i].size(j,k); l++) {
                         System.out.print(" " + nf.format(resultVariables[i].get(j, k, l)) + " ");
                     }
-                    System.out.println(")");
+                    System.out.print(")");
                 }
+                System.out.println("");
             }
         }
         System.out.println("");
