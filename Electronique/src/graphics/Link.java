@@ -8,13 +8,13 @@ import javafx.scene.shape.Line;
  */
 public class Link 
 {
-    Component image1;
-    Component image2;
-    Line lien1;
-    Line lien2;
-    Line lien3;
-    int linkAreaUsed1;
-    int linkAreaUsed2;
+    Component image1 = null;
+    Component image2 = null;
+    Line lien1 = null;
+    Line lien2 = null;
+    Line lien3 = null;
+    int linkAreaUsed1 = 0;
+    int linkAreaUsed2 = 0;
 
     public Link(Component image1, Component image2,int linkAreaUsed1,int linkAreaUsed2, Line lien1, Line lien2,Line lien3)
     {
@@ -25,5 +25,9 @@ public class Link
         this.lien1 = lien1;
         this.lien2 = lien2;
         this.lien3 = lien3;
+    }
+
+    public  Link(){
+
     }
 }
