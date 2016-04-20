@@ -526,7 +526,7 @@ public class GraphicalFunctions
 	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
 	{
 		ImageView firstCourantGenerator = new ImageView();
-		Image image2 = new Image("file:image/Generateur de courant value.png");
+		Image image2 = new Image("file:image/Generateur de courant v.png");
 		firstCourantGenerator.setImage(image2);
 		firstCourantGenerator.setX(10);
 		firstCourantGenerator.setY(80);
@@ -537,7 +537,7 @@ public class GraphicalFunctions
 		firstCourantGenerator.setOnMouseClicked(event -> {
 			System.out.println("Un generateur de courant devrait apparaitre");
 			ImageView courantGenerator = new ImageView();
-			Image image = new Image("file:image/Generateur de courant value.png");
+			Image image = new Image("file:image/Generateur de courant v.png");
 			courantGenerator.setImage(image);
 			courantGenerator.setX(200);
 			courantGenerator.setY(100);
