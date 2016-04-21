@@ -42,7 +42,7 @@ public class GraphicalFunctions
 	/**Compte  le nombre de noeud*/
 	public static int idNode = 0; 
 	
-	/**tableau qui liste les liens*/
+	/**liste qui liste les liens*/
 	public  static ArrayList<Link> arrayListOfLink = new ArrayList<Link>();
 	//public static Link [] boardOfLink = new Link[maxLien];
 	
@@ -81,8 +81,6 @@ public class GraphicalFunctions
             centreXLinkArea1 = premiereImageDuLien.square2.getX() + 5;
             centreYLinkArea1 = premiereImageDuLien.square2.getY() + 5;
         } else if (linkAreaUsed1 == 3) {
-            System.out.println(premiereImageDuLien.square3.getX());
-            System.out.println(premiereImageDuLien.square3.getY());
             centreXLinkArea1 = premiereImageDuLien.square3.getX() + 5;
             centreYLinkArea1 = premiereImageDuLien.square3.getY() + 5;
         } else if (linkAreaUsed1 == 4) {
@@ -93,6 +91,7 @@ public class GraphicalFunctions
             centreXLinkArea2 = secondeImageDuLien.square1.getX() + 5;
             centreYLinkArea2 = secondeImageDuLien.square1.getY() + 5;
         } else if (linkAreaUsed2 == 2) {
+			System.out.println(secondeImageDuLien.square2.getX());
             centreXLinkArea2 = secondeImageDuLien.square2.getX() + 5;
             centreYLinkArea2 = secondeImageDuLien.square2.getY() + 5;
         } else if (linkAreaUsed2 == 3) {
@@ -106,9 +105,6 @@ public class GraphicalFunctions
         Line line1 = new Line(0, 0, 0, 0);
         Line line2 = new Line(0, 0, 0, 0);
         Line line3 = new Line(0, 0, 0, 0);
-
-
-        //TODO il y aurait BEAUCOUP mieux a faire en résonnant sur les LinkArea1 ou 2
 
 
         if((linkAreaUsed1 == 3 && linkAreaUsed2 == 1) || (linkAreaUsed1 == 1 && linkAreaUsed2 == 3)){
@@ -192,48 +188,34 @@ public class GraphicalFunctions
 
 		else if((linkAreaUsed1 == 1 && linkAreaUsed2 == 4) || (linkAreaUsed1 == 4 && linkAreaUsed2 == 1)) {
 			if (centreYLinkArea1 < centreYLinkArea2) {
-				line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
 
-				line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
+				if(centreXLinkArea1 > centreXLinkArea2){
+					line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
+
+					line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
+				}
+				else {
+					line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
+
+					line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
+				}
 			}
-			if (centreYLinkArea1 < centreYLinkArea2) {
-				line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
+			else {
+				if(centreXLinkArea1 > centreXLinkArea2) {
+					line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
 
-				line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
+					line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
+				}
+				else {
+					line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
+
+					line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
+				}
 			}
 		}
 
-		/*
-         else if (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'h') {
 
-            line1 = new Line(centreXLinkArea1, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1);
 
-            line2 = new Line(centreXLinkArea2, centreYLinkArea2, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
-
-            line3 = new Line((centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea2);
-        }
-
-        else if (premiereImageDuLien.orientation == 'value' && secondeImageDuLien.orientation == 'value') {
-            line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, (centreYLinkArea1 + centreYLinkArea2) / 2);
-
-            line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, (centreYLinkArea1 + centreYLinkArea2) / 2);
-
-            line3 = new Line(centreXLinkArea1, (centreYLinkArea1 + centreYLinkArea2) / 2, centreXLinkArea2, (centreYLinkArea1 + centreYLinkArea2) / 2);
-        }
-
-        else if ((premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 'value') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'value') || (premiereImageDuLien.orientation == 'h' && secondeImageDuLien.orientation == 't')) {
-            line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea1);
-            line2 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea2, centreYLinkArea1);
-        }
-        else if ((premiereImageDuLien.orientation == 'value' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 'h') || (premiereImageDuLien.orientation == 'value' && secondeImageDuLien.orientation == 't')) {
-            line1 = new Line(centreXLinkArea2, centreYLinkArea2, centreXLinkArea1, centreYLinkArea2);
-
-            line2 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea1, centreYLinkArea2);
-        }
-        else if (premiereImageDuLien.orientation == 't' && secondeImageDuLien.orientation == 't') {
-            line1 = new Line(centreXLinkArea1, centreYLinkArea1, centreXLinkArea2, centreYLinkArea2);
-        }
-		*/
         if (k == -1) { //Si on ajoute un nouveau lien k = -1
             boolean a = true; //Permet de véfifier si il n'existe pas déjà un lien qui part de cet endroit la.
             for (int i = 0; i < arrayListOfLink.size(); i++) {
@@ -271,6 +253,18 @@ public class GraphicalFunctions
         }
 
     }
+
+	static  public void deleteLink(Line lien, AnchorPane anchorPane2){
+		//TODO enlever le lien qui relie deux composants
+		for (int i = 0; i < arrayListOfLink.size();i++){
+			if(arrayListOfLink.get(i).lien1 == lien || arrayListOfLink.get(i).lien2 == lien || arrayListOfLink.get(i).lien3 == lien){
+				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
+				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien2);
+				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien3);
+				arrayListOfLink.remove(i);
+			}
+		}
+	}
 
     /**
      * Actualise les liens entre les objets.
@@ -340,6 +334,23 @@ public class GraphicalFunctions
 			linkArea1.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
+			ImageView linkArea2 = new ImageView();
+			Image square2 = new Image("file:image/LinkArea.png");
+			linkArea2.setImage(square2);
+			linkArea2.setFitHeight(10);
+			linkArea2.setFitWidth(10);
+			//linkArea2.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() - 25);
+			linkArea2.setX(100 + 100);
+			linkArea2.setY(100 - 25);
+
+			ImageView linkArea4 = new ImageView();
+			Image square4 = new Image("file:image/LinkArea.png");
+			linkArea4.setImage(square4);
+			linkArea4.setFitHeight(10);
+			linkArea4.setFitWidth(10);
+			linkArea4.setX(100 + 100);
+			linkArea4.setY(100 + 75);
+
 			ImageView linkArea3 = new ImageView();
 			Image square3 = new Image("file:image/LinkArea.png");
 			linkArea3.setImage(square3);
@@ -354,7 +365,7 @@ public class GraphicalFunctions
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
             //On creer l'objet
-			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,null,linkArea3,null,'h',"Generateur de tension " + idVotalgeGenerator, 10);
+			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVotalgeGenerator, 10);
 			
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
@@ -386,6 +397,20 @@ public class GraphicalFunctions
 					linkArea = 1;
 				}
 			});
+			linkArea2.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,2,-1,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+					linkArea = 2;
+				}
+			});
 			linkArea3.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
@@ -400,11 +425,25 @@ public class GraphicalFunctions
 					linkArea = 3;
 				}
 			});
+			linkArea4.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,4,-1,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+					linkArea = 4;
+				}
+			});
 
 			//Menu qui s'affiche quand on effectue un clic droit sur l'objet
 
 			ContextMenu menu = new ContextMenu();
-			MenuItem rotation = new MenuItem("Effectuer une rotation");
+			MenuItem rotation = new MenuItem("Effectuer une rotation de +90°");
 			MenuItem changeValue = new MenuItem("Changer de valeur");
 			MenuItem delete = new MenuItem("Supprimer le composant");
 			MenuItem changeName = new MenuItem("Changer le nom");
@@ -444,13 +483,41 @@ public class GraphicalFunctions
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
 					}
 					catch(NumberFormatException erreur){
-						System.out.println("ERREUR");
 						zonePourChangerValeur.setText("Entrer une valeur correct");
 					}
 				});
 			});
 
+			rotation.setOnAction(event1 -> {
+				if(tensionGenerator.getRotate() == 0) {
+					rotation.setText("Effectuer une rotation de +90°");
 
+					tensionGenerator.setRotate(90);
+
+					/*
+					L'acutalisation a pas l'air de marcher si il n'y a pas d'objet visuel, du coup on est obliger
+					de relocaliser l'image
+					 */
+					linkArea2.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() - 25);
+					linkArea2.setX(tensionGenerator.getX() + 50);
+					linkArea2.setY(tensionGenerator.getY() - 25);
+					linkArea4.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() + 75);
+					linkArea4.setX(tensionGenerator.getX() + 50);
+					linkArea4.setY(tensionGenerator.getY() + 75);
+
+					anchorPane2.getChildren().removeAll(linkArea1,linkArea3);
+					anchorPane2.getChildren().addAll(linkArea2,linkArea4);
+
+
+				}
+				else{
+					anchorPane2.getChildren().removeAll(linkArea2,linkArea4);
+					anchorPane2.getChildren().addAll(linkArea3,linkArea1);
+					tensionGenerator.setRotate(0);
+					rotation.setText("Effectuer une rotation de -90°");
+
+				}
+			});
 
 
 			menu.getItems().addAll(changeName,changeValue,rotation,delete);
@@ -469,8 +536,16 @@ public class GraphicalFunctions
 				if (event1.isPrimaryButtonDown()) {
 					if (etat == "d") { //En position Drag and Drop
 						// position de l'image
-						double imagx = image.getWidth();
-						double imagy = image.getHeight();
+						double imagx;
+						double imagy;
+						if(tensionGenerator.getRotate() == 0) {//Dans le bon sens
+							imagx = image.getWidth();
+							imagy = image.getHeight();
+						}
+						else{//rotation 90° donc on inverse la hauteur et la largeur
+							imagy = image.getWidth();
+							imagx = image.getHeight();
+						}
 
 						//System.out.println(imagx);
 						// on récupère la taille de la fenêtre
@@ -508,6 +583,13 @@ public class GraphicalFunctions
 						linkArea1.relocate(tensionGenerator.getX(), tensionGenerator.getY() + image.getHeight() / 2);
 						linkArea1.setX(tensionGenerator.getX());
 						linkArea1.setY(tensionGenerator.getY() + image.getHeight() / 2);
+
+						linkArea2.relocate(tensionGenerator.getX() + imagx,tensionGenerator.getY() - 25);
+						linkArea2.setX(tensionGenerator.getX() + imagx);
+						linkArea2.setY(tensionGenerator.getY() - 25);
+						linkArea4.relocate(tensionGenerator.getX() + imagx,tensionGenerator.getY() + 75);
+						linkArea4.setX(tensionGenerator.getX() + imagx);
+						linkArea4.setY(tensionGenerator.getY() + 75);
 
 						actualiseViewOfLink(componentVoltageGenerator, anchorPane2); //On actualise les liens
 					}
@@ -626,9 +708,16 @@ public class GraphicalFunctions
 			{
 				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					// taille de l'image
-					double imagx = image.getWidth();
-					double imagy = image.getHeight();
-
+					double imagx;
+					double imagy;
+					if(courantGenerator.getRotate() == 0) {//Dans le bon sens
+						imagx = image.getWidth();
+						imagy = image.getHeight();
+					}
+					else{//rotation 90° donc on inverse la hauteur et la largeur
+						imagy = image.getWidth();
+						imagx = image.getHeight();
+					}
 
 					//on récupère la taille de la fenêtre
 					double x = event1.getSceneX();
@@ -834,9 +923,16 @@ public class GraphicalFunctions
 			{
 				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					//position de la souris
-					double imagx = image.getWidth();
-					double imagy = image.getHeight();
-
+					double imagx;
+					double imagy;
+					if(node.getRotate() == 0) {//Dans le bon sens
+						imagx = image.getWidth();
+						imagy = image.getHeight();
+					}
+					else{//rotation 90° donc on inverse la hauteur et la largeur
+						imagy = image.getWidth();
+						imagx = image.getHeight();
+					}
 
 					//on récupère la taille de la fenêtre
 					double x = event1.getSceneX();
