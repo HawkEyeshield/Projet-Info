@@ -3,6 +3,7 @@ package resolution;
 import components.Couple;
 import components.Tableau;
 
+import java.util.ArrayList;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -54,7 +55,7 @@ public class Equation
     /* Déclaration du constructeur */
     /* =========================== */
     
-    public Equation(Tableau tens, Tableau cour,Tableau admit, double cst, char[] v, double[] courantAlim) {
+    public Equation(Tableau<Double> tens, Tableau<Double> cour,Tableau<Double> admit, double cst, char[] v, double[] courantAlim) {
         size = tens.size();
         constante = cst;
         names = v;
@@ -62,25 +63,25 @@ public class Equation
 
         used = false;
         solved = false;
+        //t = (Tableau<Double>[])new Tableau[]{cour, tens, admit};
         t = (Tableau<Double>[])new Tableau[]{symetrise(true, cour), symetrise(true, tens), symetrise(false, admit)};
+
         update();
     }
 
     /**fonction de triangularisation des matrices : passage des coefficients sur le triangle inferieur strict.*/
-    Tableau symetrise(boolean opposition, Tableau<Double> source) {
-        Tableau ret = new Tableau<Double>(source.size());
-        for (int k = 0; k < 3; k++) {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < i; j++) {
-                    for (int l = 0; l < source.size(i, j); l++)
-                        if (opposition) {//si on doit symetriser
-                            ret.get(i,j).add(source.get(i,j,l) - source.get(j,i,l));
-                            ret.get(i,j).add(0);
-                        } else {
-                            ret.get(i,j).add(source.get(i,j,l) + source.get(j,i,l));
-                            ret.get(i,j).add(0);
-                        }
-                }
+    Tableau<Double> symetrise(boolean opposition, Tableau<Double> source) {
+        Tableau<Double> ret = new Tableau<>(source.size(), source.sizeArray(), () -> 0.0);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < i; j++) {
+                for (int l = 0; l < source.size(i, j); l++)
+                    if (opposition) {//si on doit symetriser
+                        ret.get(i, j).set(l, source.get(i, j, l) - source.get(j, i, l));
+                        ret.get(j, i).set(l, 0.0);
+                    } else {
+                        ret.get(i, j).set(l, source.get(i, j, l) + source.get(j, i, l));
+                        ret.get(j, i).set(l, 0.0);
+                    }
             }
         }
         return ret;
@@ -139,7 +140,7 @@ public class Equation
         double coeff = t[0].get(i,j,k);
         if (coeff != 0) {
             if (replaceByVoltage) {//Si on doit faire apparaitre une tension
-                t[1].get(i,j).set(k,t[1].get(i,j,k)+value*coeff);
+                t[1].get(i,j).set(0,t[1].get(i,j,0)+value*coeff);
                 t[0].get(i,j).set(k,0.0);
             } else {//Si on doit faire apparaitre une admittance
                 t[2].get(i,j).set(k,t[2].get(i,j,k)+value*coeff);
@@ -157,6 +158,7 @@ public class Equation
         }
         else {//Si on doit plutot remplacer une variable reguliere
             double coeff = t[type].get(i,j,k);
+            //System.out.println("modified : ("+type+" "+i+" "+j+" "+k+" "+value+" "+coeff);
             constante -= coeff * value;
             t[type].get(i,j).set(k,0.0);
         }
@@ -183,16 +185,17 @@ public class Equation
         for (int c = 0; c < 3; c++)
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    for (int k= 0;k<t[c].size(i,j);k++)
-                        if (t[c].get(i,j,k) != 0)
+                    for (int k= 0;k<t[c].size(i,j);k++) {
+                        if (t[c].get(i, j, k)!=0)
                             cpt++;
+                    }
         nunk = cpt;
     }
 
     /**fonction de recuperation de la premiere variable disponnible (le courant passe avant)*/
     public int[] getFirstVariable() {
         //d'abord les variables regulieres
-        int[] ret = new int[]{-1, -1, -1};
+        int[] ret = new int[]{-1, -1, -1, -1};
 
         for (int c = 0; c < 3; c++)
             for (int i = 0; i < size; i++)
@@ -205,7 +208,7 @@ public class Equation
         // et si on a pas trouvé, les courants generateurs
         for (int j = 0; j < powerCurrents.length; j++)
             if (powerCurrents[j] != 0) //trouvé
-                ret = new int[]{-1, -1, j};
+                ret = new int[]{-1, -1, j, -1};
 
         used = true;
         return ret;
@@ -244,6 +247,7 @@ public class Equation
     public Tableau<Double>[] getEquivalent(int[] id) {
         //init des variables
         Tableau<Double>[] ret = new Tableau[3];
+
         double coeff;
 
         //determination du coeff;
@@ -252,10 +256,10 @@ public class Equation
 
         //completion du tableau de retour
         for (int c = 0; c < 3; c++) {
-            ret[c] = new Tableau<>(size);
+            ret[c] = new Tableau<>(size, t[c].sizeArray(), ()->0.0);
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    for (int k = 0; k < size; k++)
+                    for (int k = 0; k < t[c].size(i,j); k++)
                         if ((c == id[0]) && (i == id[1]) && (j == id[2]) &&(k==id[3]))//si on est à la variable à equivalenter
                             ret[c].get(i,j).set(k,0.0);
                         else ret[c].get(i,j).set(k, -t[c].get(i,j,k) / coeff);
@@ -267,7 +271,7 @@ public class Equation
     public boolean isCurrentPresent() {
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++) //si on arrive à un coeff non nul, on retourne true
-                for (int k = 0; k < size; k++) //si on arrive à un coeff non nul, on retourne true
+                for (int k = 0; k < t[0].size(i,j); k++) //si on arrive à un coeff non nul, on retourne true
                     if (t[0].get(i,j,k) != 0) return true;
         return false;
     }
@@ -280,7 +284,7 @@ public class Equation
             Tableau<Double> c = t[typ];
             for (int i = 0; i < size; i++)
                 for (int j = 0; j < size; j++)
-                    for (int k = 0; k < size; k++) {
+                    for (int k = 0; k < c.size(i,j); k++) {
                         if (c.get(i,j,k) != 0) {
                             if (sum) str += " + ";
                             else sum = true;

@@ -13,14 +13,18 @@ public class Tableau<T> {
     public Tableau(int n) {
         size = n;
         tab = (ArrayList<T>[][]) new ArrayList[size][size];
+        for (int i = 0;i<size;i++)
+            for (int j = 0;j<size;j++)
+                tab[i][j] = new ArrayList<>();
     }
 
     public Tableau(int n, int[][] sizes, Supplier<T> var) {
         this(n);
         for (int x = 0; x < n; x++)
-            for (int y = 0; y < n; y++)
+            for (int y = 0; y < n; y++) {
                 for (int l = 0; l < sizes[x][y]; l++)
                     tab[x][y].add(var.get());
+            }
     }
 
     public Tableau(int n, Supplier<T> var) {
@@ -29,7 +33,14 @@ public class Tableau<T> {
             for (int y = 0;y<n;y++) {
                 tab[x][y].add(var.get());
             }
+    }
 
+    public int[][] sizeArray() {
+        int[][] ret = new int[size][size];
+        for (int i = 0;i<size;i++)
+            for (int j = 0;j<size;j++)
+                ret[i][j] = tab[i][j].size();
+        return ret;
     }
 
     public ArrayList<T> get(int i, int j) {

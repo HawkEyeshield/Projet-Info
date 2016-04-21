@@ -2,6 +2,7 @@ package jUnit;
 
 
 import components.Admittance;
+import components.CurrentGenerator;
 import components.VoltageGenerator;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
@@ -33,9 +34,11 @@ public class TestDual extends AbstractUnit
 		//les divers composants sont ici ajoutés au graphe.
 		//Admittance a;
 
-		g.addComponent(v0, v1, new VoltageGenerator("E0", v0, v1, 10));
+		g.addComponent(v0, v1, new CurrentGenerator("E0", v0, v1, 20));
 
 		g.addComponent(v0, v1, new Admittance("Y0", v0, v1, 1));
+
+		g.addComponent(v0, v1, new Admittance("Y1", v0, v1, 1));
 
 
 		//création de l'extracteur

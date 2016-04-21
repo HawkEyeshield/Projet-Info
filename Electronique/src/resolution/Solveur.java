@@ -49,31 +49,36 @@ public class Solveur
         nbEq = eq.length;
 
         powerCurrents = cg;
-        printVariables();
 
         //TODO faire une verification de la taille egale des tableaux symetriques!!
 
-        //currentsSubstituated = new boolean[nbNodes][nbNodes];
         //determination de toutes les valeurs par la loi d'ohm
         for (int c = 0; c < 3; c++)
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
                     for (int k = 0; k < vars[c].size(i, j); k++)
-                        if (vars[c].get(i, j, k).found)
-                            setVariableValue(new int[]{c, i, j, k}, vars[c].get(i,j,k).value, true);//TODO modifier SetVariableValue
+                        if (vars[c].get(i, j, k).found) {
+                            setVariableValue(new int[]{c, i, j, k}, vars[c].get(i, j, k).value, true);
+                        }
+
 
         //symetrisation des  tableaux de vars.
         makeSymetries();
 
-        //TODO progression
+        System.out.println("ducon");
+        printVariables();
+
 
         //remplacement de toutes les vars connues dans les equations
-        for (int c = 0; c < 3; c++)
+        for (int c = 0; c < 3; c++) {
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
-                    for (int k = 0; k< vars[c].size(i,j); k++)
+                    for (int k = 0; k < vars[c].size(i, j); k++)
                         if (vars[c].get(i, j, k).found)
-                            replaceAll(new int[]{c, i, j}, -1, vars[c].get(i,j,k).value);//TODO replaceAll
+                            replaceAll(new int[]{c, i, j, k}, -1, vars[c].get(i, j, k).value);
+        }
+
+
 
         //Remplacement des courants generateurs
         for (double[] d : powerCurrents)
@@ -81,9 +86,17 @@ public class Solveur
                 for (int ind = 0; ind < nbEq; ind++)
                     equations[ind].replace(-1, -1, 0, -1, d[1]);//TODO adapter  : passer un tableau d'indices
 
+
         //init du nombre d'inconnuess
         updateNumberUnknown();
-        logn("parameters saved");
+
+        logn("parameters saved "+nbUnknown);
+
+        System.out.println("ducon");
+        printVariables();
+
+
+
 
     }
     
@@ -112,11 +125,11 @@ public class Solveur
 
     /**fonction de resolution du systeme à proprement parler*/
     public boolean resolution() {
+        System.out.println(nbUnknown);
         while (!updateNumberUnknown()) {
             logn("UNKNOWN" + nbUnknown);
             //1 : Determiner toutes les vars calculables, et recommencer tant que l'on en determine plus.
 
-            printVariables();
             while (calculateVariables() != 0) {}
             //On s'arrette si on a tout trouvé
             if (updateNumberUnknown()) break;//
@@ -126,6 +139,7 @@ public class Solveur
             if (!substituateVariable()) {
                 //si on a plus de vars à injecter, le systeme n'est pas solvable
                 logn("not solvable");
+                printEquations();
                 return false;
             }
             printEquations();
@@ -147,6 +161,7 @@ public class Solveur
                     replaceAll(indices, ind, value);//on injecte dans toutes les equations
                     eq.solved = true;//marquage de l'equation comme resolue
                     cpt++;
+                    makeSymetries();
 
                     logn("Variable " + indices[0] + " " + indices[1] + " " + indices[2] + " remplacee");
                     printVariables();
@@ -215,8 +230,9 @@ public class Solveur
             return true;
         }
         //modif des vrariables regulieres
-        if (vars[id[0]].get(id[1], id[1], id[2]).found) {// if the value is already determined//TODO REFAIRE LES ID!!!!!
-            if ((vars[id[0]].get(id[1], id[1], id[2]).value != value) || (fill)) return false;
+        if (vars[id[0]].get(id[1], id[2], id[3]).found) {// if the value is already determined//TODO REFAIRE LES ID!!!!!
+
+            if ((vars[id[0]].get(id[1], id[2], id[3]).value != value) || (!fill)) return false;
         }
 
         Tableau<Couple> I = vars[0];
@@ -231,7 +247,7 @@ public class Solveur
                 U.get(idU).set(true, value / Y.get(idO).value);//Calcul U=I/Y
             }
             if ((U.get(idU).found) && (U.get(idU).value != 0) && (!Y.get(idO).found)) {//Tension connue et PAS à 0 - Admittance inconnue
-                U.get(idU).set(true, value / U.get(idU).value);//Calcul Y = I/U
+                Y.get(idO).set(true, value / U.get(idU).value);//Calcul Y = I/U
             }
         } else if (id[0] == 1) {//if we have found a voltage
             for (int l = 0; l < I.size(id[1], id[2]); l++) {//pour chaque composant parallele entre id[1] et id[2]
@@ -251,10 +267,8 @@ public class Solveur
                 I.get(idO).set(true, U.get(idU).value * value);//Calcul I = U*Y
             }
         }
-        logn("replaced");
         if (!fill) {//Ajout de la variable
             vars[id[0]].get(id[1], id[2], id[3]).set(true, value);
-            logn("Symetries made : " + makeSymetries());
         }
         return true;
     }
@@ -355,7 +369,7 @@ public class Solveur
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
                     for (int k = 0;k<vars[k].size(i, j);k++)
-                        if (!vars[k].get(i, j, k).found) nb++;
+                        if (!vars[c].get(i, j, k).found) nb++;
         nbUnknown = nb;
         return nb == 0;
     }
@@ -394,6 +408,7 @@ public class Solveur
 
 
     private void log(Object s) {
+        System.out.print(s.toString());
     }
 
     private void logn(Object s) {
