@@ -8,7 +8,7 @@ public class TODO
     //Classe débile pour les TODO
     //TODO
     /*
-    trouver toutes les images et les mettres dans le dossier
+    trouver toutes les images et les mettre dans le dossier
     redimensionner toutes les images pour avoir le moins de blanc autour (image circulaire ? pk pas !)
     mettre les images dans le code
 
