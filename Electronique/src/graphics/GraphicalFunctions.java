@@ -4,6 +4,7 @@ package graphics;
 
 import circuit.Breadboard;
 import components.AbstractDipole;
+import components.Type;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -53,7 +54,7 @@ public class GraphicalFunctions
 	
 	/** Breadboard qui traduira le schéma interface en graphe pour le solveur
 	 * Permet également de donner à chaque composant les potentiels à ses pattes et les courants après résolution*/
-	private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
+	private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole> c);
 	
 	/** Entier indiquant le numéro d'un sommet pour la création de composant*/
 	private static int vertexIndex=0;
@@ -365,7 +366,7 @@ public class GraphicalFunctions
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
             //On creer l'objet
-			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVotalgeGenerator, 10);
+			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVotalgeGenerator, 10, Type.VOLTAGEGENERATOR );
 			
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
@@ -645,7 +646,7 @@ public class GraphicalFunctions
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10);
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
@@ -828,7 +829,7 @@ public class GraphicalFunctions
 
 			node.setLayoutX(idNode);
 			idNode += 1;
-			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0);
+			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL);
 
 			node.setOnMouseEntered(event3 -> {
                 Text informations = new Text("Nom : " + componentNode.name);

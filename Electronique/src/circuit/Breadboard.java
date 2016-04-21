@@ -11,7 +11,7 @@ import graphics.*;
 
 /**
  * Classe pour une breadboard
- * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis le traduit sous forme de graphe pour la résolution
+ * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis traduit sous forme de graphe pour la résolution
  * @author François
  */
 
@@ -25,7 +25,7 @@ public class Breadboard
 /* ========================= */
 
 	/** liste des composants du circuit */
-	private ArrayList<Component> components;
+	private ArrayList<AbstractDipole> components;
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -33,7 +33,7 @@ public class Breadboard
 	
 	public Breadboard(ArrayList<Component> components)
 	{
-		this.components=components;
+		this.components = components;
 	}
 
 /* ======================== */
@@ -60,12 +60,12 @@ public class Breadboard
 	public void addComponent(Component c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
-		components.add(c);
+
 		String name = c.getCname(c);
-		double value = c.
-
-		Admittance c = new Admittance(name, null, null, value );
-
+		double value = c.getCvalue(c);
+		//if (c.get)
+        Admittance Adm = new Admittance(name, null, null, value );
+        components.add(Adm);
 
 	}
 	
@@ -75,7 +75,8 @@ public class Breadboard
 	public void addLink(AbstractDipole a, AbstractDipole b)
 	{
 		// TODO Pour Sterenn : mettre en place les liens entre composants, voir si un ré-indexage des vertex serait nécessaire pour le solveur
-		b.setFirstLink(a.getSecondLink());
+		//if (a.getSecondLink()== null) :
+        b.setFirstLink(a.getSecondLink());
 	}
 	public void deleteComponent(AbstractDipole c)
 	{
@@ -85,9 +86,9 @@ public class Breadboard
 	public String toString()
 	{
 		String string = "Connaissance actuelle du circuit : \n";
-		for(AbstractDipole a : components)
+		//for(AbstractDipole a : components)
 		{
-			string+=a.toString() + "\n";
+			//string+=a.toString() + "\n";
 		}
 		return string;
 	}
