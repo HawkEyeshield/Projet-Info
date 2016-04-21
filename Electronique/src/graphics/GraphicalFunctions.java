@@ -285,7 +285,7 @@ public class GraphicalFunctions
     }
 
 	public  static void deleteComponent(Component composant, AnchorPane anchorPane2){
-		//TODO supprimer le composant de la breadboard et les liens qui existe avec lui !
+		//TODO supprimer le composant de la breadboard et les liens qui existent avec lui !
 		for ( int i =0 ; i < arrayListOfLink.size(); i++){
 			if(arrayListOfLink.get(i).image1 == composant || arrayListOfLink.get(i).image2 == composant){
 				anchorPane2.getChildren().removeAll(arrayListOfLink.get(i).lien1,arrayListOfLink.get(i).lien2,arrayListOfLink.get(i).lien3);

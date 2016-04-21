@@ -1,10 +1,13 @@
 package circuit;
 
 import components.AbstractDipole;
+import components.Admittance;
+
 import graphStructure.CircuitGraph;
 import resolution.Extracteur;
 
 import java.util.ArrayList;
+import graphics.*;
 
 /**
  * Classe pour une breadboard
@@ -20,15 +23,15 @@ public class Breadboard
 /* ========================= */
 /* Déclaration des attributs */
 /* ========================= */
-	
+
 	/** liste des composants du circuit */
-	private ArrayList<AbstractDipole> components;
+	private ArrayList<Component> components;
 
 /* =========================== */
 /* Déclaration du constructeur */
 /* =========================== */
 	
-	public Breadboard(ArrayList<AbstractDipole> components)
+	public Breadboard(ArrayList<Component> components)
 	{
 		this.components=components;
 	}
@@ -54,10 +57,16 @@ public class Breadboard
 	}
 	
 	/** Méthode ajoutant des composants */
-	public void addComponent(AbstractDipole c)
+	public void addComponent(Component c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
 		components.add(c);
+		String name = c.getCname(c);
+		double value = c.
+
+		Admittance c = new Admittance(name, null, null, value );
+
+
 	}
 	
 	/** Méthode ajoutant des liens entre deux composants
@@ -67,6 +76,10 @@ public class Breadboard
 	{
 		// TODO Pour Sterenn : mettre en place les liens entre composants, voir si un ré-indexage des vertex serait nécessaire pour le solveur
 		b.setFirstLink(a.getSecondLink());
+	}
+	public void deleteComponent(AbstractDipole c)
+	{
+		//TODO .
 	}
 	
 	public String toString()

@@ -24,4 +24,10 @@ public class Component {
         this.name = name;
         this.value = value;
     }
-}
+    public String getCname (Component c){
+        return c.name;
+    }
+    public double getCvalue (Component c) {
+        return c.value;
+    }
+    }
