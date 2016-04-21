@@ -30,4 +30,10 @@ public class Link
     public  Link(){
 
     }
+    public Component getImage1 (){
+        return this.image1;
+    }
+    public Component getImage2 (){
+        return this.image2;
+    }
 }

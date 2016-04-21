@@ -27,14 +27,14 @@ public class Component {
         this.value = value;
         this.type = type;
     }
-    public String getCname (Component c){
-        return c.name;
+    public String getCname (){
+        return this.name;
     }
-    public double getCvalue (Component c){
-        return c.value;
+    public double getCvalue (){
+        return this.value;
     }
-    public Type getCtype (Component c){
-        return c.type;
+    public Type getCtype (){
+        return this.type;
     }
 
     }

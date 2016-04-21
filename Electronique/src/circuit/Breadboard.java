@@ -1,7 +1,7 @@
 package circuit;
 
-import components.AbstractDipole;
-import components.Admittance;
+//import components.AbstractDipole;
+import components.*;
 
 import graphStructure.CircuitGraph;
 import resolution.Extracteur;
@@ -42,8 +42,7 @@ public class Breadboard
 	
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
-	{
-		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
+	{	// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
 		CircuitGraph g = new CircuitGraph();
 		for(int i=0;i<components.size();i++)
 		{
@@ -56,29 +55,54 @@ public class Breadboard
 		e.printVariables();
 	}
 	
-	/** Méthode ajoutant des composants */
+	/** Méthode ajoutant des composants (dans la breadboard) */
 	public void addComponent(Component c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
 
-		String name = c.getCname(c);
-		double value = c.getCvalue(c);
-		//if (c.get)
-        Admittance Adm = new Admittance(name, null, null, value );
-        components.add(Adm);
-
+		String name = c.getCname();
+		double value = c.getCvalue();
+		if (c.getCtype() == Type.ADMITTANCE ) {
+            Admittance Adm = new Admittance(name, null, null, value );
+            components.add(Adm);
+        }
+       // else ;{
+        // }
 	}
-	
-	/** Méthode ajoutant des liens entre deux composants
+
+	/** Méthodes ajoutant des liens entre deux composants
 	 * @param a : premier composant
 	 * @param b : second composant */
-	public void addLink(AbstractDipole a, AbstractDipole b)
+    // TODO Pour Sterenn : mettre en place les liens entre composants, voire si un ré-indexage des vertex serait nécessaire pour le solveur
+
+    public void addLink(Link l)
+    {
+        Component A = l.getImage1();
+        Component B = l.getImage2();
+        for (int i=0;i<components.size();i++){
+            AbstractDipole C1 = components.get(i);
+            if (A.getCname() == C1.getName()){
+                for (int j=0;j<components.size();j++){
+                    AbstractDipole C2 = components.get(j);
+                    if (A.getCname() == C2.getName()){ LinkAB(C1, C2)
+                    }
+                }
+            }
+        }
+        //Else : exception = les composants ne sont pas encore arrivés. 
+    }
+
+    public void LinkAB(AbstractDipole a, AbstractDipole b)
 	{
-		// TODO Pour Sterenn : mettre en place les liens entre composants, voir si un ré-indexage des vertex serait nécessaire pour le solveur
-		//if (a.getSecondLink()== null) :
         b.setFirstLink(a.getSecondLink());
 	}
-	public void deleteComponent(AbstractDipole c)
+
+
+    /**
+     * Méthode supprimmant un composant
+     * @param c
+     */
+    public void deleteComponent(AbstractDipole c)
 	{
 		//TODO .
 	}
