@@ -15,7 +15,7 @@ import graphics.*;
  * @author François
  */
 
-//TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichants
+//TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichant
 
 public class Breadboard
 {
@@ -73,7 +73,8 @@ public class Breadboard
 	/** Méthodes ajoutant des liens entre deux composants
 	 * @param a : premier composant
 	 * @param b : second composant */
-    // TODO Pour Sterenn : mettre en place les liens entre composants, voire si un ré-indexage des vertex serait nécessaire pour le solveur
+    // TODO Pour Sterenn : mettre en place les liens entre composants,
+        // voire si un ré-indexage des vertex serait nécessaire pour le solveur
 
     public void addLink(Link l)
     {
@@ -84,12 +85,14 @@ public class Breadboard
             if (A.getCname() == C1.getName()){
                 for (int j=0;j<components.size();j++){
                     AbstractDipole C2 = components.get(j);
-                    if (A.getCname() == C2.getName()){ LinkAB(C1, C2)
+                    if (B.getCname() == C2.getName()){
+                        LinkAB(C1, C2);
                     }
                 }
             }
         }
-        //Else : exception = les composants ne sont pas encore arrivés. 
+        //Else : exception = les composants ne sont pas encore arrivés/enregistés dans la breadboard/ont été supprimés.
+          // et sinon on a supposé que personne n'a le même nom
     }
 
     public void LinkAB(AbstractDipole a, AbstractDipole b)
@@ -99,12 +102,20 @@ public class Breadboard
 
 
     /**
-     * Méthode supprimmant un composant
+     * Méthode supprimant un composant
      * @param c
      */
     public void deleteComponent(AbstractDipole c)
 	{
-		//TODO .
+		//TODO supprimer un composant c.
+        for (int i=0;i<components.size();i++){
+            AbstractDipole C1 = components.get(i);
+            if (C1.getName() == c.getName()){
+                components.remove(i); //on a supprimé le composant
+                                        // abstractdipole dans la liste mais pas le composant Component...
+                                            // Mais du coup comme ça on ne peut plus le relier à rien.
+            }
+        }
 	}
 	
 	public String toString()
