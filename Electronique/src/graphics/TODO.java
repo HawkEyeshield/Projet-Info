@@ -9,7 +9,7 @@ public class TODO
     //TODO
     /*
     trouver toutes les images et les mettres dans le dossier
-    redimensionner toutes les images pour avoir le moins de blanc autour (image circulaire ? pk pas !)
+    redimensionner toutes les images pour avoir le moins de blanc autour (image circulaire ?)
     mettre les images dans le code
 
     ajuster les dimensions des différentes parties
