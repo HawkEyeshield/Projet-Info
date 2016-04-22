@@ -1,8 +1,8 @@
 
 
 package graphics;
-
-import components.Type;
+import circuit.Breadboard;
+import components.*;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -52,7 +52,9 @@ public class GraphicalFunctions
 	
 	/** Breadboard qui traduira le schéma interface en graphe pour le solveur
 	 * Permet également de donner à chaque composant les potentiels à ses pattes et les courants après résolution*/
-	//private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
+
+    private static ArrayList<AbstractDipole> Comp = new ArrayList<AbstractDipole>(); // Ou alors on crée une breadboard par type de composants (berk) comme suggéré par l'ajout de plien de Arraylist...
+    private static Breadboard breadboard = new Breadboard( Comp );
 	
 	/** Entier indiquant le numéro d'un sommet pour la création de composant*/
 	private static int vertexIndex=0;

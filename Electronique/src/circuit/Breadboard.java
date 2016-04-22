@@ -33,9 +33,9 @@ public class Breadboard
 /* Déclaration du constructeur */
 /* =========================== */
 	
-	public Breadboard(ArrayList<Component> components)
+	public Breadboard(ArrayList<AbstractDipole> components)
 	{
-		//this.components = components;
+		this.components = components;
 	}
 
 /* ======================== */
