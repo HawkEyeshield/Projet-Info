@@ -320,13 +320,15 @@ public class Extracteur
 
                 //Partie mise en memoire des parametres; La partie precedente s'occupait juste des coefficients dans les equations
                 double[][] det = m.component().getParameters();
+                int indice;
                 for (int d = 0; d < 3; d++) {//pour chaque parametre determinable
+                    if (d==1) indice = 0;
+                    else indice = m.component().index;
                     if (det[d][0] == 1) {//si il est effectivement determiné
-                        vartab[d].get(x,y,m.component().index).found = true;//mise à 1 de la determination dans vartab//TODO variabiliser m.component
+                        vartab[d].get(x,y,indice).found = true;//mise à 1 de la determination dans vartab//TODO variabiliser m.component
                         if (d == 2) signe = 1;//si le parametre est une admittance, la valeur ne depend pas du sens
-
                         //sinon, on met le parametre en memoire, en coherence avec l'orientation du composant
-                        vartab[d].get(x,y,m.component().index).value = signe * det[d][1];
+                        vartab[d].get(x,y,indice).value = signe * det[d][1];
                     }
                 }
             }
