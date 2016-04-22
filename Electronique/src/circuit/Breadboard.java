@@ -1,18 +1,21 @@
 package circuit;
 
-import components.AbstractDipole;
+//import components.AbstractDipole;
+import components.*;
+
 import graphStructure.CircuitGraph;
 import resolution.Extracteur;
 
 import java.util.ArrayList;
+import graphics.*;
 
 /**
  * Classe pour une breadboard
- * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis le traduit sous forme de graphe pour la résolution
+ * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis traduit sous forme de graphe pour la résolution
  * @author François
  */
 
-//TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichants
+//TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichant
 
 public class Breadboard
 {
@@ -20,7 +23,7 @@ public class Breadboard
 /* ========================= */
 /* Déclaration des attributs */
 /* ========================= */
-	
+
 	/** liste des composants du circuit */
 	private ArrayList<AbstractDipole> components;
 
@@ -28,9 +31,9 @@ public class Breadboard
 /* Déclaration du constructeur */
 /* =========================== */
 	
-	public Breadboard(ArrayList<AbstractDipole> components)
+	public Breadboard(ArrayList<Component> components)
 	{
-		this.components=components;
+		this.components = components;
 	}
 
 /* ======================== */
@@ -39,8 +42,7 @@ public class Breadboard
 	
 	/** Méthode faisant appel au solveur pour la résolution */
 	public void compute()
-	{
-		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
+	{	// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
 		CircuitGraph g = new CircuitGraph();
 		for(int i=0;i<components.size();i++)
 		{
@@ -53,28 +55,75 @@ public class Breadboard
 		e.printVariables();
 	}
 	
-	/** Méthode ajoutant des composants */
-	public void addComponent(AbstractDipole c)
+	/** Méthode ajoutant des composants (dans la breadboard) */
+	public void addComponent(Component c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
-		components.add(c);
+
+		String name = c.getCname();
+		double value = c.getCvalue();
+		if (c.getCtype() == Type.ADMITTANCE ) {
+            Admittance Adm = new Admittance(name, null, null, value );
+            components.add(Adm);
+        }
+       // else ;{
+        // }
 	}
-	
-	/** Méthode ajoutant des liens entre deux composants
+
+	/** Méthodes ajoutant des liens entre deux composants
 	 * @param a : premier composant
 	 * @param b : second composant */
-	public void addLink(AbstractDipole a, AbstractDipole b)
+    // TODO Pour Sterenn : mettre en place les liens entre composants,
+        // voire si un ré-indexage des vertex serait nécessaire pour le solveur
+
+    public void addLink(Link l)
+    {
+        Component A = l.getImage1();
+        Component B = l.getImage2();
+        for (int i=0;i<components.size();i++){
+            AbstractDipole C1 = components.get(i);
+            if (A.getCname() == C1.getName()){
+                for (int j=0;j<components.size();j++){
+                    AbstractDipole C2 = components.get(j);
+                    if (B.getCname() == C2.getName()){
+                        LinkAB(C1, C2);
+                    }
+                }
+            }
+        }
+        //Else : exception = les composants ne sont pas encore arrivés/enregistés dans la breadboard/ont été supprimés.
+          // et sinon on a supposé que personne n'a le même nom
+    }
+
+    public void LinkAB(AbstractDipole a, AbstractDipole b)
 	{
-		// TODO Pour Sterenn : mettre en place les liens entre composants, voir si un ré-indexage des vertex serait nécessaire pour le solveur
-		b.setFirstLink(a.getSecondLink());
+        b.setFirstLink(a.getSecondLink());
+	}
+
+
+    /**
+     * Méthode supprimant un composant
+     * @param c
+     */
+    public void deleteComponent(AbstractDipole c)
+	{
+		//TODO supprimer un composant c.
+        for (int i=0;i<components.size();i++){
+            AbstractDipole C1 = components.get(i);
+            if (C1.getName() == c.getName()){
+                components.remove(i); //on a supprimé le composant
+                                        // abstractdipole dans la liste mais pas le composant Component...
+                                            // Mais du coup comme ça on ne peut plus le relier à rien.
+            }
+        }
 	}
 	
 	public String toString()
 	{
 		String string = "Connaissance actuelle du circuit : \n";
-		for(AbstractDipole a : components)
+		//for(AbstractDipole a : components)
 		{
-			string+=a.toString() + "\n";
+			//string+=a.toString() + "\n";
 		}
 		return string;
 	}
