@@ -1,13 +1,15 @@
 package circuit;
 
 //import components.AbstractDipole;
-import components.*;
-
+import components.AbstractDipole;
+import components.Admittance;
+import components.Type;
 import graphStructure.CircuitGraph;
+import graphics.Component;
+import graphics.Link;
 import resolution.Extracteur;
 
 import java.util.ArrayList;
-import graphics.*;
 
 /**
  * Classe pour une breadboard
@@ -33,7 +35,7 @@ public class Breadboard
 	
 	public Breadboard(ArrayList<Component> components)
 	{
-		this.components = components;
+		//this.components = components;
 	}
 
 /* ======================== */
@@ -71,8 +73,8 @@ public class Breadboard
 	}
 
 	/** Méthodes ajoutant des liens entre deux composants
-	 * @param a : premier composant
-	 * @param b : second composant */
+	 * @param  : premier composant
+	 * @param  : second composant */
     // TODO Pour Sterenn : mettre en place les liens entre composants,
         // voire si un ré-indexage des vertex serait nécessaire pour le solveur
 
