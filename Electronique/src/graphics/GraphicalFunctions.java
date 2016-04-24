@@ -239,7 +239,7 @@ public class GraphicalFunctions
                 arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
                 System.out.println("on devrait rajouter un truc a la case " + arrayListOfLink.size());
                 //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
-                // breadboard.addLink();
+                breadboard.addLink(arrayListOfLink.get(-1));
             }
         }
         else{ //Sinon c'est que c'est qu'il faut juste actualiser les liens
@@ -250,6 +250,7 @@ public class GraphicalFunctions
 			arrayListOfLink.get(k).lien2 = line2;
 			arrayListOfLink.get(k).lien3 = line3;
             //TODO Pour Sterenn : mettre la fonction qui actualise le lien dans la breadboard
+            // Actualiser = rattacher des composants différents ? Sinon, ça ne sert pas dans la breadboard...
             // breadboard.addLink();
         }
 

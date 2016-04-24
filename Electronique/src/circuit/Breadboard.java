@@ -76,7 +76,7 @@ public class Breadboard
 	 * @param  : premier composant
 	 * @param  : second composant */
     // TODO Pour Sterenn : mettre en place les liens entre composants,
-        // voire si un ré-indexage des vertex serait nécessaire pour le solveur
+        // voir si un ré-indexage des vertex serait nécessaire pour le solveur
 
     public void addLink(Link l)
     {
@@ -119,7 +119,22 @@ public class Breadboard
             }
         }
 	}
-	
+
+	/**
+	 * Méthode supprimmant des liens
+     */
+
+	public void deleteLink(Link l)
+	{
+        //Ne sert à rien si on met les liens et les composants à la fin : à partir du bouton "run"
+        // (comme ça on tient compte seulement de la liste des liens ?)
+	}
+
+	/**
+	 * Affichage
+	 * @return
+     */
+
 	public String toString()
 	{
 		String string = "Connaissance actuelle du circuit : \n";
