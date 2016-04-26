@@ -1,6 +1,5 @@
 package circuit;
 
-//import components.AbstractDipole;
 import components.AbstractDipole;
 import components.Admittance;
 import components.Type;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Classe pour une breadboard
  * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis traduit sous forme de graphe pour la résolution
- * @author François
+ * @author François, Sterenn
  */
 
 //TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichant
@@ -61,33 +60,37 @@ public class Breadboard
 	public void addComponent(Component c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
-
-		String name = c.getCname();
-		double value = c.getCvalue();
-		if (c.getCtype() == Type.ADMITTANCE ) {
-            Admittance Adm = new Admittance(name, null, null, value );
-            components.add(Adm);
+		
+		// Cas où l'on ajoute une admittance 
+		if (c.getCtype().equals(Type.ADMITTANCE)) 
+		{
+            components.add(new Admittance(c.getCname(), null, null, c.getCvalue()));
         }
        // else ;{
         // }
 	}
 
-	/** Méthodes ajoutant des liens entre deux composants
-	 * @param  : premier composant
-	 * @param  : second composant */
     // TODO Pour Sterenn : mettre en place les liens entre composants,
         // voir si un ré-indexage des vertex serait nécessaire pour le solveur
-
+	/** Méthode liant deux composants à partir du lien donné en paramètre
+	 * @param l : le lien
+	 */
     public void addLink(Link l)
     {
         Component A = l.getImage1();
         Component B = l.getImage2();
-        for (int i=0;i<components.size();i++){
+        
+        // Parcours des composants connus pour récupérer les deux que l'on souhaite lier
+        for (int i=0;i<components.size();i++)
+        {
             AbstractDipole C1 = components.get(i);
-            if (A.getCname() == C1.getName()){
-                for (int j=0;j<components.size();j++){
+            if (A.getCname().equals(C1.getName()))
+            {
+                for (int j=0;j<components.size();j++)
+                {
                     AbstractDipole C2 = components.get(j);
-                    if (B.getCname() == C2.getName()){
+                    if (B.getCname().equals(C2.getName()))
+                    {
                         LinkAB(C1, C2);
                     }
                 }
@@ -96,7 +99,11 @@ public class Breadboard
         //Else : exception = les composants ne sont pas encore arrivés/enregistés dans la breadboard/ont été supprimés.
           // et sinon on a supposé que personne n'a le même nom
     }
-
+    
+    /** Ajoute un lien entre deux composants donnés
+     * @param a : premier composant
+     * @param b : second composant
+     */
     public void LinkAB(AbstractDipole a, AbstractDipole b)
 	{
         b.setFirstLink(a.getSecondLink());
@@ -110,12 +117,14 @@ public class Breadboard
     public void deleteComponent(AbstractDipole c)
 	{
 		//TODO supprimer un composant c.
-        for (int i=0;i<components.size();i++){
+        for (int i=0;i<components.size();i++)
+        {
             AbstractDipole C1 = components.get(i);
-            if (C1.getName() == c.getName()){
-                components.remove(i); //on a supprimé le composant
-                                        // abstractdipole dans la liste mais pas le composant Component...
-                                            // Mais du coup comme ça on ne peut plus le relier à rien.
+            if (C1.getName().equals(c.getName()))
+            {
+                components.remove(i); 
+                //on a supprimé le composant abstractdipole dans la liste mais pas le composant Component...
+                // Mais du coup comme ça on ne peut plus le relier à rien.
             }
         }
 	}
@@ -131,10 +140,9 @@ public class Breadboard
 	}
 
 	/**
-	 * Affichage
-	 * @return
+	 * Méthode d'affichage console de la breadboard
+	 * @return le texte que l'on souhaite afficher
      */
-
 	public String toString()
 	{
 		String string = "Connaissance actuelle du circuit : \n";
