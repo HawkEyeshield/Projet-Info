@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -29,6 +30,41 @@ public class Controller implements javafx.fxml.Initializable
         GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane);
         GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane);
         GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreerUnLien);
+
+        Run.setOnMouseClicked(event ->{
+            if(!GraphicalFunctions.launch) {
+                System.out.println("Programme lancé");
+                Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");
+                programmeLaunch.setLayoutX(100);
+                programmeLaunch.setLayoutX(100);
+                programmeLaunch.setX(450);
+                programmeLaunch.setY(50);
+                anchorPane2.getChildren().add(programmeLaunch);
+                //TODO Mettre la fonction qui lance le programme de raph
+                //Attention il faut prendre en argument le programmeLaunch pour me le redonner par la suite (pour le supprimer)
+                GraphicalFunctions.launch = true;
+            }
+            else{
+                System.out.println("Arreter de spam la touche run !");
+            }
+        });
+
+        ValeurADeterminer.setOnMouseClicked(event -> {
+
+        });
+
+        Debugge.setOnMouseClicked(event -> {
+            System.out.println("Le programme devrait pouvoir se lancer correctement");
+            Text bug = new Text("Le programme devrait pouvoir se lancer correctement");
+            bug.setLayoutX(100);
+            bug.setLayoutX(100);
+            bug.setX(-100);
+            bug.setY(75);
+            anchorPane2.getChildren().add(bug);
+            //TODO si des gens veullent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
+
+        });
+
 
         CreerUnLien.setOnMouseClicked(event -> {
             if(GraphicalFunctions.etat == "l1" || GraphicalFunctions.etat =="l2") {

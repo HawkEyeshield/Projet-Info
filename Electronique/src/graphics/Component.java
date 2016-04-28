@@ -16,7 +16,9 @@ public class Component {
     char orientation;
     String name;
     Double value;
-    public Component(ImageView object,ImageView square1, ImageView square2,ImageView square3, ImageView square4, char orientation,String name,double value, Type type){
+    Double courant;
+    Double voltage;
+    public Component(ImageView object,ImageView square1, ImageView square2,ImageView square3, ImageView square4, char orientation,String name,double value, Type type, double courant, double voltage){
         this.object = object;
         this.square1 = square1;
         this.square2 = square2;
@@ -26,6 +28,8 @@ public class Component {
         this.name = name;
         this.value = value;
         this.type = type;
+        this.courant = courant;
+        this.voltage = voltage;
     }
     public String getCname (){
         return this.name;

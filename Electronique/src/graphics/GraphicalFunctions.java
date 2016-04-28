@@ -48,6 +48,10 @@ public class GraphicalFunctions
 	
 	/**Compte le nombre de lien*/
 	//public static int nombreDeLien = 0;
+
+	/** Boolean qui permet de savoir si le programme tourne ou non*/
+	public static boolean launch = false;
+
 	
 	public static int linkArea;
 	
@@ -185,6 +189,12 @@ public class GraphicalFunctions
 				line3 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea1,centreYLinkArea2 + 30);
 			}
 		}
+		else if((linkAreaUsed1 == 3  && linkAreaUsed2 == 4)||(linkAreaUsed1 == 4 && linkAreaUsed2 == 3)){
+			line1 = new Line(centreXLinkArea1,centreYLinkArea1,centreXLinkArea2,centreYLinkArea1);
+			line2 = new Line(0,0,0,0);
+			line3 = new Line(centreXLinkArea2,centreYLinkArea2,centreXLinkArea2,centreYLinkArea1);
+
+		}
 
 		else if((linkAreaUsed1 == 1 && linkAreaUsed2 == 4) || (linkAreaUsed1 == 4 && linkAreaUsed2 == 1)) {
 			if (centreYLinkArea1 < centreYLinkArea2) {
@@ -232,13 +242,14 @@ public class GraphicalFunctions
                 }
             }
             if (a) {
+				System.out.println(premiereImageDuLien.name + "  " + secondeImageDuLien.name);
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
                 arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
                 System.out.println("on devrait rajouter un truc a la case " + arrayListOfLink.size());
                 //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
-                breadboard.addLink(arrayListOfLink.get(-1));
+                ///breadboard.addLink(arrayListOfLink.get(-1)); Erreur ici
             }
         }
         else{ //Sinon c'est que c'est qu'il faut juste actualiser les liens
@@ -366,7 +377,7 @@ public class GraphicalFunctions
 			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
 			idVotalgeGenerator += 1;
             //On creer l'objet
-			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVotalgeGenerator, 10, Type.VOLTAGEGENERATOR );
+			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVotalgeGenerator, 10, Type.VOLTAGEGENERATOR,0,10);
 			
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
@@ -374,7 +385,8 @@ public class GraphicalFunctions
 
 			//Permet de voir le nom et la valeur
             tensionGenerator.setOnMouseEntered(event3 -> {
-                Text informations = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value);
+                Text informations = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value
+				 + "\nValeur du courant = " + componentVoltageGenerator.courant + "\nValeur de tension = " + componentVoltageGenerator.voltage);
                 informations.setLayoutX(tensionGenerator.getX());
                 informations.setLayoutY(tensionGenerator.getY() + 65);
                 anchorPane2.getChildren().add(informations);
@@ -646,14 +658,15 @@ public class GraphicalFunctions
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR);
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
 			//vertexIndex+=2;
 
             courantGenerator.setOnMouseEntered(event3 -> {
-                Text informations = new Text("Nom : " + componentCourantGenerator.name);
+                Text informations = new Text("Nom : " + componentCourantGenerator.name + "\nValeur : " + componentCourantGenerator.value
+						+ "\nValeur du courant = " + componentCourantGenerator.courant + "\nValeur de tension = " + componentCourantGenerator.voltage);
                 informations.setLayoutX(courantGenerator.getX());
                 informations.setLayoutY(courantGenerator.getY() + 120);
                 anchorPane2.getChildren().add(informations);
@@ -829,7 +842,7 @@ public class GraphicalFunctions
 
 			node.setLayoutX(idNode);
 			idNode += 1;
-			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL);
+			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL,0,0);
 
 			node.setOnMouseEntered(event3 -> {
                 Text informations = new Text("Nom : " + componentNode.name);
@@ -983,5 +996,11 @@ public class GraphicalFunctions
 				}
 			});
 		});
+	}
+
+	public static void showResult(AnchorPane anchorPane2, Text programmeLaunch){
+		//Supprime le message
+		anchorPane2.getChildren().remove(programmeLaunch);
+		GraphicalFunctions.launch = false;
 	}
 }
