@@ -62,6 +62,9 @@ public class GraphicalFunctions
 	/** Entier indiquant le numéro d'un sommet pour la création de composant*/
 	private static int vertexIndex=0;
 
+	/** Permet de savoir si la rotation d'une image est possible, ou si il existe déjà des liens*/
+	public static boolean rotationPossible;
+
 
 	/**
      * Permet d'ajouter ou d'actualiser un lien aussi bien visuellement que dans la breadboard
@@ -305,7 +308,9 @@ public class GraphicalFunctions
 				arrayListOfLink.set(i,new Link());
 			}
 		}
+		System.out.println(arrayListOfLink.size());
 		arrayListOfLink.remove(new Link());
+		System.out.println(arrayListOfLink.size());
 	}
 
 	/**
@@ -502,34 +507,36 @@ public class GraphicalFunctions
 			});
 
 			rotation.setOnAction(event1 -> {
-				if(tensionGenerator.getRotate() == 0) {
-					rotation.setText("Effectuer une rotation de +90°");
-
-					tensionGenerator.setRotate(90);
-
-					/*
-					L'acutalisation a pas l'air de marcher si il n'y a pas d'objet visuel, du coup on est obliger
-					de relocaliser l'image
-					 */
-					//linkArea2.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() - 25);
-					linkArea2.setX(tensionGenerator.getX() + 50);
-					linkArea2.setY(tensionGenerator.getY() - 25);
-					//linkArea4.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() + 75);
-					linkArea4.setX(tensionGenerator.getX() + 50);
-					linkArea4.setY(tensionGenerator.getY() + 75);
-
-					anchorPane2.getChildren().removeAll(linkArea1,linkArea3);
-					anchorPane2.getChildren().addAll(linkArea2,linkArea4);
-
-
+				rotationPossible = true;
+				for(int i = 0; i < arrayListOfLink.size(); i++){
+					System.out.println(i);
+					if(arrayListOfLink.get(i).image1.object == tensionGenerator || arrayListOfLink.get(i).image2.object == tensionGenerator){
+						rotationPossible = false;
+					}
 				}
-				else{
-					anchorPane2.getChildren().removeAll(linkArea2,linkArea4);
-					anchorPane2.getChildren().addAll(linkArea3,linkArea1);
-					tensionGenerator.setRotate(0);
-					rotation.setText("Effectuer une rotation de -90°");
 
+				if(rotationPossible) {
+					if (tensionGenerator.getRotate() == 0) {
+						rotation.setText("Effectuer une rotation de +90°");
+
+						tensionGenerator.setRotate(90);
+
+						linkArea2.setX(tensionGenerator.getX() + 50);
+						linkArea2.setY(tensionGenerator.getY() - 25);
+						linkArea4.setX(tensionGenerator.getX() + 50);
+						linkArea4.setY(tensionGenerator.getY() + 75);
+
+						anchorPane2.getChildren().removeAll(linkArea1, linkArea3);
+						anchorPane2.getChildren().addAll(linkArea2, linkArea4);
+					} else {
+						anchorPane2.getChildren().removeAll(linkArea2, linkArea4);
+						anchorPane2.getChildren().addAll(linkArea3, linkArea1);
+						tensionGenerator.setRotate(0);
+						rotation.setText("Effectuer une rotation de -90°");
+
+					}
 				}
+				else {System.out.println("Rotation impossible");}
 			});
 
 
