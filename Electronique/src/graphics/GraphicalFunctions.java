@@ -497,10 +497,10 @@ public class GraphicalFunctions
 					L'acutalisation a pas l'air de marcher si il n'y a pas d'objet visuel, du coup on est obliger
 					de relocaliser l'image
 					 */
-					linkArea2.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() - 25);
+					//linkArea2.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() - 25);
 					linkArea2.setX(tensionGenerator.getX() + 50);
 					linkArea2.setY(tensionGenerator.getY() - 25);
-					linkArea4.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() + 75);
+					//linkArea4.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() + 75);
 					linkArea4.setX(tensionGenerator.getX() + 50);
 					linkArea4.setY(tensionGenerator.getY() + 75);
 
