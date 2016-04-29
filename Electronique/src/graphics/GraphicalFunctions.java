@@ -249,8 +249,10 @@ public class GraphicalFunctions
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
+				System.out.println(linkAreaUsed1);
                 arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
                 System.out.println("on devrait rajouter un truc a la case " + arrayListOfLink.size());
+				System.out.println(arrayListOfLink.get(0).linkAreaUsed1);
                 //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
                 ///breadboard.addLink(arrayListOfLink.get(-1)); Erreur ici
             }
@@ -301,15 +303,24 @@ public class GraphicalFunctions
 
 	public  static void deleteComponent(Component composant, AnchorPane anchorPane2){
 		//TODO supprimer le composant de la breadboard et les liens qui existent avec lui !
+		int[] a = new int[arrayListOfLink.size()];
+		int b = 0;
+		System.out.println(arrayListOfLink.size());
 		for ( int i =0 ; i < arrayListOfLink.size(); i++){
 			if(arrayListOfLink.get(i).image1 == composant || arrayListOfLink.get(i).image2 == composant){
 				anchorPane2.getChildren().removeAll(arrayListOfLink.get(i).lien1,arrayListOfLink.get(i).lien2,arrayListOfLink.get(i).lien3);
 				anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
-				arrayListOfLink.set(i,new Link());
+				a[b]=i;
+				b += 1;
+			}
+			else{a[i]=0;}
+		}
+		for(int j = 0; j < b;j++){
+				arrayListOfLink.remove(a[j]);
+			for(int k = j + 1 ; k < b;k++){
+				a[k] -= 1;
 			}
 		}
-		System.out.println(arrayListOfLink.size());
-		arrayListOfLink.remove(new Link());
 		System.out.println(arrayListOfLink.size());
 	}
 
