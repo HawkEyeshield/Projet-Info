@@ -1,8 +1,6 @@
 package circuit;
 
-import components.AbstractDipole;
-import components.Admittance;
-import components.Type;
+import components.*;
 import graphStructure.CircuitGraph;
 import graphics.Component;
 import graphics.Link;
@@ -51,6 +49,9 @@ public class Breadboard
 			g.addVertex(components.get(i).getFirstLink());
 			g.addVertex(components.get(i).getSecondLink());
 		}
+		// La "clé" devient l'indice du composant dans la liste "components". En bijection avec les noms, donc.
+		//Ne fonctionne que si on travaille avec une seule liste - un seul type ?
+
 		Extracteur e = new Extracteur(g);
 		e.extraction(false);
 		e.printVariables();
@@ -60,14 +61,22 @@ public class Breadboard
 	public void addComponent(Component c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
-		
-		// Cas où l'on ajoute une admittance 
+
 		if (c.getCtype().equals(Type.ADMITTANCE)) 
 		{
             components.add(new Admittance(c.getCname(), null, null, c.getCvalue()));
         }
-       // else ;{
-        // }
+       else if (c.getCtype().equals(Type.CURRENTGENERATOR))
+        {
+            components.add(new CurrentGenerator(c.getCname(), null, null, c.getCvalue()));
+        }
+        else if (c.getCtype().equals(Type.VOLTAGEGENERATOR))
+        {
+            components.add(new VoltageGenerator(c.getCname(), null, null, c.getCvalue()));
+        }
+        else {
+            throw new IllegalArgumentException("Composant inconnu");
+        }
 	}
 
     // TODO Pour Sterenn : mettre en place les liens entre composants,
