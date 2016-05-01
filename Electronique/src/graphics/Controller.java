@@ -27,9 +27,10 @@ public class Controller implements javafx.fxml.Initializable
         anchorPane3.setPrefWidth(2000);
 
         // On charge les images des composants dans la zone de droite
-        GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane);
-        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane);
-        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane, CreerUnLien);
+        GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane, ValeurADeterminer);
+        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane, ValeurADeterminer);
+        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane,ValeurADeterminer);
+        GraphicalFunctions.addResistance(anchorPane2, anchorPane4, scrollPane,  anchorPane,ValeurADeterminer);
 
         Run.setOnMouseClicked(event ->{
             if(!GraphicalFunctions.launch) {
@@ -50,7 +51,8 @@ public class Controller implements javafx.fxml.Initializable
         });
 
         ValeurADeterminer.setOnMouseClicked(event -> {
-
+            GraphicalFunctions.etat = "v";
+            ValeurADeterminer.setText("Choisir un composant");
         });
 
         Debugge.setOnMouseClicked(event -> {
@@ -86,7 +88,6 @@ public class Controller implements javafx.fxml.Initializable
 
     @FXML
     private Menu Help;
-
 
     @FXML
     private ImageView image;

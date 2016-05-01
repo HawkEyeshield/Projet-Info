@@ -2,7 +2,8 @@
 
 package graphics;
 import circuit.Breadboard;
-import components.*;
+import components.AbstractDipole;
+import components.Type;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -34,20 +35,22 @@ public class GraphicalFunctions
 	public static Component premiereImageDuLien;
 	
 	/**Compte le nombre de generateur de tension*/
-	public static int idVotalgeGenerator = 0; 
+	public static int idVoltageGenerator = 0;
 	
 	/** Compte le nombre de generateur de courant*/
 	public static int idCourantgeGenerator = 0;
-	
+
+	/** Compte le nombre de generateur de courant*/
+	public static int idResistance = 0;
+
 	/**Compte  le nombre de noeud*/
 	public static int idNode = 0; 
 	
 	/**liste qui liste les liens*/
 	public  static ArrayList<Link> arrayListOfLink = new ArrayList<Link>();
-	//public static Link [] boardOfLink = new Link[maxLien];
-	
-	/**Compte le nombre de lien*/
-	//public static int nombreDeLien = 0;
+
+	/**Permet de retenir quel est la valeur a afficher*/
+	public static Component valueToShow = null;
 
 	/** Boolean qui permet de savoir si le programme tourne ou non*/
 	public static boolean launch = false;
@@ -102,6 +105,7 @@ public class GraphicalFunctions
             centreXLinkArea2 = secondeImageDuLien.square2.getX() + 5;
             centreYLinkArea2 = secondeImageDuLien.square2.getY() + 5;
         } else if (linkAreaUsed2 == 3) {
+			System.out.println();
             centreXLinkArea2 = secondeImageDuLien.square3.getX() + 5;
             centreYLinkArea2 = secondeImageDuLien.square3.getY() + 5;
         } else if (linkAreaUsed2 == 4) {
@@ -301,15 +305,18 @@ public class GraphicalFunctions
         }
     }
 
+	/**
+	 * Supprime le composant dans la Breadboard et dans l'interface graphique, avec les liens qui lui sont associé
+	 * @param composant composant à supprimer.
+	 * @param anchorPane2 zone de travail
+     */
 	public  static void deleteComponent(Component composant, AnchorPane anchorPane2){
 		//TODO supprimer le composant de la breadboard et les liens qui existent avec lui !
 		int[] a = new int[arrayListOfLink.size()];
 		int b = 0;
-		System.out.println(arrayListOfLink.size());
 		for ( int i =0 ; i < arrayListOfLink.size(); i++){
 			if(arrayListOfLink.get(i).image1 == composant || arrayListOfLink.get(i).image2 == composant){
 				anchorPane2.getChildren().removeAll(arrayListOfLink.get(i).lien1,arrayListOfLink.get(i).lien2,arrayListOfLink.get(i).lien3);
-				anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
 				a[b]=i;
 				b += 1;
 			}
@@ -321,7 +328,7 @@ public class GraphicalFunctions
 				a[k] -= 1;
 			}
 		}
-		System.out.println(arrayListOfLink.size());
+		anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
 	}
 
 	/**
@@ -330,12 +337,12 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane)
+	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer)
 	{
 		ImageView firstVoltageGenerator = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/Generateur de tension h.png"); // On va la cherche au bonne endroit
 		firstVoltageGenerator.setImage(image1);
-		firstVoltageGenerator.setX(90);
+		firstVoltageGenerator.setX(120);
 		firstVoltageGenerator.setY(80); // On définit la position
 		anchorPane4.getChildren().add(firstVoltageGenerator); // On affiche dans la zone voulu (anchorPane4)
 
@@ -367,7 +374,6 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			//linkArea2.relocate(tensionGenerator.getX() + 100,tensionGenerator.getY() - 25);
 			linkArea2.setX(100 + 100);
 			linkArea2.setY(100 - 25);
 
@@ -390,10 +396,10 @@ public class GraphicalFunctions
 
 
 
-			tensionGenerator.setLayoutX(idVotalgeGenerator); // Donne un identifiant unique au generateur de tension
-			idVotalgeGenerator += 1;
+			tensionGenerator.setLayoutX(idVoltageGenerator); // Donne un identifiant unique au generateur de tension
+			idVoltageGenerator += 1;
             //On creer l'objet
-			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVotalgeGenerator, 10, Type.VOLTAGEGENERATOR,0,10);
+			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVoltageGenerator, 10, Type.VOLTAGEGENERATOR,0,10);
 			
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
@@ -510,6 +516,7 @@ public class GraphicalFunctions
 						componentVoltageGenerator.value = x;
 						//TODO Actualiser la valeur dans la breadboard
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
+						componentVoltageGenerator.voltage = x;
 					}
 					catch(NumberFormatException erreur){
 						zonePourChangerValeur.setText("Entrer une valeur correct");
@@ -608,17 +615,12 @@ public class GraphicalFunctions
 						tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
 						tensionGenerator.setX(x - imagx / 2);
 						tensionGenerator.setY(y - imagy / 2);
-						linkArea3.relocate(tensionGenerator.getX() + image.getWidth(), tensionGenerator.getY() + image.getHeight() / 2);
 						linkArea3.setX(tensionGenerator.getX() + image.getWidth());
 						linkArea3.setY(tensionGenerator.getY() + image.getHeight() / 2);
-						linkArea1.relocate(tensionGenerator.getX(), tensionGenerator.getY() + image.getHeight() / 2);
 						linkArea1.setX(tensionGenerator.getX());
 						linkArea1.setY(tensionGenerator.getY() + image.getHeight() / 2);
-
-						linkArea2.relocate(tensionGenerator.getX() + imagx,tensionGenerator.getY() - 25);
 						linkArea2.setX(tensionGenerator.getX() + imagx);
 						linkArea2.setY(tensionGenerator.getY() - 25);
-						linkArea4.relocate(tensionGenerator.getX() + imagx,tensionGenerator.getY() + 75);
 						linkArea4.setX(tensionGenerator.getX() + imagx);
 						linkArea4.setY(tensionGenerator.getY() + 75);
 
@@ -636,10 +638,10 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane)
+	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer)
 	{
 		ImageView firstCourantGenerator = new ImageView();
-		Image image2 = new Image("file:image/Generateur de courant v.png");
+		Image image2 = new Image("file:image/Generateur de courant h.png");
 		firstCourantGenerator.setImage(image2);
 		firstCourantGenerator.setX(10);
 		firstCourantGenerator.setY(80);
@@ -650,33 +652,49 @@ public class GraphicalFunctions
 		firstCourantGenerator.setOnMouseClicked(event -> {
 			System.out.println("Un generateur de courant devrait apparaitre");
 			ImageView courantGenerator = new ImageView();
-			Image image = new Image("file:image/Generateur de courant v.png");
+			Image image = new Image("file:image/Generateur de courant h.png");
 			courantGenerator.setImage(image);
-			courantGenerator.setX(200);
+			courantGenerator.setX(230);
 			courantGenerator.setY(100);
 			anchorPane2.getChildren().add(courantGenerator);
+
+			ImageView linkArea1 = new ImageView();
+			Image square1 = new Image("file:image/LinkArea.png");
+			linkArea1.setImage(square1);
+			linkArea1.setFitHeight(10);//On redimensionne
+			linkArea1.setFitWidth(10);
+			linkArea1.setX(230); //Placer en fonction des valeurs par default
+			linkArea1.setY(100 + image.getHeight()/2);
+			anchorPane2.getChildren().add(linkArea1);
 
 			ImageView linkArea2 = new ImageView();
 			Image square2 = new Image("file:image/LinkArea.png");
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(200 + image.getWidth()/2);
-			linkArea2.setY(100);
-			anchorPane2.getChildren().add(linkArea2);
+			linkArea2.setX(230 + 100);
+			linkArea2.setY(100 - 25);
 
 			ImageView linkArea4 = new ImageView();
 			Image square4 = new Image("file:image/LinkArea.png");
 			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
-			linkArea4.setX(200 + image.getWidth()/2);
-			linkArea4.setY(100 + image.getHeight());
-			anchorPane2.getChildren().add(linkArea4);
+			linkArea4.setX(230 + 100);
+			linkArea4.setY(100 + 75);
+
+			ImageView linkArea3 = new ImageView();
+			Image square3 = new Image("file:image/LinkArea.png");
+			linkArea3.setImage(square3);
+			linkArea3.setFitHeight(10);
+			linkArea3.setFitWidth(10);
+			linkArea3.setX(230 + image.getWidth());
+			linkArea3.setY(100 + image.getHeight()/2);
+			anchorPane2.getChildren().add(linkArea3);
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'v',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
+			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
@@ -694,6 +712,23 @@ public class GraphicalFunctions
             });
 
 			//Permet de creer un lien
+
+			linkArea1.setOnMouseClicked(event1 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentCourantGenerator,linkArea,1,-1,anchorPane2);
+
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+					linkArea = 1;
+				}
+			});
+
 			linkArea2.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
@@ -709,6 +744,23 @@ public class GraphicalFunctions
 					linkArea = 2;
 				}
 			});
+
+			linkArea3.setOnMouseClicked(event3 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentCourantGenerator,linkArea,3,-1,anchorPane2);
+
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+					linkArea = 3;
+				}
+			});
+
 			linkArea4.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
@@ -725,16 +777,109 @@ public class GraphicalFunctions
 				}
 			});
 
+			//Permet de selectionner la valeur à déterminer.
+
+			courantGenerator.setOnMouseClicked(event1 -> {
+				if(etat == "v"){
+					valueToShow = componentCourantGenerator;
+					etat = "d";
+					valeurADeterminer.setText("Choix pris en compte");
+				}
+			});
+
+
+			//Menu qui s'affiche quand on effectue un clic droit sur l'objet
+
+			ContextMenu menu = new ContextMenu();
+			MenuItem rotation = new MenuItem("Effectuer une rotation de +90°");
+			MenuItem changeValue = new MenuItem("Changer de valeur");
+			MenuItem delete = new MenuItem("Supprimer le composant");
+			MenuItem changeName = new MenuItem("Changer le nom");
+
+			delete.setOnAction(event1 -> {
+				deleteComponent(componentCourantGenerator,anchorPane2);
+			});
+
+			changeName.setOnAction(event1 -> {
+				TextField zonePourChangerName = new TextField("Entrer votre valeur");
+				zonePourChangerName.setLayoutX(menu.getX());
+				zonePourChangerName.setLayoutY(menu.getY());
+				anchorPane2.getChildren().add(zonePourChangerName);
+				zonePourChangerName.setOnAction(event8 ->{
+					String a = zonePourChangerName.getText();
+					if (a.equals("Tanguy")) {
+						System.out.println("Excellent choix !");
+					}
+					componentCourantGenerator.name = a;
+					//TODO Actualiser le nom dans la breadboard
+					anchorPane2.getChildren().remove(zonePourChangerName);
+
+				});
+			});
+
+			changeValue.setOnAction(event1 ->{
+				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+				zonePourChangerValeur.setLayoutX(menu.getX());
+				zonePourChangerValeur.setLayoutY(menu.getY());
+				anchorPane2.getChildren().add(zonePourChangerValeur);
+				zonePourChangerValeur.setOnAction(event8 ->{
+					String a = zonePourChangerValeur.getText();
+					double x;
+					try {x = Double.parseDouble(a);
+						componentCourantGenerator.value = x;
+						//TODO Actualiser la valeur dans la breadboard
+						anchorPane2.getChildren().remove(zonePourChangerValeur);
+						componentCourantGenerator.courant = x;
+					}
+					catch(NumberFormatException erreur){
+						zonePourChangerValeur.setText("Entrer une valeur correct");
+					}
+				});
+			});
+
+			rotation.setOnAction(event1 -> {
+				rotationPossible = true;
+				for(int i = 0; i < arrayListOfLink.size(); i++){
+					if(arrayListOfLink.get(i).image1.object == courantGenerator || arrayListOfLink.get(i).image2.object == courantGenerator){
+						rotationPossible = false;
+					}
+				}
+
+				if(rotationPossible) {
+					if (courantGenerator.getRotate() == 0) {
+						rotation.setText("Effectuer une rotation de +90°");
+
+						courantGenerator.setRotate(90);
+
+						linkArea2.setX(courantGenerator.getX() + 50);
+						linkArea2.setY(courantGenerator.getY() - 25);
+						linkArea4.setX(courantGenerator.getX() + 50);
+						linkArea4.setY(courantGenerator.getY() + 75);
+
+						anchorPane2.getChildren().removeAll(linkArea1, linkArea3);
+						anchorPane2.getChildren().addAll(linkArea2, linkArea4);
+					} else {
+						anchorPane2.getChildren().removeAll(linkArea2, linkArea4);
+						anchorPane2.getChildren().addAll(linkArea3, linkArea1);
+						courantGenerator.setRotate(0);
+						rotation.setText("Effectuer une rotation de -90°");
+
+					}
+				}
+				else {System.out.println("Rotation impossible");}
+			});
+
+
+			menu.getItems().addAll(changeName,changeValue,rotation,delete);
+
+
+			courantGenerator.setOnContextMenuRequested(event11 ->{
+				menu.show(courantGenerator, Side.BOTTOM,0,0);
+			});
+
 			/*
             Permet de deplacer le generateur de courant d'un point a un autre
 			 */
-
-			//Permet de faire apparaitre un menu avec le clique droit
-			courantGenerator.setOnMousePressed(event4 -> {
-				if(event4.isSecondaryButtonDown()){
-					System.out.println("coucou");
-				}
-			});
 
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
@@ -779,12 +924,14 @@ public class GraphicalFunctions
 					courantGenerator.relocate(x - imagx / 2, y - imagy / 2);
 					courantGenerator.setX(x - imagx / 2);
 					courantGenerator.setY(y - imagy / 2);
-					linkArea2.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY());
-					linkArea2.setX(courantGenerator.getX() + image.getWidth()/2);
-					linkArea2.setY(courantGenerator.getY());
-					linkArea4.relocate(courantGenerator.getX() + image.getWidth()/2,courantGenerator.getY() + image.getHeight());
-					linkArea4.setX(courantGenerator.getX() + image.getWidth()/2);
-					linkArea4.setY(courantGenerator.getY() + image.getHeight());
+					linkArea3.setX(courantGenerator.getX() + image.getWidth());
+					linkArea3.setY(courantGenerator.getY() + image.getHeight() / 2);
+					linkArea1.setX(courantGenerator.getX());
+					linkArea1.setY(courantGenerator.getY() + image.getHeight() / 2);
+					linkArea2.setX(courantGenerator.getX() + imagx);
+					linkArea2.setY(courantGenerator.getY() - 25);
+					linkArea4.setX(courantGenerator.getX() + imagx);
+					linkArea4.setY(courantGenerator.getY() + 75);
 
 					actualiseViewOfLink(componentCourantGenerator,anchorPane2);
 
@@ -799,7 +946,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button CreeUnLien)
+	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer)
 	{
 		ImageView firstNode = new ImageView();
 		Image image2 = new Image("file:image/Noeud.png");
@@ -818,7 +965,7 @@ public class GraphicalFunctions
 			ImageView node = new ImageView();
 			Image image = new Image("file:image/Noeud.png");
 			node.setImage(image);
-			node.setX(300);
+			node.setX(350);
 			node.setY(100);
 			anchorPane2.getChildren().add(node);
 
@@ -827,7 +974,7 @@ public class GraphicalFunctions
 			linkArea3.setImage(square3);
 			linkArea3.setFitHeight(10);
 			linkArea3.setFitWidth(10);
-			linkArea3.setX(300 + image.getWidth());
+			linkArea3.setX(350 + image.getWidth());
 			linkArea3.setY(100  +image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
@@ -836,7 +983,7 @@ public class GraphicalFunctions
 			linkArea1.setImage(square1);
 			linkArea1.setFitHeight(10);
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(300);
+			linkArea1.setX(350);
 			linkArea1.setY(100 + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
@@ -845,7 +992,7 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(300 + image.getWidth()/2);
+			linkArea2.setX(350 + image.getWidth()/2);
 			linkArea2.setY(100);
 			anchorPane2.getChildren().add(linkArea2);
 
@@ -854,23 +1001,13 @@ public class GraphicalFunctions
 			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
-			linkArea4.setX(300 + image.getWidth()/2);
+			linkArea4.setX(350 + image.getWidth()/2);
 			linkArea4.setY(100 + image.getHeight());
 			anchorPane2.getChildren().add(linkArea4);
 
 			node.setLayoutX(idNode);
 			idNode += 1;
 			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL,0,0);
-
-			node.setOnMouseEntered(event3 -> {
-                Text informations = new Text("Nom : " + componentNode.name);
-                informations.setLayoutX(node.getX() + 40);
-                informations.setLayoutY(node.getY() + 50);
-                anchorPane2.getChildren().add(informations);
-                node.setOnMouseExited(event4 ->{
-                    anchorPane2.getChildren().remove(informations);
-                });
-            });
 
 
 			//Permet de creer un lien
@@ -1016,9 +1153,337 @@ public class GraphicalFunctions
 		});
 	}
 
-	public static void showResult(AnchorPane anchorPane2, Text programmeLaunch){
+
+	/**
+	 * Permet de faire apparaitre une résistance
+	 * @param anchorPane2 Zone a l'interieur du scrollPane
+	 * @param anchorPane4 Zone de depart des images
+	 * @param scrollPane Zone pour mettre le circuit
+	 */
+	public static  void addResistance (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer)
+	{
+		ImageView firstResistance = new ImageView(); // On créer un object de type ImageView
+		Image image1 = new Image("file:image/resistance.png"); // On va la cherche au bonne endroit
+		firstResistance.setImage(image1);
+		firstResistance.setFitHeight(50);
+		firstResistance.setFitWidth(100);
+		firstResistance.setX(120);
+		firstResistance.setY(180); // On définit la position
+		anchorPane4.getChildren().add(firstResistance); // On affiche dans la zone voulu (anchorPane4)
+
+
+		// Permet de faire apparaitre une resistance dans la zone centrale en cliquant dans la zone des composants
+		firstResistance.setOnMouseClicked(event ->
+		{
+			//Fait apparaitre différente image
+			System.out.println("Une résistance de tension devrait apparaitre");
+			ImageView Resistance = new ImageView();
+			Image image = new Image("file:image/resistance.png");
+			Resistance.setImage(image);
+			Resistance.setFitHeight(50);
+			Resistance.setFitWidth(100);
+			Resistance.setX(450);//valeur par default d'apparition
+			Resistance.setY(100);//valeur par default d'apparition
+			anchorPane2.getChildren().add(Resistance);
+
+			ImageView linkArea1 = new ImageView();
+			Image square1 = new Image("file:image/LinkArea.png");
+			linkArea1.setImage(square1);
+			linkArea1.setFitHeight(10);//On redimensionne
+			linkArea1.setFitWidth(10);
+			linkArea1.setX(450); //Placer en fonction des valeurs par default
+			linkArea1.setY(100 + image.getHeight()/2);
+			anchorPane2.getChildren().add(linkArea1);
+
+			ImageView linkArea2 = new ImageView();
+			Image square2 = new Image("file:image/LinkArea.png");
+			linkArea2.setImage(square2);
+			linkArea2.setFitHeight(10);
+			linkArea2.setFitWidth(10);
+			linkArea2.setX(450 + 100);
+			linkArea2.setY(100 - 25);
+
+			ImageView linkArea4 = new ImageView();
+			Image square4 = new Image("file:image/LinkArea.png");
+			linkArea4.setImage(square4);
+			linkArea4.setFitHeight(10);
+			linkArea4.setFitWidth(10);
+			linkArea4.setX(450 + 100);
+			linkArea4.setY(100 + 75);
+
+			ImageView linkArea3 = new ImageView();
+			Image square3 = new Image("file:image/LinkArea.png");
+			linkArea3.setImage(square3);
+			linkArea3.setFitHeight(10);
+			linkArea3.setFitWidth(10);
+			linkArea3.setX(450 + image.getWidth());
+			linkArea3.setY(100 + image.getHeight()/2);
+			anchorPane2.getChildren().add(linkArea3);
+
+
+
+			Resistance.setLayoutX(idResistance); // Donne un identifiant unique a la resistance
+			idResistance += 1;
+			//On creer l'objet
+			Component componentResistance = new Component(Resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, 10, Type.RESISTANCE,0,0);
+
+			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
+			// breadboard.addComponent(new Resistance(componentResistance.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
+			// vertexIndex+=2;
+
+			//Permet de voir le nom et la valeur
+			Resistance.setOnMouseEntered(event3 -> {
+				Text informations = new Text("Nom : " + componentResistance.name + "\nValeur : " + componentResistance.value
+						+ "\nValeur du courant = " + componentResistance.courant + "\nValeur de tension = " + componentResistance.voltage);
+				informations.setLayoutX(Resistance.getX());
+				informations.setLayoutY(Resistance.getY() + 65);
+				anchorPane2.getChildren().add(informations);
+				Resistance.setOnMouseExited(event4 ->{ //On le supprime quand la souris sort de la zone
+					anchorPane2.getChildren().remove(informations);
+				});
+			});
+
+			//Permet de creer un lien
+			linkArea1.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentResistance,linkArea,1,-1,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentResistance; // On enregistre l'image
+					linkArea = 1;
+				}
+			});
+			linkArea2.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentResistance,linkArea,2,-1,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentResistance; // On enregistre l'image
+					linkArea = 2;
+				}
+			});
+			linkArea3.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentResistance,linkArea,3,-1,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentResistance; // On enregistre l'image
+					linkArea = 3;
+				}
+			});
+			linkArea4.setOnMouseClicked(event2 ->
+			{
+				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					System.out.println("On a cliqué sur le second objet");
+					addLink(premiereImageDuLien,componentResistance,linkArea,4,-1,anchorPane2);
+					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				}
+				else if (etat == "l1"){ // ajoute un objet
+					System.out.println("On a cliqué sur le premier objet");
+					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					premiereImageDuLien = componentResistance; // On enregistre l'image
+					linkArea = 4;
+				}
+			});
+
+			//Menu qui s'affiche quand on effectue un clic droit sur l'objet
+
+			ContextMenu menu = new ContextMenu();
+			MenuItem rotation = new MenuItem("Effectuer une rotation de +90°");
+			MenuItem changeValue = new MenuItem("Changer de valeur");
+			MenuItem delete = new MenuItem("Supprimer le composant");
+			MenuItem changeName = new MenuItem("Changer le nom");
+
+			delete.setOnAction(event1 -> {
+				deleteComponent(componentResistance,anchorPane2);
+			});
+
+			changeName.setOnAction(event1 -> {
+				TextField zonePourChangerName = new TextField("Entrer votre valeur");
+				zonePourChangerName.setLayoutX(menu.getX());
+				zonePourChangerName.setLayoutY(menu.getY());
+				anchorPane2.getChildren().add(zonePourChangerName);
+				zonePourChangerName.setOnAction(event8 ->{
+					String a = zonePourChangerName.getText();
+					if (a.equals("Tanguy")) {
+						System.out.println("Excellent choix !");
+					}
+					componentResistance.name = a;
+					//TODO Actualiser le nom dans la breadboard
+					anchorPane2.getChildren().remove(zonePourChangerName);
+
+				});
+			});
+
+			changeValue.setOnAction(event1 ->{
+				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+				zonePourChangerValeur.setLayoutX(menu.getX());
+				zonePourChangerValeur.setLayoutY(menu.getY());
+				anchorPane2.getChildren().add(zonePourChangerValeur);
+				zonePourChangerValeur.setOnAction(event8 ->{
+					String a = zonePourChangerValeur.getText();
+					double x;
+					try {x = Double.parseDouble(a);
+						componentResistance.value = x;
+						//TODO Actualiser la valeur dans la breadboard
+						anchorPane2.getChildren().remove(zonePourChangerValeur);
+					}
+					catch(NumberFormatException erreur){
+						zonePourChangerValeur.setText("Entrer une valeur correct");
+					}
+				});
+			});
+
+			rotation.setOnAction(event1 -> {
+				rotationPossible = true;
+				for(int i = 0; i < arrayListOfLink.size(); i++){
+					System.out.println(i);
+					if(arrayListOfLink.get(i).image1.object == Resistance || arrayListOfLink.get(i).image2.object == Resistance){
+						rotationPossible = false;
+					}
+				}
+
+				if(rotationPossible) {
+					if (Resistance.getRotate() == 0) {
+						rotation.setText("Effectuer une rotation de +90°");
+
+						Resistance.setRotate(90);
+
+						linkArea2.setX(Resistance.getX() + 50);
+						linkArea2.setY(Resistance.getY() - 25);
+						linkArea4.setX(Resistance.getX() + 50);
+						linkArea4.setY(Resistance.getY() + 75);
+
+						anchorPane2.getChildren().removeAll(linkArea1, linkArea3);
+						anchorPane2.getChildren().addAll(linkArea2, linkArea4);
+					} else {
+						anchorPane2.getChildren().removeAll(linkArea2, linkArea4);
+						anchorPane2.getChildren().addAll(linkArea3, linkArea1);
+						Resistance.setRotate(0);
+						rotation.setText("Effectuer une rotation de -90°");
+
+					}
+				}
+				else {System.out.println("Rotation impossible");}
+			});
+
+
+			menu.getItems().addAll(changeName,changeValue,rotation,delete);
+
+
+			Resistance.setOnContextMenuRequested(event11 ->{
+				menu.show(Resistance, Side.BOTTOM,0,0);
+			});
+
+
+
+			// Permet de deplacer la resistance d'un point a un autre
+			Resistance.setOnMouseDragged(event1 ->
+			{
+
+				if (event1.isPrimaryButtonDown()) {
+					if (etat == "d") { //En position Drag and Drop
+						// position de l'image
+						double imagx;
+						double imagy;
+						if(Resistance.getRotate() == 0) {//Dans le bon sens
+							imagx = image.getWidth();
+							imagy = image.getHeight();
+						}
+						else{//rotation 90° donc on inverse la hauteur et la largeur
+							imagy = image.getWidth();
+							imagx = image.getHeight();
+						}
+
+						//System.out.println(imagx);
+						// on récupère la taille de la fenêtre
+						double x = event1.getSceneX();
+						double y = event1.getSceneY();
+
+						// Permet de ne pas sortir du cadre
+						if (x < (imagx / 2)) {
+							x = (imagx / 2);
+						} // on evite de sortir du cadre a gauche
+						if (y < (65 + imagy / 2)) {
+							y = (65 + imagy / 2);
+						} // on evite de sortir du cadre en haut
+
+						double mx = anchorPane2.getWidth();
+
+						double my = anchorPane2.getHeight();
+						if (x + imagx / 2 > mx - 20) {
+							x = mx - imagx / 2 - 20;
+						} // on evite de sortir du cadre a droite
+
+					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
+					 * c est a dire le centre x plus la largeur de l image divise par 2 */
+						if (y + imagy / 2 > my - 20) {
+							y = my - imagy / 2 - 20;
+						} // on evite de sortir du cadre en bas
+
+						//Ici on repositionne l'image est les 4 potentiel carré noir autour
+						Resistance.relocate(x - imagx / 2, y - imagy / 2);
+						Resistance.setX(x - imagx / 2);
+						Resistance.setY(y - imagy / 2);
+						linkArea3.setX(Resistance.getX() + image.getWidth());
+						linkArea3.setY(Resistance.getY() + image.getHeight() / 2);
+						linkArea1.setX(Resistance.getX());
+						linkArea1.setY(Resistance.getY() + image.getHeight() / 2);
+						linkArea2.setX(Resistance.getX() + imagx);
+						linkArea2.setY(Resistance.getY() - 25);
+						linkArea4.setX(Resistance.getX() + imagx);
+						linkArea4.setY(Resistance.getY() + 75);
+
+						actualiseViewOfLink(componentResistance, anchorPane2); //On actualise les liens
+					}
+				}
+			});
+
+		});
+	}
+
+	public static void showResult(AnchorPane anchorPane2, Text programmeLaunch, AnchorPane anchorPane4,Component[] result){
+		//TODO il me faudrait un tableau compose d'element du type Component pour que je puisse tout affiche
+
 		//Supprime le message
 		anchorPane2.getChildren().remove(programmeLaunch);
 		GraphicalFunctions.launch = false;
+		if(valueToShow !=null){
+			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
+					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
+			informations.setLayoutX(20);
+			informations.setLayoutY(500);
+			anchorPane4.getChildren().add(informations);
+		}
+
+		for(int i = 0; i < result.length ; i++){
+			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
+					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
+			informations.setLayoutX(valueToShow.object.getX());
+			informations.setLayoutY(valueToShow.object.getY() + 65);
+			anchorPane2.getChildren().add(informations);
+		}
 	}
 }
+
+
+
+
+
+
+
