@@ -3,7 +3,7 @@ package graphics;
 import components.Type;
 import javafx.scene.image.ImageView;
 
-/** Composant avec ces zones de liens et les valeurs necessaire et les noms
+/** Classe qui definie un composant pour l interface graphique
  * Created by tanguy on 15/04/16.
  */
 public class Component {
@@ -18,6 +18,21 @@ public class Component {
     Double value;
     Double courant;
     Double voltage;
+
+    /**
+     * Contructeur d un composant
+     * @param object Image du composant en lui meme
+     * @param square1 Premiere zone de lien
+     * @param square2 Seconde zone de lien
+     * @param square3 Troisieme zone de lien
+     * @param square4 Quatrieme zone de lien
+     * @param orientation Definie si l image est horizontale ou verticale
+     * @param name Nom du composant
+     * @param value valeur du composant
+     * @param type Type du composant
+     * @param courant Valeur du courant qui traverse le composant
+     * @param voltage Valeur de la tension au borne du composant
+     */
     public Component(ImageView object,ImageView square1, ImageView square2,ImageView square3, ImageView square4, char orientation,String name,double value, Type type, double courant, double voltage){
         this.object = object;
         this.square1 = square1;
@@ -31,6 +46,7 @@ public class Component {
         this.courant = courant;
         this.voltage = voltage;
     }
+    //Quelques fonctions pour acceder a differente valeur
     public String getCname (){
         return this.name;
     }

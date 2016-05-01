@@ -346,13 +346,11 @@ public class GraphicalFunctions
 		firstVoltageGenerator.setY(80); // On définit la position
 		anchorPane4.getChildren().add(firstVoltageGenerator); // On affiche dans la zone voulu (anchorPane4)
 
-		//firstVoltageGenerator.setOnMouseEntered();
-
         // Permet de faire apparaitre le generateur de tension dans la zone centrale en cliquant dans la zone des composants
 		firstVoltageGenerator.setOnMouseClicked(event ->
-		{
-            //Fait apparaitre différente image
-			System.out.println("Un generateur de tension devrait apparaitre");
+		{	//Fait apparaitre différente image
+
+			//L'image principale du composant
 			ImageView tensionGenerator = new ImageView();
 			Image image = new Image("file:image/Generateur de tension h.png");
 			tensionGenerator.setImage(image);
@@ -360,13 +358,14 @@ public class GraphicalFunctions
 			tensionGenerator.setY(100);//valeur par default d'apparition
 			anchorPane2.getChildren().add(tensionGenerator);
 
+			//Les 4 carrés noir autour (affiche 2 par 2)
 			ImageView linkArea1 = new ImageView();
 			Image square1 = new Image("file:image/LinkArea.png");
 			linkArea1.setImage(square1);
 			linkArea1.setFitHeight(10);//On redimensionne
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(100); //Placer en fonction des valeurs par default
-			linkArea1.setY(100 + image.getHeight()/2);
+			linkArea1.setX(tensionGenerator.getX()); //Placer en fonction des valeurs par default
+			linkArea1.setY(tensionGenerator.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
 			ImageView linkArea2 = new ImageView();
@@ -374,29 +373,28 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(100 + 100);
-			linkArea2.setY(100 - 25);
+			//One definit pas immediatement la position, on attendre d effectuer une rotation
 
 			ImageView linkArea4 = new ImageView();
 			Image square4 = new Image("file:image/LinkArea.png");
 			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
-			linkArea4.setX(100 + 100);
-			linkArea4.setY(100 + 75);
+			//De même
 
 			ImageView linkArea3 = new ImageView();
 			Image square3 = new Image("file:image/LinkArea.png");
 			linkArea3.setImage(square3);
 			linkArea3.setFitHeight(10);
 			linkArea3.setFitWidth(10);
-			linkArea3.setX(100 + image.getWidth());
-			linkArea3.setY(100 + image.getHeight()/2);
+			linkArea3.setX(tensionGenerator.getX() + image.getWidth());
+			linkArea3.setY(tensionGenerator.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
 
 
-			tensionGenerator.setLayoutX(idVoltageGenerator); // Donne un identifiant unique au generateur de tension
+			tensionGenerator.setLayoutX(idVoltageGenerator); // Donne un identifiant unique au generateur de tension.
+			// Pas très propre d'utiliser Layout mais permet de garder en mémoire en valeur, mais sans conséquence après affichage
 			idVoltageGenerator += 1;
             //On creer l'objet
 			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVoltageGenerator, 10, Type.VOLTAGEGENERATOR,0,10);
@@ -405,31 +403,47 @@ public class GraphicalFunctions
 			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
 			// vertexIndex+=2;
 
-			//Permet de voir le nom et la valeur
+			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
             tensionGenerator.setOnMouseEntered(event3 -> {
-                Text informations = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value
+				//On cree deux messages en fonctions de l'orientation de l'image
+                Text informationsh = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value
 				 + "\nValeur du courant = " + componentVoltageGenerator.courant + "\nValeur de tension = " + componentVoltageGenerator.voltage);
-                informations.setLayoutX(tensionGenerator.getX());
-                informations.setLayoutY(tensionGenerator.getY() + 65);
-                anchorPane2.getChildren().add(informations);
-                tensionGenerator.setOnMouseExited(event4 ->{ //On le supprime quand la souris sort de la zone
-                    anchorPane2.getChildren().remove(informations);
+				Text informationsv = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value
+						+ "\nValeur du courant = " + componentVoltageGenerator.courant + "\nValeur de tension = " + componentVoltageGenerator.voltage);
+
+
+				// On definie la zone des deux informations.
+				informationsh.setX(tensionGenerator.getX());
+				informationsh.setY(tensionGenerator.getY() + 60);
+
+				informationsv.setX(tensionGenerator.getX() + 80);
+				informationsv.setY(tensionGenerator.getY());
+
+				//On affiche le bon en fonction de l orientation
+				if(componentVoltageGenerator.orientation == 'v') {
+					anchorPane2.getChildren().add(informationsv); //On affiche les informations
+				}
+				else{
+					anchorPane2.getChildren().add(informationsh); //On affiche les informations
+
+				}
+				tensionGenerator.setOnMouseExited(event4 ->{ //On supprime les informations quand la souris sort de la zone
+                    anchorPane2.getChildren().removeAll(informationsh,informationsv);
+
                 });
             });
 
-			//Permet de creer un lien
+			//Permet de creer un lien en cliquant sur les deux zones
 			linkArea1.setOnMouseClicked(event2 ->
 			{
 				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					System.out.println("On a cliqué sur le second objet");
 					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,1,-1,anchorPane2);
 					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
 				else if (etat == "l1"){ // ajoute un objet
-					System.out.println("On a cliqué sur le premier objet");
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
-					linkArea = 1;
+					linkArea = 1;//C est la premier zone qui a ete utilise
 				}
 			});
 			linkArea2.setOnMouseClicked(event2 ->
@@ -484,27 +498,33 @@ public class GraphicalFunctions
 			MenuItem changeName = new MenuItem("Changer le nom");
 
 			delete.setOnAction(event1 -> {
+				//Permet de supprimer le composant et les liens qui vont avec
 				deleteComponent(componentVoltageGenerator,anchorPane2);
 			});
 
 			changeName.setOnAction(event1 -> {
-				TextField zonePourChangerName = new TextField("Entrer votre valeur");
+				//Permet de changer le nom du composant
+
+				//Zone de texte interractive
+				TextField zonePourChangerName = new TextField("Entrer un nouveau nom");
+				//On definie la bonne zone
 				zonePourChangerName.setLayoutX(menu.getX());
 				zonePourChangerName.setLayoutY(menu.getY());
-				anchorPane2.getChildren().add(zonePourChangerName);
+				anchorPane2.getChildren().add(zonePourChangerName); //On affiche
 				zonePourChangerName.setOnAction(event8 ->{
 					String a = zonePourChangerName.getText();
-					if (a.equals("Tanguy")) {
+					if (a.equals("Tanguy")) {//Sans commentaire
 						System.out.println("Excellent choix !");
 					}
 					componentVoltageGenerator.name = a;
 					//TODO Actualiser le nom dans la breadboard
-					anchorPane2.getChildren().remove(zonePourChangerName);
+					anchorPane2.getChildren().remove(zonePourChangerName);//on enleve la zone d'affichage du message
 
 				});
 			});
 
 			changeValue.setOnAction(event1 ->{
+				//Permet de changer la valeur du composant, les unités sont celles utilise habituellement en electronique
 				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
 				zonePourChangerValeur.setLayoutX(menu.getX());
 				zonePourChangerValeur.setLayoutY(menu.getY());
@@ -512,22 +532,27 @@ public class GraphicalFunctions
 				zonePourChangerValeur.setOnAction(event8 ->{
 					String a = zonePourChangerValeur.getText();
 					double x;
-					try {x = Double.parseDouble(a);
+
+					//Petit differecne ici, on essaie de mettre la valeur rentrer dans un double
+					//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
+					//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
+					try {x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
 						componentVoltageGenerator.value = x;
 						//TODO Actualiser la valeur dans la breadboard
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
 						componentVoltageGenerator.voltage = x;
 					}
-					catch(NumberFormatException erreur){
+					catch(NumberFormatException erreur){//Sinon on demande a l utilisateur de remettre une autre valeur
 						zonePourChangerValeur.setText("Entrer une valeur correct");
 					}
 				});
 			});
 
 			rotation.setOnAction(event1 -> {
-				rotationPossible = true;
+				//Permet d'effectuer une rotation pour mettre le composant a la verticale ou a l horizontale
+				rotationPossible = true; //impossible de faire une rotation si des liens existent deja
 				for(int i = 0; i < arrayListOfLink.size(); i++){
-					System.out.println(i);
+					//On regarde si des liens existent deja, on pourrait limite faire un "break" pour quitter la boucle
 					if(arrayListOfLink.get(i).image1.object == tensionGenerator || arrayListOfLink.get(i).image2.object == tensionGenerator){
 						rotationPossible = false;
 					}
@@ -537,40 +562,48 @@ public class GraphicalFunctions
 					if (tensionGenerator.getRotate() == 0) {
 						rotation.setText("Effectuer une rotation de +90°");
 
-						tensionGenerator.setRotate(90);
+						tensionGenerator.setRotate(90);//Fonction bien pratique qui retourne visuellement l'image
+						//En revanche aucune de ces caracteristique a ete modifie.
 
+
+						/*Les valeurs 50/25/75 proviennent rigoureusement de calcul sur la taille de l'image, mais en sachant que
+						la hauteur vaut 50 et la longueur 100 on evite des longues formules
+						C'est aussi ici qu'on definie la position des carres pour la premiere fois*/
 						linkArea2.setX(tensionGenerator.getX() + 50);
 						linkArea2.setY(tensionGenerator.getY() - 25);
 						linkArea4.setX(tensionGenerator.getX() + 50);
 						linkArea4.setY(tensionGenerator.getY() + 75);
 
+						//On supprime visuellement les zones inutiles et on affiche les nouvelles
 						anchorPane2.getChildren().removeAll(linkArea1, linkArea3);
 						anchorPane2.getChildren().addAll(linkArea2, linkArea4);
+
+						componentVoltageGenerator.orientation = 'v';//On retient qu'un rotation a ete effectue
 					} else {
+						//On fait de meme mais sans definir la position des carres
+						rotation.setText("Effectuer une rotation de -90°");
+
 						anchorPane2.getChildren().removeAll(linkArea2, linkArea4);
 						anchorPane2.getChildren().addAll(linkArea3, linkArea1);
 						tensionGenerator.setRotate(0);
-						rotation.setText("Effectuer une rotation de -90°");
 
+						componentVoltageGenerator.orientation = 'h';
 					}
 				}
-				else {System.out.println("Rotation impossible");}
+				else {System.out.println("Rotation impossible");} //Dans le cas ou des liens existent deja
 			});
 
 
-			menu.getItems().addAll(changeName,changeValue,rotation,delete);
+			menu.getItems().addAll(changeName,changeValue,rotation,delete);//Permet d'ajouter les different bouton au menu
 
 
 			tensionGenerator.setOnContextMenuRequested(event11 ->{
-				menu.show(tensionGenerator, Side.BOTTOM,0,0);
+				menu.show(tensionGenerator, Side.BOTTOM,0,0);//Fait apparaitre le menu qui disparrait automatiquement lorsqu on clique ailleurs
 			});
 
-
-
-           // Permet de deplacer le generateur de tension d'un point a un autre
+           	// Permet de deplacer le generateur de tension d'un point a un autre
 			tensionGenerator.setOnMouseDragged(event1 -> 
 			{
-
 				if (event1.isPrimaryButtonDown()) {
 					if (etat == "d") { //En position Drag and Drop
 						// position de l'image
@@ -584,8 +617,6 @@ public class GraphicalFunctions
 							imagy = image.getWidth();
 							imagx = image.getHeight();
 						}
-
-						//System.out.println(imagx);
 						// on récupère la taille de la fenêtre
 						double x = event1.getSceneX();
 						double y = event1.getSceneY();
@@ -601,6 +632,7 @@ public class GraphicalFunctions
 						double mx = anchorPane2.getWidth();
 
 						double my = anchorPane2.getHeight();
+
 						if (x + imagx / 2 > mx - 20) {
 							x = mx - imagx / 2 - 20;
 						} // on evite de sortir du cadre a droite
@@ -612,9 +644,9 @@ public class GraphicalFunctions
 						} // on evite de sortir du cadre en bas
 
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
-						tensionGenerator.relocate(x - imagx / 2, y - imagy / 2);
 						tensionGenerator.setX(x - imagx / 2);
 						tensionGenerator.setY(y - imagy / 2);
+
 						linkArea3.setX(tensionGenerator.getX() + image.getWidth());
 						linkArea3.setY(tensionGenerator.getY() + image.getHeight() / 2);
 						linkArea1.setX(tensionGenerator.getX());
@@ -672,16 +704,14 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(230 + 100);
-			linkArea2.setY(100 - 25);
+
 
 			ImageView linkArea4 = new ImageView();
 			Image square4 = new Image("file:image/LinkArea.png");
 			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
-			linkArea4.setX(230 + 100);
-			linkArea4.setY(100 + 75);
+
 
 			ImageView linkArea3 = new ImageView();
 			Image square3 = new Image("file:image/LinkArea.png");
@@ -700,16 +730,35 @@ public class GraphicalFunctions
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
 			//vertexIndex+=2;
 
-            courantGenerator.setOnMouseEntered(event3 -> {
-                Text informations = new Text("Nom : " + componentCourantGenerator.name + "\nValeur : " + componentCourantGenerator.value
+			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
+			courantGenerator.setOnMouseEntered(event3 -> {
+				//On cree deux messages en fonctions de l'orientation de l'image
+				Text informationsh = new Text("Nom : " + componentCourantGenerator.name + "\nValeur : " + componentCourantGenerator.value
 						+ "\nValeur du courant = " + componentCourantGenerator.courant + "\nValeur de tension = " + componentCourantGenerator.voltage);
-                informations.setLayoutX(courantGenerator.getX());
-                informations.setLayoutY(courantGenerator.getY() + 120);
-                anchorPane2.getChildren().add(informations);
-                courantGenerator.setOnMouseExited(event4 ->{
-                    anchorPane2.getChildren().remove(informations);
-                });
-            });
+				Text informationsv = new Text("Nom : " + componentCourantGenerator.name + "\nValeur : " + componentCourantGenerator.value
+						+ "\nValeur du courant = " + componentCourantGenerator.courant + "\nValeur de tension = " + componentCourantGenerator.voltage);
+
+
+				// On definie la zone des deux informations.
+				informationsh.setX(courantGenerator.getX());
+				informationsh.setY(courantGenerator.getY() + 60);
+
+				informationsv.setX(courantGenerator.getX() + 80);
+				informationsv.setY(courantGenerator.getY());
+
+				//On affiche le bon en fonction de l orientation
+				if(componentCourantGenerator.orientation == 'v') {
+					anchorPane2.getChildren().add(informationsv); //On affiche les informations
+				}
+				else{
+					anchorPane2.getChildren().add(informationsh); //On affiche les informations
+
+				}
+				courantGenerator.setOnMouseExited(event4 ->{ //On supprime les informations quand la souris sort de la zone
+					anchorPane2.getChildren().removeAll(informationsh,informationsv);
+
+				});
+			});
 
 			//Permet de creer un lien
 
@@ -818,7 +867,7 @@ public class GraphicalFunctions
 			});
 
 			changeValue.setOnAction(event1 ->{
-				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+				TextField zonePourChangerValeur = new TextField("Entrer un nouveau nom");
 				zonePourChangerValeur.setLayoutX(menu.getX());
 				zonePourChangerValeur.setLayoutY(menu.getY());
 				anchorPane2.getChildren().add(zonePourChangerValeur);
@@ -858,12 +907,15 @@ public class GraphicalFunctions
 
 						anchorPane2.getChildren().removeAll(linkArea1, linkArea3);
 						anchorPane2.getChildren().addAll(linkArea2, linkArea4);
+
+						componentCourantGenerator.orientation = 'v';
 					} else {
 						anchorPane2.getChildren().removeAll(linkArea2, linkArea4);
 						anchorPane2.getChildren().addAll(linkArea3, linkArea1);
 						courantGenerator.setRotate(0);
 						rotation.setText("Effectuer une rotation de -90°");
 
+						componentCourantGenerator.orientation = 'h';
 					}
 				}
 				else {System.out.println("Rotation impossible");}
@@ -1177,14 +1229,14 @@ public class GraphicalFunctions
 		{
 			//Fait apparaitre différente image
 			System.out.println("Une résistance de tension devrait apparaitre");
-			ImageView Resistance = new ImageView();
+			ImageView resistance = new ImageView();
 			Image image = new Image("file:image/resistance.png");
-			Resistance.setImage(image);
-			Resistance.setFitHeight(50);
-			Resistance.setFitWidth(100);
-			Resistance.setX(450);//valeur par default d'apparition
-			Resistance.setY(100);//valeur par default d'apparition
-			anchorPane2.getChildren().add(Resistance);
+			resistance.setImage(image);
+			resistance.setFitHeight(50);
+			resistance.setFitWidth(100);
+			resistance.setX(450);//valeur par default d'apparition
+			resistance.setY(100);//valeur par default d'apparition
+			anchorPane2.getChildren().add(resistance);
 
 			ImageView linkArea1 = new ImageView();
 			Image square1 = new Image("file:image/LinkArea.png");
@@ -1200,16 +1252,13 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(450 + 100);
-			linkArea2.setY(100 - 25);
+
 
 			ImageView linkArea4 = new ImageView();
 			Image square4 = new Image("file:image/LinkArea.png");
 			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
-			linkArea4.setX(450 + 100);
-			linkArea4.setY(100 + 75);
 
 			ImageView linkArea3 = new ImageView();
 			Image square3 = new Image("file:image/LinkArea.png");
@@ -1222,24 +1271,42 @@ public class GraphicalFunctions
 
 
 
-			Resistance.setLayoutX(idResistance); // Donne un identifiant unique a la resistance
+			resistance.setLayoutX(idResistance); // Donne un identifiant unique a la resistance
 			idResistance += 1;
 			//On creer l'objet
-			Component componentResistance = new Component(Resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, 10, Type.RESISTANCE,0,0);
+			Component componentResistance = new Component(resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, 10, Type.RESISTANCE,0,0);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new Resistance(componentResistance.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
 			// vertexIndex+=2;
 
-			//Permet de voir le nom et la valeur
-			Resistance.setOnMouseEntered(event3 -> {
-				Text informations = new Text("Nom : " + componentResistance.name + "\nValeur : " + componentResistance.value
+			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
+			resistance.setOnMouseEntered(event3 -> {
+				//On cree deux messages en fonctions de l'orientation de l'image
+				Text informationsh = new Text("Nom : " + componentResistance.name + "\nValeur : " + componentResistance.value
 						+ "\nValeur du courant = " + componentResistance.courant + "\nValeur de tension = " + componentResistance.voltage);
-				informations.setLayoutX(Resistance.getX());
-				informations.setLayoutY(Resistance.getY() + 65);
-				anchorPane2.getChildren().add(informations);
-				Resistance.setOnMouseExited(event4 ->{ //On le supprime quand la souris sort de la zone
-					anchorPane2.getChildren().remove(informations);
+				Text informationsv = new Text("Nom : " + componentResistance.name + "\nValeur : " + componentResistance.value
+						+ "\nValeur du courant = " + componentResistance.courant + "\nValeur de tension = " + componentResistance.voltage);
+
+
+				// On definie la zone des deux informations.
+				informationsh.setX(resistance.getX());
+				informationsh.setY(resistance.getY() + 60);
+
+				informationsv.setX(resistance.getX() + 80);
+				informationsv.setY(resistance.getY());
+
+				//On affiche le bon en fonction de l orientation
+				if(componentResistance.orientation == 'v') {
+					anchorPane2.getChildren().add(informationsv); //On affiche les informations
+				}
+				else{
+					anchorPane2.getChildren().add(informationsh); //On affiche les informations
+
+				}
+				resistance.setOnMouseExited(event4 ->{ //On supprime les informations quand la souris sort de la zone
+					anchorPane2.getChildren().removeAll(informationsh,informationsv);
+
 				});
 			});
 
@@ -1314,7 +1381,7 @@ public class GraphicalFunctions
 			});
 
 			changeName.setOnAction(event1 -> {
-				TextField zonePourChangerName = new TextField("Entrer votre valeur");
+				TextField zonePourChangerName = new TextField("Entrer un nouveau nom");
 				zonePourChangerName.setLayoutX(menu.getX());
 				zonePourChangerName.setLayoutY(menu.getY());
 				anchorPane2.getChildren().add(zonePourChangerName);
@@ -1353,30 +1420,33 @@ public class GraphicalFunctions
 				rotationPossible = true;
 				for(int i = 0; i < arrayListOfLink.size(); i++){
 					System.out.println(i);
-					if(arrayListOfLink.get(i).image1.object == Resistance || arrayListOfLink.get(i).image2.object == Resistance){
+					if(arrayListOfLink.get(i).image1.object == resistance || arrayListOfLink.get(i).image2.object == resistance){
 						rotationPossible = false;
 					}
 				}
 
 				if(rotationPossible) {
-					if (Resistance.getRotate() == 0) {
+					if (resistance.getRotate() == 0) {
 						rotation.setText("Effectuer une rotation de +90°");
 
-						Resistance.setRotate(90);
+						resistance.setRotate(90);
 
-						linkArea2.setX(Resistance.getX() + 50);
-						linkArea2.setY(Resistance.getY() - 25);
-						linkArea4.setX(Resistance.getX() + 50);
-						linkArea4.setY(Resistance.getY() + 75);
+						linkArea2.setX(resistance.getX() + 50);
+						linkArea2.setY(resistance.getY() - 25);
+						linkArea4.setX(resistance.getX() + 50);
+						linkArea4.setY(resistance.getY() + 75);
 
 						anchorPane2.getChildren().removeAll(linkArea1, linkArea3);
 						anchorPane2.getChildren().addAll(linkArea2, linkArea4);
+
+						componentResistance.orientation = 'v';
 					} else {
 						anchorPane2.getChildren().removeAll(linkArea2, linkArea4);
 						anchorPane2.getChildren().addAll(linkArea3, linkArea1);
-						Resistance.setRotate(0);
+						resistance.setRotate(0);
 						rotation.setText("Effectuer une rotation de -90°");
 
+						componentResistance.orientation = 'h';
 					}
 				}
 				else {System.out.println("Rotation impossible");}
@@ -1386,14 +1456,14 @@ public class GraphicalFunctions
 			menu.getItems().addAll(changeName,changeValue,rotation,delete);
 
 
-			Resistance.setOnContextMenuRequested(event11 ->{
-				menu.show(Resistance, Side.BOTTOM,0,0);
+			resistance.setOnContextMenuRequested(event11 ->{
+				menu.show(resistance, Side.BOTTOM,0,0);
 			});
 
 
 
 			// Permet de deplacer la resistance d'un point a un autre
-			Resistance.setOnMouseDragged(event1 ->
+			resistance.setOnMouseDragged(event1 ->
 			{
 
 				if (event1.isPrimaryButtonDown()) {
@@ -1401,7 +1471,7 @@ public class GraphicalFunctions
 						// position de l'image
 						double imagx;
 						double imagy;
-						if(Resistance.getRotate() == 0) {//Dans le bon sens
+						if(resistance.getRotate() == 0) {//Dans le bon sens
 							imagx = image.getWidth();
 							imagy = image.getHeight();
 						}
@@ -1437,17 +1507,17 @@ public class GraphicalFunctions
 						} // on evite de sortir du cadre en bas
 
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
-						Resistance.relocate(x - imagx / 2, y - imagy / 2);
-						Resistance.setX(x - imagx / 2);
-						Resistance.setY(y - imagy / 2);
-						linkArea3.setX(Resistance.getX() + image.getWidth());
-						linkArea3.setY(Resistance.getY() + image.getHeight() / 2);
-						linkArea1.setX(Resistance.getX());
-						linkArea1.setY(Resistance.getY() + image.getHeight() / 2);
-						linkArea2.setX(Resistance.getX() + imagx);
-						linkArea2.setY(Resistance.getY() - 25);
-						linkArea4.setX(Resistance.getX() + imagx);
-						linkArea4.setY(Resistance.getY() + 75);
+						resistance.relocate(x - imagx / 2, y - imagy / 2);
+						resistance.setX(x - imagx / 2);
+						resistance.setY(y - imagy / 2);
+						linkArea3.setX(resistance.getX() + image.getWidth());
+						linkArea3.setY(resistance.getY() + image.getHeight() / 2);
+						linkArea1.setX(resistance.getX());
+						linkArea1.setY(resistance.getY() + image.getHeight() / 2);
+						linkArea2.setX(resistance.getX() + imagx);
+						linkArea2.setY(resistance.getY() - 25);
+						linkArea4.setX(resistance.getX() + imagx);
+						linkArea4.setY(resistance.getY() + 75);
 
 						actualiseViewOfLink(componentResistance, anchorPane2); //On actualise les liens
 					}

@@ -13,7 +13,7 @@ public class Controller implements javafx.fxml.Initializable
 {
 
 
-    /** cette méthode avec l'implements permet de lancer une méthode au lancement du controller */
+    /** cette méthode avec l'implements "javafx.fxml.Initializable" permet de lancer une méthode au lancement du controller */
     @Override
     public void initialize(URL location, ResourceBundle resources) 
     {
@@ -32,7 +32,10 @@ public class Controller implements javafx.fxml.Initializable
         GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane,ValeurADeterminer);
         GraphicalFunctions.addResistance(anchorPane2, anchorPane4, scrollPane,  anchorPane,ValeurADeterminer);
 
+
+        //permet d'executer le programme
         Run.setOnMouseClicked(event ->{
+            //On regarde si l utilisateur n a pas deja appuier sur la bouton Run
             if(!GraphicalFunctions.launch) {
                 System.out.println("Programme lancé");
                 Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");
@@ -82,6 +85,8 @@ public class Controller implements javafx.fxml.Initializable
         });
     }
 
+
+    //Liste creer automatiquement par SceneBuilder des objets graphique
 
     @FXML
     private MenuItem Delete;

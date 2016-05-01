@@ -21,9 +21,7 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-
-        URL location = getClass().getResource("sample.fxml");
+        URL location = getClass().getResource("sample.fxml");//Permet de trouver le fichier sample
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(location);
@@ -31,9 +29,9 @@ public class Main extends Application
 
         Parent root = (Parent) fxmlLoader.load(location.openStream());
 
-        primaryStage.setTitle("Circuit Electrique");
-        primaryStage.setScene(new Scene(root, 1100, 690));
-        primaryStage.show();
+        primaryStage.setTitle("Circuit Electrique"); //permet de donner un titre a la fenetre
+        primaryStage.setScene(new Scene(root, 1100, 690)); //definie la taille
+        primaryStage.show(); //affiche l interface
     }
 
 
