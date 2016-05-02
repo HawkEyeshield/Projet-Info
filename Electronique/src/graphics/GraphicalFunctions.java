@@ -22,12 +22,7 @@ import java.util.ArrayList;
  */
 public class GraphicalFunctions
 {
-	/*Permet de définir dans quel etat on est a tout moment, d pour Drag and Drop,
-    l1 pour Lien et indique que aucun objet n'a été selectionner, l2 pour Lien et que un objet a déjà
-    ete selectionner et qu'on attend le second
-    */
-	public static int maxLien = 1000;
-	
+
 	/** Permet de définir si on peut faire du drag and drop ou si on est entrain de créer des liens*/
 	public static String etat = "d";
 	
@@ -55,7 +50,7 @@ public class GraphicalFunctions
 	/** Boolean qui permet de savoir si le programme tourne ou non*/
 	public static boolean launch = false;
 
-	
+	/**Va servir pour garder en memoire la premiere zone de lien utilise*/
 	public static int linkArea;
 	
 	/** Breadboard qui traduira le schéma interface en graphe pour le solveur.
@@ -68,6 +63,9 @@ public class GraphicalFunctions
 	/** Permet de savoir si la rotation d'une image est possible, ou si il existe déjà des liens*/
 	public static boolean rotationPossible;
 
+	/** Permet de retenir la tension imposee*/
+	public  static double tensionImposee;
+
 
 	/**
      * Permet d'ajouter ou d'actualiser un lien aussi bien visuellement que dans la breadboard
@@ -79,11 +77,12 @@ public class GraphicalFunctions
      * @param anchorPane2 Zone de travail
      */
     public static void addLink(Component premiereImageDuLien,Component secondeImageDuLien, int linkAreaUsed1, int linkAreaUsed2, int k, AnchorPane anchorPane2) {
-
+		//On initialise des variables qui vont nous simplifier la compréhension
         double centreXLinkArea1 = 0;
         double centreYLinkArea1 = 0;
         double centreXLinkArea2 = 0;
         double centreYLinkArea2 = 0;
+		//Les variables prennent les valeurs des zones utilise
         if (linkAreaUsed1 == 1) {
             centreXLinkArea1 = premiereImageDuLien.square1.getX() + 5;
             centreYLinkArea1 = premiereImageDuLien.square1.getY() + 5;
@@ -113,11 +112,16 @@ public class GraphicalFunctions
             centreYLinkArea2 = secondeImageDuLien.square4.getY() + 5;
         }
 
+		//On initialise les lignescar elles se seront pas toujours toutes utilisees, mais toujours toutes affichees
         Line line1 = new Line(0, 0, 0, 0);
         Line line2 = new Line(0, 0, 0, 0);
         Line line3 = new Line(0, 0, 0, 0);
 
-
+		/**Tout les if suivent le même schema, on regarde les zones utilise et on agit en consequence
+		 * On part toujours d un cote de la zone utiliser pour le premier composant et de l autre pour le second composant
+		 * On relie ces deux traits avec un dernier
+		 * Ceci a pour unique but de clarifier visuellement la schema, en evitant les traits droit qui serait illisible
+		*/
         if((linkAreaUsed1 == 3 && linkAreaUsed2 == 1) || (linkAreaUsed1 == 1 && linkAreaUsed2 == 3)){
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1);
 
@@ -231,8 +235,6 @@ public class GraphicalFunctions
 			}
 		}
 
-
-
         if (k == -1) { //Si on ajoute un nouveau lien k = -1
             boolean a = true; //Permet de véfifier si il n'existe pas déjà un lien qui part de cet endroit la.
             for (int i = 0; i < arrayListOfLink.size(); i++) {
@@ -248,8 +250,7 @@ public class GraphicalFunctions
                     break; //On quitte la boucle pour eviter d'ecrire deux message d'erreur
                 }
             }
-            if (a) {
-				System.out.println(premiereImageDuLien.name + "  " + secondeImageDuLien.name);
+            if (a) {//Si on est dans le cas ou il n existe pas encore de lien, alors on affiche tout
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
@@ -258,26 +259,29 @@ public class GraphicalFunctions
                 System.out.println("on devrait rajouter un truc a la case " + arrayListOfLink.size());
 				System.out.println(arrayListOfLink.get(0).linkAreaUsed1);
                 //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
-                ///breadboard.addLink(arrayListOfLink.get(-1)); Erreur ici
+                //breadboard.addLink(arrayListOfLink.get(-1));Erreur ici
             }
         }
-        else{ //Sinon c'est que c'est qu'il faut juste actualiser les liens
+        else{ //Si k!= -1 c'est que c'est qu'il faut juste actualiser les liens
             anchorPane2.getChildren().add(line1);
             anchorPane2.getChildren().add(line2);
             anchorPane2.getChildren().add(line3);
+			//Et on remet en memoire les nouveaux liens
 			arrayListOfLink.get(k).lien1 = line1;
 			arrayListOfLink.get(k).lien2 = line2;
 			arrayListOfLink.get(k).lien3 = line3;
-            //TODO Pour Sterenn : mettre la fonction qui actualise le lien dans la breadboard
-            // Actualiser = rattacher des composants différents ? Sinon, ça ne sert pas dans la breadboard...
-            // breadboard.addLink();
         }
 
     }
 
+	/**
+	 * Fonction qui permet de supprimer un lien, mais ne me parrait pas tres pertinent apres reflexion donc ne sera sans doute pas utiliser
+	 * @param lien Lelien a surpprimer
+	 * @param anchorPane2 Zone de travail dans lequel le lien apparait
+     */
 	static  public void deleteLink(Line lien, AnchorPane anchorPane2){
 		//TODO enlever le lien qui relie deux composants
-		for (int i = 0; i < arrayListOfLink.size();i++){
+		for (int i = 0; i < arrayListOfLink.size();i++){//On retrouve les liens qui lui sont associé (ils vont par trois) et on les supprime
 			if(arrayListOfLink.get(i).lien1 == lien || arrayListOfLink.get(i).lien2 == lien || arrayListOfLink.get(i).lien3 == lien){
 				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
 				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien2);
@@ -296,6 +300,8 @@ public class GraphicalFunctions
      */
     public static void actualiseViewOfLink(Component image, AnchorPane anchorPane2) {
         for (int i = 0; i < arrayListOfLink.size();i++){
+			//On trouve tous les liens associes a l image et on les supprime pour les reaffiches comme si n existait pas
+			//(avec k != -1 donc pas d ajout dans le breadboard)
             if(arrayListOfLink.get(i).image1 == image || arrayListOfLink.get(i).image2 == image){
                 anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
                 anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien2);
@@ -312,22 +318,26 @@ public class GraphicalFunctions
      */
 	public  static void deleteComponent(Component composant, AnchorPane anchorPane2){
 		//TODO supprimer le composant de la breadboard et les liens qui existent avec lui !
-		int[] a = new int[arrayListOfLink.size()];
-		int b = 0;
+		int[] a = new int[arrayListOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
+		int b = 0; //Compte le nombre de composants relies avec celui qui doit etre supprimer
 		for ( int i =0 ; i < arrayListOfLink.size(); i++){
+			//On garde que les valeurs qui sont en lien avec le composant a supprimer
 			if(arrayListOfLink.get(i).image1 == composant || arrayListOfLink.get(i).image2 == composant){
+				//On supprime les liens
 				anchorPane2.getChildren().removeAll(arrayListOfLink.get(i).lien1,arrayListOfLink.get(i).lien2,arrayListOfLink.get(i).lien3);
-				a[b]=i;
+				a[b]=i;//On garde en memoire dans les premiers cases les valeurs qui correspondent au lien a supprimer
 				b += 1;
 			}
 			else{a[i]=0;}
 		}
 		for(int j = 0; j < b;j++){
-				arrayListOfLink.remove(a[j]);
-			for(int k = j + 1 ; k < b;k++){
+			//On regarde toutes les valeurs retenu en memoire
+			arrayListOfLink.remove(a[j]);//On les supprime
+			for(int k = j + 1 ; k < b;k++){//On enleve ensuite 1 au valeur de a[k] car le remove a decaler le arrayListOfLink de 1...
 				a[k] -= 1;
 			}
 		}
+		//Enfin on supprime le composant en lui meme
 		anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
 	}
 
@@ -337,7 +347,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer)
+	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer,Button TensionAImposer)
 	{
 		ImageView firstVoltageGenerator = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/Generateur de tension h.png"); // On va la cherche au bonne endroit
@@ -486,6 +496,21 @@ public class GraphicalFunctions
 					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
 					linkArea = 4;
+				}
+			});
+
+
+			//Permet de selectionner la valeur à déterminer.
+
+			tensionGenerator.setOnMouseClicked(event1 -> {
+				if(etat == "v"){
+					valueToShow = componentVoltageGenerator;
+					etat = "d";
+					valeurADeterminer.setText("Choix pris en compte");
+				}
+
+				if(etat == "vd"){
+					System.out.println("On va eviter de faire des betises...");
 				}
 			});
 
@@ -670,7 +695,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer)
+	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer, Button TensionAImposer)
 	{
 		ImageView firstCourantGenerator = new ImageView();
 		Image image2 = new Image("file:image/Generateur de courant h.png");
@@ -724,7 +749,7 @@ public class GraphicalFunctions
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,null,linkArea2,null,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
+			Component componentCourantGenerator = new Component(courantGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
@@ -833,6 +858,37 @@ public class GraphicalFunctions
 					valueToShow = componentCourantGenerator;
 					etat = "d";
 					valeurADeterminer.setText("Choix pris en compte");
+				}
+
+				if(etat == "vd"){
+					Text info = new Text("Par convention, fleche de la tension est oriente \n de bas en haut ou de gauche a droite");
+					info.setX(courantGenerator.getX() + 100);
+					info.setY(courantGenerator.getY() + 60);
+					anchorPane2.getChildren().add(info);
+
+					TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+					zonePourChangerValeur.setLayoutX(courantGenerator.getX() + 100);
+					zonePourChangerValeur.setLayoutY(courantGenerator.getY());
+					anchorPane2.getChildren().add(zonePourChangerValeur);
+					zonePourChangerValeur.setOnAction(event8 ->{
+						String a = zonePourChangerValeur.getText();
+						double x;
+						//On essaie de mettre la valeur rentrer dans un double
+						//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
+						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
+						try {x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
+							//TODO Actualiser la valeur dans la breadboard
+							anchorPane2.getChildren().remove(zonePourChangerValeur);
+							componentCourantGenerator.voltage = x;
+							etat = "d";
+							TensionAImposer.setText("Choix pris en compte");
+							anchorPane2.getChildren().remove(info);
+						}
+						catch(NumberFormatException erreur){//Sinon on demande a l utilisateur de remettre une autre valeur
+							zonePourChangerValeur.setText("Entrer une valeur correct");
+						}
+					});
+
 				}
 			});
 
@@ -998,7 +1054,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer)
+	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer, Button TensionAImposer)
 	{
 		ImageView firstNode = new ImageView();
 		Image image2 = new Image("file:image/Noeud.png");
@@ -1212,7 +1268,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addResistance (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer)
+	public static  void addResistance (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer, Button TensionAImposer)
 	{
 		ImageView firstResistance = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/resistance.png"); // On va la cherche au bonne endroit
@@ -1279,6 +1335,8 @@ public class GraphicalFunctions
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new Resistance(componentResistance.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
 			// vertexIndex+=2;
+
+
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
 			resistance.setOnMouseEntered(event3 -> {
@@ -1368,6 +1426,45 @@ public class GraphicalFunctions
 				}
 			});
 
+
+			resistance.setOnMouseClicked(event1 -> {
+				if(etat == "v"){
+					valueToShow = componentResistance;
+					etat = "d";
+					valeurADeterminer.setText("Choix pris en compte");
+				}
+
+				if(etat == "vd") {
+					Text info = new Text("Par convention, fleche de la tension est oriente \n de bas en haut ou de gauche a droite");
+					info.setX(resistance.getX() + 100);
+					info.setY(resistance.getY() + 60);
+					anchorPane2.getChildren().add(info);
+
+					TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+					zonePourChangerValeur.setLayoutX(resistance.getX() + 110);
+					zonePourChangerValeur.setLayoutY(resistance.getY());
+					anchorPane2.getChildren().add(zonePourChangerValeur);
+					zonePourChangerValeur.setOnAction(event8 -> {
+						String a = zonePourChangerValeur.getText();
+						double x;
+						//On essaie de mettre la valeur rentrer dans un double
+						//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
+						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
+						try {
+							x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
+							//TODO Actualiser la valeur dans la breadboard
+							anchorPane2.getChildren().remove(zonePourChangerValeur);
+							componentResistance.voltage = x;
+							etat = "d";
+							TensionAImposer.setText("Choix pris en compte");
+							anchorPane2.getChildren().remove(info);
+						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
+							zonePourChangerValeur.setText("Entrer une valeur correct");
+						}
+					});
+
+				}
+			});
 			//Menu qui s'affiche quand on effectue un clic droit sur l'objet
 
 			ContextMenu menu = new ContextMenu();
@@ -1532,8 +1629,8 @@ public class GraphicalFunctions
 
 		//Supprime le message
 		anchorPane2.getChildren().remove(programmeLaunch);
-		GraphicalFunctions.launch = false;
-		if(valueToShow !=null){
+		GraphicalFunctions.launch = false;//On aurtorise a l utilisateur de relancer le programme
+		if(valueToShow !=null){//On affiche les valeurs qui interessent l utilisateur
 			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
 					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
 			informations.setLayoutX(20);
@@ -1541,12 +1638,29 @@ public class GraphicalFunctions
 			anchorPane4.getChildren().add(informations);
 		}
 
-		for(int i = 0; i < result.length ; i++){
-			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
+		for(int i = 0; i < result.length ; i++){//On affiche aussi toutes les valeurs
+			//On cree deux messages en fonctions de l'orientation de l'image
+			Text informationsh = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
 					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
-			informations.setLayoutX(valueToShow.object.getX());
-			informations.setLayoutY(valueToShow.object.getY() + 65);
-			anchorPane2.getChildren().add(informations);
+			Text informationsv = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
+					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
+
+
+			// On definie la zone des deux informations.
+			informationsh.setX(valueToShow.object.getX());
+			informationsh.setY(valueToShow.object.getY() + 60);
+
+			informationsv.setX(valueToShow.object.getX() + 80);
+			informationsv.setY(valueToShow.object.getY());
+
+			//On affiche le bon en fonction de l orientation
+			if(valueToShow.orientation == 'v') {
+				anchorPane2.getChildren().add(informationsv); //On affiche les informations
+			}
+			else{
+				anchorPane2.getChildren().add(informationsh); //On affiche les informations
+
+			}
 		}
 	}
 }

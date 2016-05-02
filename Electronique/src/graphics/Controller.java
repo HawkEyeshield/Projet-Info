@@ -27,59 +27,62 @@ public class Controller implements javafx.fxml.Initializable
         anchorPane3.setPrefWidth(2000);
 
         // On charge les images des composants dans la zone de droite
-        GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane, ValeurADeterminer);
-        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane, ValeurADeterminer);
-        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane,ValeurADeterminer);
-        GraphicalFunctions.addResistance(anchorPane2, anchorPane4, scrollPane,  anchorPane,ValeurADeterminer);
+        GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane, ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane, ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane,ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addResistance(anchorPane2, anchorPane4, scrollPane,  anchorPane,ValeurADeterminer, TensionAImposer);
 
 
         //permet d'executer le programme
         Run.setOnMouseClicked(event ->{
-            //On regarde si l utilisateur n a pas deja appuier sur la bouton Run
+            //On regarde si l utilisateur n a pas deja appuyer sur la bouton Run
             if(!GraphicalFunctions.launch) {
-                System.out.println("Programme lancé");
-                Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");
-                programmeLaunch.setLayoutX(100);
-                programmeLaunch.setLayoutX(100);
-                programmeLaunch.setX(450);
+                Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
+                programmeLaunch.setX(550);//On definie la zone
                 programmeLaunch.setY(50);
-                anchorPane2.getChildren().add(programmeLaunch);
+                anchorPane2.getChildren().add(programmeLaunch);//et on affiche
                 //TODO Mettre la fonction qui lance le programme de raph
                 //Attention il faut prendre en argument le programmeLaunch pour me le redonner par la suite (pour le supprimer)
                 GraphicalFunctions.launch = true;
             }
             else{
-                System.out.println("Arreter de spam la touche run !");
+                System.out.println("Arreter de spammer la touche run !");
             }
         });
 
-        ValeurADeterminer.setOnMouseClicked(event -> {
-            GraphicalFunctions.etat = "v";
-            ValeurADeterminer.setText("Choisir un composant");
+        TensionAImposer.setOnMouseClicked(event -> {
+            if(TensionAImposer.getText().endsWith("Tension à imposer")) {//Evite qu on puisse definir deux fois une tension
+                TensionAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
+                GraphicalFunctions.etat = "vd";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
+            }
+        });
+
+
+        ValeurADeterminer.setOnMouseClicked(event -> {//Permet a l utilisateur de donner un composant, la tension et le courant lui seront rendu a la fin du calcul
+            if(ValeurADeterminer.getText().endsWith("Valeur à déterminer")) {//Evite qu on puisse definir deux fois une valeur a determiner
+                GraphicalFunctions.etat = "v";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
+                ValeurADeterminer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
+            }
         });
 
         Debugge.setOnMouseClicked(event -> {
-            System.out.println("Le programme devrait pouvoir se lancer correctement");
+            //Fonction qui determine si le solveur va pouvoir donner un resultat ou si il existe des problemes dans le schema electrique
             Text bug = new Text("Le programme devrait pouvoir se lancer correctement");
-            bug.setLayoutX(100);
-            bug.setLayoutX(100);
-            bug.setX(-100);
+            bug.setX(2);
             bug.setY(75);
             anchorPane2.getChildren().add(bug);
             //TODO si des gens veullent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
-
         });
 
 
         CreerUnLien.setOnMouseClicked(event -> {
-            if(GraphicalFunctions.etat == "l1" || GraphicalFunctions.etat =="l2") {
-                GraphicalFunctions.etat = "d";
-                CreerUnLien.setText("Creer un lien");
-                GraphicalFunctions.etat = "d";
+            //Permet de creer un lien entre deux composants
+            if(GraphicalFunctions.etat == "l1" || GraphicalFunctions.etat =="l2") {//On regarde si l utilisateur veut arreter de creer des liens
+                GraphicalFunctions.etat = "d";//Si il etait dans entrain de creer des liens, c est qu il veut arreter, donc on repasse en Drag and Drop
+                CreerUnLien.setText("Creer un lien"); //On remet le texte d'origine
             }
             else{
                 GraphicalFunctions.etat = "l1";
-                System.out.println("On commence a creer un lien");
                 CreerUnLien.setText("Arreter de creer des liens");
             }
         });
