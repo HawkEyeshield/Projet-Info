@@ -45,9 +45,18 @@ public class Breadboard
 		CircuitGraph g = new CircuitGraph();
 		for(int i=0;i<components.size();i++)
 		{
-			g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
+			// Attention ! Il faut d'abord ajouter les vertices au graphe, sinon il renvoie IllegalArgumentException lors de l'ajout du composant !
 			g.addVertex(components.get(i).getFirstLink());
 			g.addVertex(components.get(i).getSecondLink());
+			try
+			{
+				g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
+			}
+			catch(IllegalArgumentException e)
+			{
+				System.out.println("Le circuit à un problème de sommet ! Veuillez le vérifier !");
+				return;
+			}
 		}
 		// La "clé" devient l'indice du composant dans la liste "components". En bijection avec les noms, donc.
 		//Ne fonctionne que si on travaille avec une seule liste - un seul type ?
@@ -74,7 +83,8 @@ public class Breadboard
         {
             components.add(new VoltageGenerator(c.getCname(), null, null, c.getCvalue()));
         }
-        else {
+        else 
+        {
             throw new IllegalArgumentException("Composant inconnu");
         }
 	}
@@ -146,6 +156,15 @@ public class Breadboard
 	{
         //Ne sert à rien si on met les liens et les composants à la fin : à partir du bouton "run"
         // (comme ça on tient compte seulement de la liste des liens ?)
+	}
+	
+	/**
+	 * Getter de components
+	 * @return la liste des composants de la breadboard
+	 */
+	public ArrayList<AbstractDipole> getComponents()
+	{
+		return this.components;
 	}
 
 	/**
