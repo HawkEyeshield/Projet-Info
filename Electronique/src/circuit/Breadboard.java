@@ -2,7 +2,7 @@ package circuit;
 
 import components.*;
 import graphStructure.CircuitGraph;
-import graphics.Component;
+import graphics.GraphicalComponent;
 import graphics.Link;
 import resolution.Extracteur;
 
@@ -58,7 +58,7 @@ public class Breadboard
 	}
 	
 	/** Méthode ajoutant des composants (dans la breadboard) */
-	public void addComponent(Component c)
+	public void addComponent(GraphicalComponent c)
 	{
 		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
 
@@ -86,8 +86,8 @@ public class Breadboard
 	 */
     public void addLink(Link l)
     {
-        Component A = l.getImage1();
-        Component B = l.getImage2();
+        GraphicalComponent A = l.getImage1();
+        GraphicalComponent B = l.getImage2();
         
         // Parcours des composants connus pour récupérer les deux que l'on souhaite lier
         for (int i=0;i<components.size();i++)
@@ -132,7 +132,7 @@ public class Breadboard
             if (C1.getName().equals(c.getName()))
             {
                 components.remove(i); 
-                //on a supprimé le composant abstractdipole dans la liste mais pas le composant Component...
+                //on a supprimé le composant abstractdipole dans la liste mais pas le composant GraphicalComponent...
                 // Mais du coup comme ça on ne peut plus le relier à rien.
             }
         }

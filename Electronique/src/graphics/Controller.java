@@ -23,14 +23,14 @@ public class Controller implements javafx.fxml.Initializable
 
         // On génère toute les images à la suite en les positionnant au bon endroit
 
-        anchorPane3.setPrefHeight(4000);
-        anchorPane3.setPrefWidth(2000);
+        anchorPane3.setPrefHeight(3000);
+        anchorPane3.setPrefWidth(3000);
 
         // On charge les images des composants dans la zone de droite
-        GraphicalFunctions.addCurrentGenerator(anchorPane2, anchorPane4, scrollPane, ValeurADeterminer, TensionAImposer);
-        GraphicalFunctions.addVoltageGenerator(anchorPane2, anchorPane4, scrollPane, anchorPane, ValeurADeterminer, TensionAImposer);
-        GraphicalFunctions.addNode(anchorPane2, anchorPane4, scrollPane,ValeurADeterminer, TensionAImposer);
-        GraphicalFunctions.addResistance(anchorPane2, anchorPane4, scrollPane,  anchorPane,ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addCurrentGenerator(anchorPane3, anchorPane4, scrollPane, ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addVoltageGenerator(anchorPane3, anchorPane4, scrollPane, anchorPane, ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addNode(anchorPane3, anchorPane4, scrollPane,ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addResistance(anchorPane3, anchorPane4, scrollPane, anchorPane,ValeurADeterminer, TensionAImposer);
 
 
         //permet d'executer le programme
@@ -39,8 +39,9 @@ public class Controller implements javafx.fxml.Initializable
             if(!GraphicalFunctions.launch) {
                 Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
                 programmeLaunch.setX(550);//On definie la zone
-                programmeLaunch.setY(50);
-                anchorPane2.getChildren().add(programmeLaunch);//et on affiche
+                programmeLaunch.setY(20);
+                System.out.println(scrollPane.getTranslateX());
+                anchorPane3.getChildren().add(programmeLaunch);//et on affiche
                 //TODO Mettre la fonction qui lance le programme de raph
                 //Attention il faut prendre en argument le programmeLaunch pour me le redonner par la suite (pour le supprimer)
                 GraphicalFunctions.launch = true;
@@ -57,7 +58,6 @@ public class Controller implements javafx.fxml.Initializable
             }
         });
 
-
         ValeurADeterminer.setOnMouseClicked(event -> {//Permet a l utilisateur de donner un composant, la tension et le courant lui seront rendu a la fin du calcul
             if(ValeurADeterminer.getText().endsWith("Valeur à déterminer")) {//Evite qu on puisse definir deux fois une valeur a determiner
                 GraphicalFunctions.etat = "v";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
@@ -69,11 +69,10 @@ public class Controller implements javafx.fxml.Initializable
             //Fonction qui determine si le solveur va pouvoir donner un resultat ou si il existe des problemes dans le schema electrique
             Text bug = new Text("Le programme devrait pouvoir se lancer correctement");
             bug.setX(2);
-            bug.setY(75);
-            anchorPane2.getChildren().add(bug);
+            bug.setY(20);
+            anchorPane3.getChildren().add(bug);
             //TODO si des gens veullent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
         });
-
 
         CreerUnLien.setOnMouseClicked(event -> {
             //Permet de creer un lien entre deux composants
@@ -87,7 +86,6 @@ public class Controller implements javafx.fxml.Initializable
             }
         });
     }
-
 
     //Liste creer automatiquement par SceneBuilder des objets graphique
 

@@ -27,7 +27,7 @@ public class GraphicalFunctions
 	public static String etat = "d";
 	
 	/** Premiere image du lien que l'on va creer*/
-	public static Component premiereImageDuLien;
+	public static GraphicalComponent premiereImageDuLien;
 	
 	/**Compte le nombre de generateur de tension*/
 	public static int idVoltageGenerator = 0;
@@ -45,7 +45,7 @@ public class GraphicalFunctions
 	public  static ArrayList<Link> arrayListOfLink = new ArrayList<Link>();
 
 	/**Permet de retenir quel est la valeur a afficher*/
-	public static Component valueToShow = null;
+	public static GraphicalComponent valueToShow = null;
 
 	/** Boolean qui permet de savoir si le programme tourne ou non*/
 	public static boolean launch = false;
@@ -76,7 +76,7 @@ public class GraphicalFunctions
      * @param k Permet de savoir si il faut l'ajouter ou juste actualiser
      * @param anchorPane2 Zone de travail
      */
-    public static void addLink(Component premiereImageDuLien,Component secondeImageDuLien, int linkAreaUsed1, int linkAreaUsed2, int k, AnchorPane anchorPane2) {
+    public static void addLink(GraphicalComponent premiereImageDuLien, GraphicalComponent secondeImageDuLien, int linkAreaUsed1, int linkAreaUsed2, int k, AnchorPane anchorPane2) {
 		//On initialise des variables qui vont nous simplifier la compréhension
         double centreXLinkArea1 = 0;
         double centreYLinkArea1 = 0;
@@ -298,7 +298,7 @@ public class GraphicalFunctions
      * @param image objet que l'on deplace
      * @param anchorPane2 zone ou l'on travail
      */
-    public static void actualiseViewOfLink(Component image, AnchorPane anchorPane2) {
+    public static void actualiseViewOfLink(GraphicalComponent image, AnchorPane anchorPane2) {
         for (int i = 0; i < arrayListOfLink.size();i++){
 			//On trouve tous les liens associes a l image et on les supprime pour les reaffiches comme si n existait pas
 			//(avec k != -1 donc pas d ajout dans le breadboard)
@@ -316,7 +316,7 @@ public class GraphicalFunctions
 	 * @param composant composant à supprimer.
 	 * @param anchorPane2 zone de travail
      */
-	public  static void deleteComponent(Component composant, AnchorPane anchorPane2){
+	public  static void deleteComponent(GraphicalComponent composant, AnchorPane anchorPane2){
 		//TODO supprimer le composant de la breadboard et les liens qui existent avec lui !
 		int[] a = new int[arrayListOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
 		int b = 0; //Compte le nombre de composants relies avec celui qui doit etre supprimer
@@ -364,8 +364,11 @@ public class GraphicalFunctions
 			ImageView tensionGenerator = new ImageView();
 			Image image = new Image("file:image/Generateur de tension h.png");
 			tensionGenerator.setImage(image);
-			tensionGenerator.setX(100);//valeur par default d'apparition
-			tensionGenerator.setY(100);//valeur par default d'apparition
+			/**Arnaque du lambda proposer par Intellij qui permet d'outre passer le faite qu'on ne puisse pas
+			 * modifier des varaibles dans les events*/
+			final double[][] positionFenetre = {positionRelative(anchorPane2, scrollPane)};
+			tensionGenerator.setX(100 + positionFenetre[0][0]);//valeur par default d'apparition
+			tensionGenerator.setY(100 + positionFenetre[0][1]);//valeur par default d'apparition
 			anchorPane2.getChildren().add(tensionGenerator);
 
 			//Les 4 carrés noir autour (affiche 2 par 2)
@@ -407,7 +410,7 @@ public class GraphicalFunctions
 			// Pas très propre d'utiliser Layout mais permet de garder en mémoire en valeur, mais sans conséquence après affichage
 			idVoltageGenerator += 1;
             //On creer l'objet
-			Component componentVoltageGenerator = new Component(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVoltageGenerator, 10, Type.VOLTAGEGENERATOR,0,10);
+			GraphicalComponent componentVoltageGenerator = new GraphicalComponent(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVoltageGenerator, 10, Type.VOLTAGEGENERATOR,0,10);
 			
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
@@ -415,6 +418,7 @@ public class GraphicalFunctions
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
             tensionGenerator.setOnMouseEntered(event3 -> {
+
 				//On cree deux messages en fonctions de l'orientation de l'image
                 Text informationsh = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentVoltageGenerator.value
 				 + "\nValeur du courant = " + componentVoltageGenerator.courant + "\nValeur de tension = " + componentVoltageGenerator.voltage);
@@ -532,9 +536,10 @@ public class GraphicalFunctions
 
 				//Zone de texte interractive
 				TextField zonePourChangerName = new TextField("Entrer un nouveau nom");
-				//On definie la bonne zone
-				zonePourChangerName.setLayoutX(menu.getX());
-				zonePourChangerName.setLayoutY(menu.getY());
+				// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+				positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+				zonePourChangerName.setLayoutX(tensionGenerator.getX());
+				zonePourChangerName.setLayoutY(tensionGenerator.getY() - 25);
 				anchorPane2.getChildren().add(zonePourChangerName); //On affiche
 				zonePourChangerName.setOnAction(event8 ->{
 					String a = zonePourChangerName.getText();
@@ -551,8 +556,10 @@ public class GraphicalFunctions
 			changeValue.setOnAction(event1 ->{
 				//Permet de changer la valeur du composant, les unités sont celles utilise habituellement en electronique
 				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
-				zonePourChangerValeur.setLayoutX(menu.getX());
-				zonePourChangerValeur.setLayoutY(menu.getY());
+				// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+				positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+				zonePourChangerValeur.setLayoutX(tensionGenerator.getX() + positionFenetre[0][0]);
+				zonePourChangerValeur.setLayoutY(tensionGenerator.getY() + positionFenetre[0][1] - 25);
 				anchorPane2.getChildren().add(zonePourChangerValeur);
 				zonePourChangerValeur.setOnAction(event8 ->{
 					String a = zonePourChangerValeur.getText();
@@ -642,31 +649,39 @@ public class GraphicalFunctions
 							imagy = image.getWidth();
 							imagx = image.getHeight();
 						}
+
+						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+						positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+
 						// on récupère la taille de la fenêtre
-						double x = event1.getSceneX();
-						double y = event1.getSceneY();
+						double x = event1.getSceneX() + positionFenetre[0][0];
+						double y = event1.getSceneY() + positionFenetre[0][1];
+
+						//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
+						//alors que celles du composant à partir de anchorPane2
+						y = y - 60;
 
 						// Permet de ne pas sortir du cadre
-						if (x < (imagx / 2)) {
+						if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
 							x = (imagx / 2);
-						} // on evite de sortir du cadre a gauche
-						if (y < (65 + imagy / 2)) {
-							y = (65 + imagy / 2);
-						} // on evite de sortir du cadre en haut
+						}
+						if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+							y = (imagy / 2);
+						}
 
 						double mx = anchorPane2.getWidth();
 
 						double my = anchorPane2.getHeight();
 
-						if (x + imagx / 2 > mx - 20) {
-							x = mx - imagx / 2 - 20;
-						} // on evite de sortir du cadre a droite
+						if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
+							x = mx - imagx / 2 ;
+						}
 
-					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
-					 * c est a dire le centre x plus la largeur de l image divise par 2 */
-						if (y + imagy / 2 > my - 20) {
-							y = my - imagy / 2 - 20;
-						} // on evite de sortir du cadre en bas
+						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
+						 * c est a dire le centre x plus la largeur de l image divise par 2 */
+						if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
+							y = my - imagy / 2 ;
+						}
 
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
 						tensionGenerator.setX(x - imagx / 2);
@@ -707,12 +722,12 @@ public class GraphicalFunctions
 		
         //Permet de faire apparaitre le generateur de courant
 		firstCourantGenerator.setOnMouseClicked(event -> {
-			System.out.println("Un generateur de courant devrait apparaitre");
 			ImageView courantGenerator = new ImageView();
 			Image image = new Image("file:image/Generateur de courant h.png");
 			courantGenerator.setImage(image);
-			courantGenerator.setX(230);
-			courantGenerator.setY(100);
+			final double[][] positionFenetre = {positionRelative(anchorPane2, scrollPane)};
+			courantGenerator.setX(230 + positionFenetre[0][0]);//valeur par default d'apparition
+			courantGenerator.setY(100 + positionFenetre[0][1]);//valeur par default d'apparition
 			anchorPane2.getChildren().add(courantGenerator);
 
 			ImageView linkArea1 = new ImageView();
@@ -720,8 +735,8 @@ public class GraphicalFunctions
 			linkArea1.setImage(square1);
 			linkArea1.setFitHeight(10);//On redimensionne
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(230); //Placer en fonction des valeurs par default
-			linkArea1.setY(100 + image.getHeight()/2);
+			linkArea1.setX(courantGenerator.getX()); //Placer en fonction des valeurs par default
+			linkArea1.setY(courantGenerator.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
 			ImageView linkArea2 = new ImageView();
@@ -743,13 +758,13 @@ public class GraphicalFunctions
 			linkArea3.setImage(square3);
 			linkArea3.setFitHeight(10);
 			linkArea3.setFitWidth(10);
-			linkArea3.setX(230 + image.getWidth());
-			linkArea3.setY(100 + image.getHeight()/2);
+			linkArea3.setX(courantGenerator.getX() + image.getWidth());
+			linkArea3.setY(courantGenerator.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
 			courantGenerator.setLayoutX(idCourantgeGenerator);
 			idCourantgeGenerator += 1;
-			Component componentCourantGenerator = new Component(courantGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
+			GraphicalComponent componentCourantGenerator = new GraphicalComponent(courantGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR,10,0);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
@@ -907,8 +922,8 @@ public class GraphicalFunctions
 
 			changeName.setOnAction(event1 -> {
 				TextField zonePourChangerName = new TextField("Entrer votre valeur");
-				zonePourChangerName.setLayoutX(menu.getX());
-				zonePourChangerName.setLayoutY(menu.getY());
+				zonePourChangerName.setLayoutX(courantGenerator.getX());
+				zonePourChangerName.setLayoutY(courantGenerator.getY() - 25);
 				anchorPane2.getChildren().add(zonePourChangerName);
 				zonePourChangerName.setOnAction(event8 ->{
 					String a = zonePourChangerName.getText();
@@ -924,8 +939,8 @@ public class GraphicalFunctions
 
 			changeValue.setOnAction(event1 ->{
 				TextField zonePourChangerValeur = new TextField("Entrer un nouveau nom");
-				zonePourChangerValeur.setLayoutX(menu.getX());
-				zonePourChangerValeur.setLayoutY(menu.getY());
+				zonePourChangerValeur.setLayoutX(courantGenerator.getX());
+				zonePourChangerValeur.setLayoutY(courantGenerator.getY() - 25);
 				anchorPane2.getChildren().add(zonePourChangerValeur);
 				zonePourChangerValeur.setOnAction(event8 ->{
 					String a = zonePourChangerValeur.getText();
@@ -992,7 +1007,7 @@ public class GraphicalFunctions
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
 				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
-					// taille de l'image
+					// position de l'image
 					double imagx;
 					double imagy;
 					if(courantGenerator.getRotate() == 0) {//Dans le bon sens
@@ -1004,34 +1019,43 @@ public class GraphicalFunctions
 						imagx = image.getHeight();
 					}
 
-					//on récupère la taille de la fenêtre
-					double x = event1.getSceneX();
-					double y = event1.getSceneY();
+					// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+					positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
 
-					//Permet de ne pas sortir du cadre
-					if (x < (imagx / 2)) {
+					// on récupère la taille de la fenêtre
+					double x = event1.getSceneX() + positionFenetre[0][0];
+					double y = event1.getSceneY() + positionFenetre[0][1];
+
+					//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
+					//alors que celles du composant à partir de anchorPane2
+					y = y - 60;
+
+					// Permet de ne pas sortir du cadre
+					if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
 						x = (imagx / 2);
-					} // on evite de sortir du cadre a gauche
-					if (y < (65 + imagy / 2)) {
-						y = (65 + imagy / 2);
-					} // on evite de sortir du cadre en haut
+					}
+					if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+						y = (imagy / 2);
+					}
 
 					double mx = anchorPane2.getWidth();
 
 					double my = anchorPane2.getHeight();
-					if (x + imagx / 2 > mx - 20) {
-						x = mx - imagx / 2 - 20;
-					} // on evite de sortir du cadre a droite
-				
-					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
-				 	* c est a dire le centre x plus la largeur de l image divise par 2*/
-					if (y + imagy / 2 > my - 20) {
-						y = my - imagy / 2 - 20;
-					} // on evite de sortir du cadre en bas
 
-					courantGenerator.relocate(x - imagx / 2, y - imagy / 2);
+					if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
+						x = mx - imagx / 2 ;
+					}
+
+						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
+						 * c est a dire le centre x plus la largeur de l image divise par 2 */
+					if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
+						y = my - imagy / 2 ;
+					}
+
+					//Ici on repositionne l'image est les 4 potentiel carré noir autour
 					courantGenerator.setX(x - imagx / 2);
 					courantGenerator.setY(y - imagy / 2);
+
 					linkArea3.setX(courantGenerator.getX() + image.getWidth());
 					linkArea3.setY(courantGenerator.getY() + image.getHeight() / 2);
 					linkArea1.setX(courantGenerator.getX());
@@ -1073,8 +1097,9 @@ public class GraphicalFunctions
 			ImageView node = new ImageView();
 			Image image = new Image("file:image/Noeud.png");
 			node.setImage(image);
-			node.setX(350);
-			node.setY(100);
+			final double[][] positionFenetre = {positionRelative(anchorPane2, scrollPane)};
+			node.setX(350 + positionFenetre[0][0]);//valeur par default d'apparition
+			node.setY(100 + positionFenetre[0][1]);//valeur par default d'apparition
 			anchorPane2.getChildren().add(node);
 
 			ImageView linkArea3 = new ImageView();
@@ -1082,8 +1107,8 @@ public class GraphicalFunctions
 			linkArea3.setImage(square3);
 			linkArea3.setFitHeight(10);
 			linkArea3.setFitWidth(10);
-			linkArea3.setX(350 + image.getWidth());
-			linkArea3.setY(100  +image.getHeight()/2);
+			linkArea3.setX(node.getX() + image.getWidth());
+			linkArea3.setY(node.getY()  +image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
 			ImageView linkArea1 = new ImageView();
@@ -1091,8 +1116,8 @@ public class GraphicalFunctions
 			linkArea1.setImage(square1);
 			linkArea1.setFitHeight(10);
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(350);
-			linkArea1.setY(100 + image.getHeight()/2);
+			linkArea1.setX(node.getX());
+			linkArea1.setY(node.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
 			ImageView linkArea2 = new ImageView();
@@ -1100,8 +1125,8 @@ public class GraphicalFunctions
 			linkArea2.setImage(square2);
 			linkArea2.setFitHeight(10);
 			linkArea2.setFitWidth(10);
-			linkArea2.setX(350 + image.getWidth()/2);
-			linkArea2.setY(100);
+			linkArea2.setX(node.getX() + image.getWidth()/2);
+			linkArea2.setY(node.getY());
 			anchorPane2.getChildren().add(linkArea2);
 
 			ImageView linkArea4 = new ImageView();
@@ -1109,13 +1134,13 @@ public class GraphicalFunctions
 			linkArea4.setImage(square4);
 			linkArea4.setFitHeight(10);
 			linkArea4.setFitWidth(10);
-			linkArea4.setX(350 + image.getWidth()/2);
-			linkArea4.setY(100 + image.getHeight());
+			linkArea4.setX(node.getX() + image.getWidth()/2);
+			linkArea4.setY(node.getY() + image.getHeight());
 			anchorPane2.getChildren().add(linkArea4);
 
 			node.setLayoutX(idNode);
 			idNode += 1;
-			Component componentNode = new Component(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL,0,0);
+			GraphicalComponent componentNode = new GraphicalComponent(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL,0,0);
 
 
 			//Permet de creer un lien
@@ -1180,26 +1205,12 @@ public class GraphicalFunctions
 				}
 			});
 
-            /*
-            //Test pour savoir si on peux faire tourner l'image
-            node.setOnMouseEntered(event5 ->{
-                node.setRotate(350);
-                System.out.println("ca devrait rotater");
-            });
-            */
 
-			//Permet de faire apparaitre un menu avec le clique droit
-			node.setOnMousePressed(event4 -> {
-				if(event4.isSecondaryButtonDown()){
-					System.out.println("coucou");
-				}
-			});
-			
             //Permet de deplacer le noeud d'un point a un autre
 			node.setOnMouseDragged(event1 -> 
 			{
 				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
-					//position de la souris
+					// position de l'image
 					double imagx;
 					double imagy;
 					if(node.getRotate() == 0) {//Dans le bon sens
@@ -1211,36 +1222,42 @@ public class GraphicalFunctions
 						imagx = image.getHeight();
 					}
 
-					//on récupère la taille de la fenêtre
-					double x = event1.getSceneX();
-					double y = event1.getSceneY();
+					// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+					positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
 
-					//Permet de ne pas sortir du cadre
-					if (x < (imagx / 2)) {
+					// on récupère la taille de la fenêtre
+					double x = event1.getSceneX() + positionFenetre[0][0];
+					double y = event1.getSceneY() + positionFenetre[0][1];
+
+					//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
+					//alors que celles du composant à partir de anchorPane2
+					y = y - 60;
+
+					// Permet de ne pas sortir du cadre
+					if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
 						x = (imagx / 2);
-					} // on evite de sortir du cadre a gauche
-					if (y < (65 + imagy / 2)) {
-						y = (65 + imagy / 2);
-					} // on evite de sortir du cadre en haut
+					}
+					if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+						y = (imagy / 2);
+					}
 
 					double mx = anchorPane2.getWidth();
 
 					double my = anchorPane2.getHeight();
-					if (x + imagx / 2 > mx - 20) {
-						x = mx - imagx / 2 - 20;
-					} // on evite de sortir du cadre a droite
-				
-					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
-				 	* c est a dire le centre x plus la largeur de l image divise par 2*/
 
-					if (y + imagy / 2 > my - 20) {
-						y = my - imagy / 2 - 20;
-					} // on evite de sortir du cadre en bas
+					if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
+						x = mx - imagx / 2 ;
+					}
 
-					node.relocate(x - imagx / 2, y - imagy / 2);
+						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
+						 * c est a dire le centre x plus la largeur de l image divise par 2 */
+					if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
+						y = my - imagy / 2 ;
+					}
+
+					//Ici on repositionne l'image est les 4 potentiel carré noir autour
 					node.setX(x - imagx / 2);
 					node.setY(y - imagy / 2);
-
 					linkArea1.relocate(node.getX(),node.getY() + image.getHeight()/2);
 					linkArea1.setX(node.getX());
 					linkArea1.setY(node.getY() + image.getHeight()/2);
@@ -1290,8 +1307,9 @@ public class GraphicalFunctions
 			resistance.setImage(image);
 			resistance.setFitHeight(50);
 			resistance.setFitWidth(100);
-			resistance.setX(450);//valeur par default d'apparition
-			resistance.setY(100);//valeur par default d'apparition
+			final double[][] positionFenetre = {positionRelative(anchorPane2, scrollPane)};
+			resistance.setX(450 + positionFenetre[0][0]);//valeur par default d'apparition
+			resistance.setY(100 + positionFenetre[0][1]);//valeur par default d'apparition
 			anchorPane2.getChildren().add(resistance);
 
 			ImageView linkArea1 = new ImageView();
@@ -1299,8 +1317,8 @@ public class GraphicalFunctions
 			linkArea1.setImage(square1);
 			linkArea1.setFitHeight(10);//On redimensionne
 			linkArea1.setFitWidth(10);
-			linkArea1.setX(450); //Placer en fonction des valeurs par default
-			linkArea1.setY(100 + image.getHeight()/2);
+			linkArea1.setX(resistance.getX()); //Placer en fonction des valeurs par default
+			linkArea1.setY(resistance.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea1);
 
 			ImageView linkArea2 = new ImageView();
@@ -1321,8 +1339,8 @@ public class GraphicalFunctions
 			linkArea3.setImage(square3);
 			linkArea3.setFitHeight(10);
 			linkArea3.setFitWidth(10);
-			linkArea3.setX(450 + image.getWidth());
-			linkArea3.setY(100 + image.getHeight()/2);
+			linkArea3.setX(resistance.getX() + image.getWidth());
+			linkArea3.setY(resistance.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
 
@@ -1330,7 +1348,7 @@ public class GraphicalFunctions
 			resistance.setLayoutX(idResistance); // Donne un identifiant unique a la resistance
 			idResistance += 1;
 			//On creer l'objet
-			Component componentResistance = new Component(resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, 10, Type.RESISTANCE,0,0);
+			GraphicalComponent componentResistance = new GraphicalComponent(resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, 10, Type.RESISTANCE,0,0);
 
 			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
 			// breadboard.addComponent(new Resistance(componentResistance.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
@@ -1479,8 +1497,10 @@ public class GraphicalFunctions
 
 			changeName.setOnAction(event1 -> {
 				TextField zonePourChangerName = new TextField("Entrer un nouveau nom");
-				zonePourChangerName.setLayoutX(menu.getX());
-				zonePourChangerName.setLayoutY(menu.getY());
+				// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+				positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+				zonePourChangerName.setLayoutX(resistance.getX());
+				zonePourChangerName.setLayoutY(resistance.getY() - 25);
 				anchorPane2.getChildren().add(zonePourChangerName);
 				zonePourChangerName.setOnAction(event8 ->{
 					String a = zonePourChangerName.getText();
@@ -1496,8 +1516,10 @@ public class GraphicalFunctions
 
 			changeValue.setOnAction(event1 ->{
 				TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
-				zonePourChangerValeur.setLayoutX(menu.getX());
-				zonePourChangerValeur.setLayoutY(menu.getY());
+				// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+				positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+				zonePourChangerValeur.setLayoutX(resistance.getX());
+				zonePourChangerValeur.setLayoutY(resistance.getY() - 25);
 				anchorPane2.getChildren().add(zonePourChangerValeur);
 				zonePourChangerValeur.setOnAction(event8 ->{
 					String a = zonePourChangerValeur.getText();
@@ -1516,7 +1538,6 @@ public class GraphicalFunctions
 			rotation.setOnAction(event1 -> {
 				rotationPossible = true;
 				for(int i = 0; i < arrayListOfLink.size(); i++){
-					System.out.println(i);
 					if(arrayListOfLink.get(i).image1.object == resistance || arrayListOfLink.get(i).image2.object == resistance){
 						rotationPossible = false;
 					}
@@ -1577,36 +1598,43 @@ public class GraphicalFunctions
 							imagx = image.getHeight();
 						}
 
-						//System.out.println(imagx);
+						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+						positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+
 						// on récupère la taille de la fenêtre
-						double x = event1.getSceneX();
-						double y = event1.getSceneY();
+						double x = event1.getSceneX() + positionFenetre[0][0];
+						double y = event1.getSceneY() + positionFenetre[0][1];
+
+						//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
+						//alors que celles du composant à partir de anchorPane2
+						y = y - 60;
 
 						// Permet de ne pas sortir du cadre
-						if (x < (imagx / 2)) {
+						if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
 							x = (imagx / 2);
-						} // on evite de sortir du cadre a gauche
-						if (y < (65 + imagy / 2)) {
-							y = (65 + imagy / 2);
-						} // on evite de sortir du cadre en haut
+						}
+						if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+							y = (imagy / 2);
+						}
 
 						double mx = anchorPane2.getWidth();
 
 						double my = anchorPane2.getHeight();
-						if (x + imagx / 2 > mx - 20) {
-							x = mx - imagx / 2 - 20;
-						} // on evite de sortir du cadre a droite
 
-					/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
-					 * c est a dire le centre x plus la largeur de l image divise par 2 */
-						if (y + imagy / 2 > my - 20) {
-							y = my - imagy / 2 - 20;
-						} // on evite de sortir du cadre en bas
+						if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
+							x = mx - imagx / 2 ;
+						}
+
+						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
+						 * c est a dire le centre x plus la largeur de l image divise par 2 */
+						if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
+							y = my - imagy / 2 ;
+						}
 
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
-						resistance.relocate(x - imagx / 2, y - imagy / 2);
 						resistance.setX(x - imagx / 2);
 						resistance.setY(y - imagy / 2);
+
 						linkArea3.setX(resistance.getX() + image.getWidth());
 						linkArea3.setY(resistance.getY() + image.getHeight() / 2);
 						linkArea1.setX(resistance.getX());
@@ -1624,8 +1652,23 @@ public class GraphicalFunctions
 		});
 	}
 
-	public static void showResult(AnchorPane anchorPane2, Text programmeLaunch, AnchorPane anchorPane4,Component[] result){
-		//TODO il me faudrait un tableau compose d'element du type Component pour que je puisse tout affiche
+	/**
+	 * Retourne la valeur de la position du coin en haut a droite de l'anchor pane 3
+	 * @param anchorPane3
+	 * @param scrollPane
+     * @return
+     */
+	public static double[] positionRelative(AnchorPane anchorPane3,ScrollPane scrollPane){
+		double relativeX = (anchorPane3.getWidth() - scrollPane.getWidth()) * scrollPane.getHvalue();
+		double relativeY = (anchorPane3.getHeight() - scrollPane.getHeight()) * scrollPane.getVvalue();
+		double[] a = new double[2];
+		a[0] = relativeX;
+		a[1] = relativeY;
+		return(a);
+	}
+
+	public static void showResult(AnchorPane anchorPane2, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result){
+		//TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
 
 		//Supprime le message
 		anchorPane2.getChildren().remove(programmeLaunch);
@@ -1659,7 +1702,6 @@ public class GraphicalFunctions
 			}
 			else{
 				anchorPane2.getChildren().add(informationsh); //On affiche les informations
-
 			}
 		}
 	}

@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 /** Classe qui definie un composant pour l interface graphique
  * Created by tanguy on 15/04/16.
  */
-public class Component {
+public class GraphicalComponent {
     ImageView object;
     ImageView square1 = null;
     ImageView square2 = null;
@@ -33,7 +33,7 @@ public class Component {
      * @param courant Valeur du courant qui traverse le composant
      * @param voltage Valeur de la tension au borne du composant
      */
-    public Component(ImageView object,ImageView square1, ImageView square2,ImageView square3, ImageView square4, char orientation,String name,double value, Type type, double courant, double voltage){
+    public GraphicalComponent(ImageView object, ImageView square1, ImageView square2, ImageView square3, ImageView square4, char orientation, String name, double value, Type type, double courant, double voltage){
         this.object = object;
         this.square1 = square1;
         this.square2 = square2;

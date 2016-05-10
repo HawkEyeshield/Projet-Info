@@ -8,8 +8,8 @@ import javafx.scene.shape.Line;
  */
 public class Link 
 {
-    Component image1 = null;
-    Component image2 = null;
+    GraphicalComponent image1 = null;
+    GraphicalComponent image2 = null;
     Line lien1 = null;
     Line lien2 = null;
     Line lien3 = null;
@@ -26,7 +26,7 @@ public class Link
      * @param lien2 Lien graphique
      * @param lien3 Lien graphique
      */
-    public Link(Component image1, Component image2,int linkAreaUsed1,int linkAreaUsed2, Line lien1, Line lien2,Line lien3)
+    public Link(GraphicalComponent image1, GraphicalComponent image2, int linkAreaUsed1, int linkAreaUsed2, Line lien1, Line lien2, Line lien3)
     {
         this.image1 = image1;
         this.image2 = image2;
@@ -37,10 +37,10 @@ public class Link
         this.lien3 = lien3;
     }
     //Quelques fonctions qui permettent d'acceder a differente valeur
-    public Component getImage1 (){
+    public GraphicalComponent getImage1 (){
         return this.image1;
     }
-    public Component getImage2 (){
+    public GraphicalComponent getImage2 (){
         return this.image2;
     }
 }
