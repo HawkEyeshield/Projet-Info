@@ -347,7 +347,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer,Button TensionAImposer)
+	public static  void addVoltageGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer,Button TensionAImposer, Button CourantAImposer)
 	{
 		ImageView firstVoltageGenerator = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/Generateur de tension h.png"); // On va la cherche au bonne endroit
@@ -513,8 +513,39 @@ public class GraphicalFunctions
 					valeurADeterminer.setText("Choix pris en compte");
 				}
 
-				if(etat == "vd"){
+				if(etat == "tai"){
 					System.out.println("On va eviter de faire des betises...");
+				}
+				if(etat == "cai") {
+					Text info = new Text("Par convention, fleche du courant est oriente \n de bas en haut ou de gauche a droite");
+					info.setX(tensionGenerator.getX() + 100);
+					info.setY(tensionGenerator.getY() + 60);
+					anchorPane2.getChildren().add(info);
+
+					TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+					zonePourChangerValeur.setLayoutX(tensionGenerator.getX() + 110);
+					zonePourChangerValeur.setLayoutY(tensionGenerator.getY());
+					anchorPane2.getChildren().add(zonePourChangerValeur);
+					zonePourChangerValeur.setOnAction(event8 -> {
+						String a = zonePourChangerValeur.getText();
+						double x;
+						//On essaie de mettre la valeur rentrer dans un double
+						//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
+						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
+						try {
+							x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
+							//TODO Actualiser la valeur dans la breadboard
+							anchorPane2.getChildren().remove(zonePourChangerValeur);
+							componentVoltageGenerator.courant = x;
+							etat = "d";
+							CourantAImposer.setText("Choix pris en compte");
+							anchorPane2.getChildren().remove(info);
+						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
+							zonePourChangerValeur.setText("Entrer une valeur correct");
+						}
+
+					});
+
 				}
 			});
 
@@ -710,7 +741,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer, Button TensionAImposer)
+	public static void addCurrentGenerator (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer, Button TensionAImposer,Button CourantAImposer)
 	{
 		ImageView firstCourantGenerator = new ImageView();
 		Image image2 = new Image("file:image/Generateur de courant h.png");
@@ -875,7 +906,7 @@ public class GraphicalFunctions
 					valeurADeterminer.setText("Choix pris en compte");
 				}
 
-				if(etat == "vd"){
+				if(etat == "tai"){
 					Text info = new Text("Par convention, fleche de la tension est oriente \n de bas en haut ou de gauche a droite");
 					info.setX(courantGenerator.getX() + 100);
 					info.setY(courantGenerator.getY() + 60);
@@ -1078,7 +1109,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer, Button TensionAImposer)
+	public static void addNode (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, Button valeurADeterminer, Button TensionAImposer,Button CourantAImposer)
 	{
 		ImageView firstNode = new ImageView();
 		Image image2 = new Image("file:image/Noeud.png");
@@ -1207,72 +1238,69 @@ public class GraphicalFunctions
 
 
             //Permet de deplacer le noeud d'un point a un autre
-			node.setOnMouseDragged(event1 -> 
+			node.setOnMouseDragged(event1 ->
 			{
-				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
-					// position de l'image
-					double imagx;
-					double imagy;
-					if(node.getRotate() == 0) {//Dans le bon sens
-						imagx = image.getWidth();
-						imagy = image.getHeight();
-					}
-					else{//rotation 90° donc on inverse la hauteur et la largeur
-						imagy = image.getWidth();
-						imagx = image.getHeight();
-					}
+				if (event1.isPrimaryButtonDown()) {
+					if (etat == "d") { //En position Drag and Drop
+						// position de l'image
+						double imagx;
+						double imagy;
+						if (node.getRotate() == 0) {//Dans le bon sens
+							imagx = image.getWidth();
+							imagy = image.getHeight();
+						} else {//rotation 90° donc on inverse la hauteur et la largeur
+							imagy = image.getWidth();
+							imagx = image.getHeight();
+						}
 
-					// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
-					positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+						positionFenetre[0] = positionRelative(anchorPane2, scrollPane);
 
-					// on récupère la taille de la fenêtre
-					double x = event1.getSceneX() + positionFenetre[0][0];
-					double y = event1.getSceneY() + positionFenetre[0][1];
+						// on récupère la taille de la fenêtre
+						double x = event1.getSceneX() + positionFenetre[0][0];
+						double y = event1.getSceneY() + positionFenetre[0][1];
 
-					//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
-					//alors que celles du composant à partir de anchorPane2
-					y = y - 60;
+						//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
+						//alors que celles du composant à partir de anchorPane2
+						y = y - 60;
 
-					// Permet de ne pas sortir du cadre
-					if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
-						x = (imagx / 2);
-					}
-					if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
-						y = (imagy / 2);
-					}
+						// Permet de ne pas sortir du cadre
+						if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
+							x = (imagx / 2);
+						}
+						if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+							y = (imagy / 2);
+						}
 
-					double mx = anchorPane2.getWidth();
+						double mx = anchorPane2.getWidth();
 
-					double my = anchorPane2.getHeight();
+						double my = anchorPane2.getHeight();
 
-					if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
-						x = mx - imagx / 2 ;
-					}
+						if (x + imagx / 2 > mx) {// on evite de sortir du cadre a droite
+							x = mx - imagx / 2;
+						}
 
 						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
 						 * c est a dire le centre x plus la largeur de l image divise par 2 */
-					if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
-						y = my - imagy / 2 ;
+						if (y + imagy / 2 > my) {// on evite de sortir du cadre en bas
+							y = my - imagy / 2;
+						}
+
+						//Ici on repositionne l'image est les 4 potentiel carré noir autour
+						node.setX(x - imagx / 2);
+						node.setY(y - imagy / 2);
+
+						linkArea3.setX(node.getX() + image.getWidth());
+						linkArea3.setY(node.getY() + image.getHeight() / 2);
+						linkArea1.setX(node.getX());
+						linkArea1.setY(node.getY() + image.getHeight() / 2);
+						linkArea2.setX(node.getX() + image.getWidth() / 2);
+						linkArea2.setY(node.getY());
+						linkArea4.setX(node.getX() + image.getWidth() / 2);
+						linkArea4.setY(node.getY() + image.getHeight());
+
+						actualiseViewOfLink(componentNode, anchorPane2); //On actualise les liens
 					}
-
-					//Ici on repositionne l'image est les 4 potentiel carré noir autour
-					node.setX(x - imagx / 2);
-					node.setY(y - imagy / 2);
-					linkArea1.relocate(node.getX(),node.getY() + image.getHeight()/2);
-					linkArea1.setX(node.getX());
-					linkArea1.setY(node.getY() + image.getHeight()/2);
-					linkArea3.relocate(node.getX() + image.getWidth(),node.getY() + image.getHeight()/2);
-					linkArea3.setX(node.getX() + image.getWidth());
-					linkArea3.setY(node.getY() + image.getHeight()/2);
-					linkArea2.relocate(node.getX() + image.getWidth()/2,node.getY());
-					linkArea2.setX(node.getX() + image.getWidth()/2);
-					linkArea2.setY(node.getY());
-					linkArea4.relocate(node.getX() + image.getWidth()/2,node.getY() + image.getHeight());
-					linkArea4.setX(node.getX() + image.getWidth()/2);
-					linkArea4.setY(node.getY() + image.getHeight());
-
-					actualiseViewOfLink(componentNode,anchorPane2);
-
 				}
 			});
 		});
@@ -1285,7 +1313,7 @@ public class GraphicalFunctions
 	 * @param anchorPane4 Zone de depart des images
 	 * @param scrollPane Zone pour mettre le circuit
 	 */
-	public static  void addResistance (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer, Button TensionAImposer)
+	public static  void addResistance (AnchorPane anchorPane2, AnchorPane anchorPane4, ScrollPane scrollPane, AnchorPane anchorPane, Button valeurADeterminer, Button TensionAImposer, Button CourantAImposer)
 	{
 		ImageView firstResistance = new ImageView(); // On créer un object de type ImageView
 		Image image1 = new Image("file:image/resistance.png"); // On va la cherche au bonne endroit
@@ -1452,7 +1480,7 @@ public class GraphicalFunctions
 					valeurADeterminer.setText("Choix pris en compte");
 				}
 
-				if(etat == "vd") {
+				if(etat == "tai") {
 					Text info = new Text("Par convention, fleche de la tension est oriente \n de bas en haut ou de gauche a droite");
 					info.setX(resistance.getX() + 100);
 					info.setY(resistance.getY() + 60);
@@ -1479,6 +1507,38 @@ public class GraphicalFunctions
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
 							zonePourChangerValeur.setText("Entrer une valeur correct");
 						}
+
+					});
+
+				}
+				if(etat == "cai") {
+					Text info = new Text("Par convention, fleche du courant est oriente \n de bas en haut ou de gauche a droite");
+					info.setX(resistance.getX() + 100);
+					info.setY(resistance.getY() + 60);
+					anchorPane2.getChildren().add(info);
+
+					TextField zonePourChangerValeur = new TextField("Entrer votre valeur");
+					zonePourChangerValeur.setLayoutX(resistance.getX() + 110);
+					zonePourChangerValeur.setLayoutY(resistance.getY());
+					anchorPane2.getChildren().add(zonePourChangerValeur);
+					zonePourChangerValeur.setOnAction(event8 -> {
+						String a = zonePourChangerValeur.getText();
+						double x;
+						//On essaie de mettre la valeur rentrer dans un double
+						//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
+						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
+						try {
+							x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
+							//TODO Actualiser la valeur dans la breadboard
+							anchorPane2.getChildren().remove(zonePourChangerValeur);
+							componentResistance.voltage = x;
+							etat = "d";
+							CourantAImposer.setText("Choix pris en compte");
+							anchorPane2.getChildren().remove(info);
+						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
+							zonePourChangerValeur.setText("Entrer une valeur correct");
+						}
+
 					});
 
 				}
@@ -1583,7 +1643,6 @@ public class GraphicalFunctions
 			// Permet de deplacer la resistance d'un point a un autre
 			resistance.setOnMouseDragged(event1 ->
 			{
-
 				if (event1.isPrimaryButtonDown()) {
 					if (etat == "d") { //En position Drag and Drop
 						// position de l'image
@@ -1667,11 +1726,11 @@ public class GraphicalFunctions
 		return(a);
 	}
 
-	public static void showResult(AnchorPane anchorPane2, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result){
+	public static void showResult(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result){
 		//TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
 
 		//Supprime le message
-		anchorPane2.getChildren().remove(programmeLaunch);
+		anchorPane3.getChildren().remove(programmeLaunch);
 		GraphicalFunctions.launch = false;//On aurtorise a l utilisateur de relancer le programme
 		if(valueToShow !=null){//On affiche les valeurs qui interessent l utilisateur
 			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
@@ -1683,33 +1742,26 @@ public class GraphicalFunctions
 
 		for(int i = 0; i < result.length ; i++){//On affiche aussi toutes les valeurs
 			//On cree deux messages en fonctions de l'orientation de l'image
-			Text informationsh = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
-					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
-			Text informationsv = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
-					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
+			Text informationsh = new Text("Nom : " + result[i].name + "\nValeur : " + result[i].value
+					+ "\nValeur du courant = " + result[i].courant + "\nValeur de tension = " + result[i].voltage);
+			Text informationsv = new Text("Nom : " + result[i].name + "\nValeur : " + result[i].value
+					+ "\nValeur du courant = " + result[i].courant + "\nValeur de tension = " + result[i].voltage);
 
 
 			// On definie la zone des deux informations.
-			informationsh.setX(valueToShow.object.getX());
-			informationsh.setY(valueToShow.object.getY() + 60);
+			informationsh.setX(result[i].object.getX());
+			informationsh.setY(result[i].object.getY() + 60);
 
-			informationsv.setX(valueToShow.object.getX() + 80);
-			informationsv.setY(valueToShow.object.getY());
+			informationsv.setX(result[i].object.getX() + 80);
+			informationsv.setY(result[i].object.getY());
 
 			//On affiche le bon en fonction de l orientation
-			if(valueToShow.orientation == 'v') {
-				anchorPane2.getChildren().add(informationsv); //On affiche les informations
+			if(result[i].orientation == 'v') {
+				anchorPane3.getChildren().add(informationsv); //On affiche les informations
 			}
 			else{
-				anchorPane2.getChildren().add(informationsh); //On affiche les informations
+				anchorPane3.getChildren().add(informationsh); //On affiche les informations
 			}
 		}
 	}
 }
-
-
-
-
-
-
-

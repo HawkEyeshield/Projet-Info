@@ -27,15 +27,15 @@ public class Controller implements javafx.fxml.Initializable
         anchorPane3.setPrefWidth(3000);
 
         // On charge les images des composants dans la zone de droite
-        GraphicalFunctions.addCurrentGenerator(anchorPane3, anchorPane4, scrollPane, ValeurADeterminer, TensionAImposer);
-        GraphicalFunctions.addVoltageGenerator(anchorPane3, anchorPane4, scrollPane, anchorPane, ValeurADeterminer, TensionAImposer);
-        GraphicalFunctions.addNode(anchorPane3, anchorPane4, scrollPane,ValeurADeterminer, TensionAImposer);
-        GraphicalFunctions.addResistance(anchorPane3, anchorPane4, scrollPane, anchorPane,ValeurADeterminer, TensionAImposer);
+        GraphicalFunctions.addCurrentGenerator(anchorPane3, anchorPane4, scrollPane, ValeurADeterminer, TensionAImposer, CourantAImposer);
+        GraphicalFunctions.addVoltageGenerator(anchorPane3, anchorPane4, scrollPane, anchorPane, ValeurADeterminer, TensionAImposer, CourantAImposer);
+        GraphicalFunctions.addNode(anchorPane3, anchorPane4, scrollPane,ValeurADeterminer, TensionAImposer, CourantAImposer);
+        GraphicalFunctions.addResistance(anchorPane3, anchorPane4, scrollPane, anchorPane,ValeurADeterminer, TensionAImposer, CourantAImposer);
 
 
         //permet d'executer le programme
         Run.setOnMouseClicked(event ->{
-            //On regarde si l utilisateur n a pas deja appuyer sur la bouton Run
+            //On regarde si l utilisateur n a pas deja appuyer sur le bouton Run
             if(!GraphicalFunctions.launch) {
                 Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
                 programmeLaunch.setX(550);//On definie la zone
@@ -43,7 +43,7 @@ public class Controller implements javafx.fxml.Initializable
                 System.out.println(scrollPane.getTranslateX());
                 anchorPane3.getChildren().add(programmeLaunch);//et on affiche
                 //TODO Mettre la fonction qui lance le programme de raph
-                //Attention il faut prendre en argument le programmeLaunch pour me le redonner par la suite (pour le supprimer)
+                //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,
                 GraphicalFunctions.launch = true;
             }
             else{
@@ -54,7 +54,14 @@ public class Controller implements javafx.fxml.Initializable
         TensionAImposer.setOnMouseClicked(event -> {
             if(TensionAImposer.getText().endsWith("Tension à imposer")) {//Evite qu on puisse definir deux fois une tension
                 TensionAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
-                GraphicalFunctions.etat = "vd";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
+                GraphicalFunctions.etat = "tai";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
+            }
+        });
+
+        CourantAImposer.setOnMouseClicked(event -> {
+            if(CourantAImposer.getText().endsWith("Courant à imposer")) {//Evite qu on puisse definir deux fois une tension
+                CourantAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
+                GraphicalFunctions.etat = "cai";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
             }
         });
 
@@ -142,6 +149,9 @@ public class Controller implements javafx.fxml.Initializable
 
     @FXML
     private Button TensionAImposer;
+
+    @FXML
+    private Button CourantAImposer;
 
     @FXML
     private MenuItem Close;

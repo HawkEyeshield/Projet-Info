@@ -18,6 +18,7 @@ public class GraphicalComponent {
     Double value;
     Double courant;
     Double voltage;
+    int indexation;
 
     /**
      * Contructeur d un composant
@@ -45,6 +46,7 @@ public class GraphicalComponent {
         this.type = type;
         this.courant = courant;
         this.voltage = voltage;
+        indexation = -1;
     }
     //Quelques fonctions pour acceder a differente valeur
     public String getCname (){
