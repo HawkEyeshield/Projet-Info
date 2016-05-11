@@ -31,10 +31,8 @@ public class GraphicalComponent {
      * @param name Nom du composant
      * @param value valeur du composant
      * @param type Type du composant
-     * @param courant Valeur du courant qui traverse le composant
-     * @param voltage Valeur de la tension au borne du composant
      */
-    public GraphicalComponent(ImageView object, ImageView square1, ImageView square2, ImageView square3, ImageView square4, char orientation, String name, double value, Type type, double courant, double voltage){
+    public GraphicalComponent(ImageView object, ImageView square1, ImageView square2, ImageView square3, ImageView square4, char orientation, String name, double value, Type type){
         this.object = object;
         this.square1 = square1;
         this.square2 = square2;
@@ -44,8 +42,24 @@ public class GraphicalComponent {
         this.name = name;
         this.value = value;
         this.type = type;
-        this.courant = courant;
-        this.voltage = voltage;
+        this.indexation = -1;
+        if(type == Type.VOLTAGEGENERATOR){
+            this.voltage = value;
+        }
+        if(type == Type.CURRENTGENERATOR){
+            this.courant = value;
+        }
+    }
+
+    public GraphicalComponent(ImageView object, ImageView square1, ImageView square2, ImageView square3, ImageView square4, char orientation, String name, Type type){
+        this.object = object;
+        this.square1 = square1;
+        this.square2 = square2;
+        this.square3 = square3;
+        this.square4 = square4;
+        this.orientation = orientation;
+        this.name = name;
+        this.type = type;
         indexation = -1;
     }
     //Quelques fonctions pour acceder a differente valeur

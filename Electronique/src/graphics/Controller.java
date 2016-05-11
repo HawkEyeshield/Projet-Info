@@ -19,7 +19,6 @@ public class Controller implements javafx.fxml.Initializable
     {
         //Juste pour bien voir que le programme ce lance
 
-        System.out.println("L'interface graphique est lancée");
 
         // On génère toute les images à la suite en les positionnant au bon endroit
 
@@ -40,14 +39,34 @@ public class Controller implements javafx.fxml.Initializable
                 Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
                 programmeLaunch.setX(550);//On definie la zone
                 programmeLaunch.setY(20);
-                System.out.println(scrollPane.getTranslateX());
                 anchorPane3.getChildren().add(programmeLaunch);//et on affiche
                 //TODO Mettre la fonction qui lance le programme de raph
-                //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,
-                GraphicalFunctions.launch = true;
+                //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,boutton Run
+
+                GraphicalFunctions.launch = true;//on indique que le programme est lance
+                anchorPane3.getChildren().remove(GraphicalFunctions.bug);
+
+                /*Fonction de test pour voir si le renvoie de valeur fonctionne
+                GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.arrayListOfLink.size()];
+                for(int i = 0; i < GraphicalFunctions.arrayListOfLink.size();i++){
+                    a[i] = GraphicalFunctions.arrayListOfLink.get(i).image1;
+                }
+                GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);*/
+
+                //On echange de nom a chaque clic
+                if(Run.getText().equals("Run")) {
+                    Run.setText("StopRun");
+                }
+                else{
+                    Run.setText("Run");
+                    for (int i = 0; i < GraphicalFunctions.informationsList.size(); i++) {//On supprime les infos quand l utilisateur clic sur StopRun
+                        anchorPane3.getChildren().remove(GraphicalFunctions.informationsList.get(i));
+                    }
+                }
             }
             else{
                 System.out.println("Arreter de spammer la touche run !");
+                anchorPane3.getChildren().remove(GraphicalFunctions.bug);
             }
         });
 
@@ -79,6 +98,7 @@ public class Controller implements javafx.fxml.Initializable
             bug.setY(20);
             anchorPane3.getChildren().add(bug);
             //TODO si des gens veullent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
+            GraphicalFunctions.bug = bug;
         });
 
         CreerUnLien.setOnMouseClicked(event -> {

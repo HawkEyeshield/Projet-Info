@@ -17,7 +17,7 @@
           <children>
             <Button fx:id="CreerUnLien" mnemonicParsing="false" text="Creer un lien" AnchorPane.leftAnchor="600.0" AnchorPane.topAnchor="34.0" />
             <Button fx:id="Run" mnemonicParsing="false" text="Run" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="34.0" />
-            <Button fx:id="Debugge" mnemonicParsing="false" text="Debugge" AnchorPane.leftAnchor="64.0" AnchorPane.topAnchor="34.0" />
+            <Button fx:id="Debugge" mnemonicParsing="false" text="Debugge" AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="34.0" />
             <Button fx:id="ValeurADeterminer" mnemonicParsing="false" text="Valeur à déterminer" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="34.0" />
             <Button fx:id="TensionAImposer" mnemonicParsing="false" text="Tension à imposer" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="34.0" />
             <Button fx:id="CourantAImposer" mnemonicParsing="false" text="Courant à imposer" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="34.0" />
