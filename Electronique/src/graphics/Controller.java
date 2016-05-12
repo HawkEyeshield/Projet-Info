@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class Controller implements javafx.fxml.Initializable
+public class Controller implements javafx.fxml.Initializable//implement tres tres utile qui permet de lancer la fonction d'initialisation
 {
 
 
