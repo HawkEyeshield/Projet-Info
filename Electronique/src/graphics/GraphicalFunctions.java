@@ -550,7 +550,7 @@ public class GraphicalFunctions
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentVoltageGenerator.courant = x;
 							etat = "d";
-							CourantAImposer.setText("Choix pris en compte");
+							CourantAImposer.setText("Courant à imposer");
 							anchorPane2.getChildren().remove(info);
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
 							zonePourChangerValeur.setText("Entrer une valeur correct");
@@ -955,7 +955,7 @@ public class GraphicalFunctions
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentCourantGenerator.voltage = x;
 							etat = "d";
-							TensionAImposer.setText("Choix pris en compte");
+							TensionAImposer.setText("Tension à imposer");
 							anchorPane2.getChildren().remove(info);
 						}
 						catch(NumberFormatException erreur){//Sinon on demande a l utilisateur de remettre une autre valeur
@@ -1542,7 +1542,7 @@ public class GraphicalFunctions
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentResistance.voltage = x;
 							etat = "d";
-							TensionAImposer.setText("Choix pris en compte");
+							TensionAImposer.setText("Tension à imposer");
 							anchorPane2.getChildren().remove(info);
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
 							zonePourChangerValeur.setText("Entrer une valeur correct");
@@ -1573,7 +1573,7 @@ public class GraphicalFunctions
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentResistance.courant = x;
 							etat = "d";
-							CourantAImposer.setText("Choix pris en compte");
+							CourantAImposer.setText("Courant à imposer");
 							anchorPane2.getChildren().remove(info);
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
 							zonePourChangerValeur.setText("Entrer une valeur correct");

@@ -37,8 +37,9 @@ public class Controller implements javafx.fxml.Initializable
             //On regarde si l utilisateur n a pas deja appuyer sur le bouton Run
             if(!GraphicalFunctions.launch) {
                 Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
-                programmeLaunch.setX(550);//On definie la zone
-                programmeLaunch.setY(20);
+                double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relaive de la fenetre
+                programmeLaunch.setX(550 + scrollPosition[0]);//On definie la zone
+                programmeLaunch.setY(20 + scrollPosition[1]);
                 anchorPane3.getChildren().add(programmeLaunch);//et on affiche
                 //TODO Mettre la fonction qui lance le programme de raph
                 //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,boutton Run
@@ -46,12 +47,12 @@ public class Controller implements javafx.fxml.Initializable
                 GraphicalFunctions.launch = true;//on indique que le programme est lance
                 anchorPane3.getChildren().remove(GraphicalFunctions.bug);
 
-                /*Fonction de test pour voir si le renvoie de valeur fonctionne
+                //Fonction de test pour voir si le renvoie de valeur fonctionne
                 GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.arrayListOfLink.size()];
                 for(int i = 0; i < GraphicalFunctions.arrayListOfLink.size();i++){
                     a[i] = GraphicalFunctions.arrayListOfLink.get(i).image1;
                 }
-                GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);*/
+                GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);
 
                 //On echange de nom a chaque clic
                 if(Run.getText().equals("Run")) {
@@ -94,8 +95,9 @@ public class Controller implements javafx.fxml.Initializable
         Debugge.setOnMouseClicked(event -> {
             //Fonction qui determine si le solveur va pouvoir donner un resultat ou si il existe des problemes dans le schema electrique
             Text bug = new Text("Le programme devrait pouvoir se lancer correctement");
-            bug.setX(2);
-            bug.setY(20);
+            double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane);
+            bug.setX(2 + scrollPosition[0]);
+            bug.setY(20 + scrollPosition[1]);
             anchorPane3.getChildren().add(bug);
             //TODO si des gens veullent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
             GraphicalFunctions.bug = bug;
