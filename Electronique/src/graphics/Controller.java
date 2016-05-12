@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements javafx.fxml.Initializable
@@ -36,33 +37,34 @@ public class Controller implements javafx.fxml.Initializable
         Run.setOnMouseClicked(event ->{
             //On regarde si l utilisateur n a pas deja appuyer sur le bouton Run
             if(!GraphicalFunctions.launch) {
-                Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
-                double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relaive de la fenetre
-                programmeLaunch.setX(550 + scrollPosition[0]);//On definie la zone
-                programmeLaunch.setY(20 + scrollPosition[1]);
-                anchorPane3.getChildren().add(programmeLaunch);//et on affiche
-                //TODO Mettre la fonction qui lance le programme de raph
-                //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,boutton Run
-
-                GraphicalFunctions.launch = true;//on indique que le programme est lance
-                anchorPane3.getChildren().remove(GraphicalFunctions.bug);
-
-                //Fonction de test pour voir si le renvoie de valeur fonctionne
-                GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.arrayListOfLink.size()];
-                for(int i = 0; i < GraphicalFunctions.arrayListOfLink.size();i++){
-                    a[i] = GraphicalFunctions.arrayListOfLink.get(i).image1;
-                }
-                GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);
-
                 //On echange de nom a chaque clic
                 if(Run.getText().equals("Run")) {
                     Run.setText("StopRun");
+                    Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
+                    double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relaive de la fenetre
+                    programmeLaunch.setX(550 + scrollPosition[0]);//On definie la zone
+                    programmeLaunch.setY(20 + scrollPosition[1]);
+                    anchorPane3.getChildren().add(programmeLaunch);//et on affiche
+                    //TODO Mettre la fonction qui lance le programme de raph
+                    //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,boutton Run
+
+                    GraphicalFunctions.launch = true;//on indique que le programme est lance
+                    anchorPane3.getChildren().remove(GraphicalFunctions.bug);
+
+                    //Fonction de test pour voir si le renvoie de valeur fonctionne
+                    GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.arrayListOfLink.size()];
+                    for(int i = 0; i < GraphicalFunctions.arrayListOfLink.size();i++){
+                        a[i] = GraphicalFunctions.arrayListOfLink.get(i).image1;
+                    }
+                    GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);
                 }
                 else{
+                    anchorPane4.getChildren().remove(GraphicalFunctions.informationsList.get(0));//On met ici le premier, car il est dans anchorPane4
                     Run.setText("Run");
-                    for (int i = 0; i < GraphicalFunctions.informationsList.size(); i++) {//On supprime les infos quand l utilisateur clic sur StopRun
+                    for (int i = 1; i < GraphicalFunctions.informationsList.size(); i++) {//On supprime les infos quand l utilisateur clic sur StopRun
                         anchorPane3.getChildren().remove(GraphicalFunctions.informationsList.get(i));
                     }
+                    GraphicalFunctions.informationsList = new ArrayList<Text>();//On supprime toute les valeurs présente car elles ont été supprimées
                 }
             }
             else{
