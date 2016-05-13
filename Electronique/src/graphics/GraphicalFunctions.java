@@ -691,9 +691,10 @@ public class GraphicalFunctions
 							imagx = image.getWidth();
 							imagy = image.getHeight();
 						}
-						else{//rotation 90° donc on inverse la hauteur et la largeur
-							imagy = image.getWidth();
-							imagx = image.getHeight();
+						else{//rotation 90° donc on inverse la hauteur et la largeur et on prend en compte que le point (x,y) de l'image
+							//n'est plus en haut a gauche de l'image visuel.
+							imagy = image.getWidth() - 25;
+							imagx = image.getHeight() - 25;
 						}
 
 						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
@@ -1081,9 +1082,10 @@ public class GraphicalFunctions
 						imagx = image.getWidth();
 						imagy = image.getHeight();
 					}
-					else{//rotation 90° donc on inverse la hauteur et la largeur
-						imagy = image.getWidth();
-						imagx = image.getHeight();
+					else{//rotation 90° donc on inverse la hauteur et la largeur et on prend en compte que le point (x,y) de l'image
+						//n'est plus en haut a gauche de l'image visuel.
+						imagy = image.getWidth() - 25;
+						imagx = image.getHeight() - 25;
 					}
 
 					// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
@@ -1275,9 +1277,11 @@ public class GraphicalFunctions
 						if (node.getRotate() == 0) {//Dans le bon sens
 							imagx = image.getWidth();
 							imagy = image.getHeight();
-						} else {//rotation 90° donc on inverse la hauteur et la largeur
-							imagy = image.getWidth();
-							imagx = image.getHeight();
+						}
+						else{//rotation 90° donc on inverse la hauteur et la largeur et on prend en compte que le point (x,y) de l'image
+							//n'est plus en haut a gauche de l'image visuel.
+							imagy = image.getWidth() - 25;
+							imagx = image.getHeight() - 25;
 						}
 
 						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
@@ -1700,9 +1704,10 @@ public class GraphicalFunctions
 							imagx = image.getWidth();
 							imagy = image.getHeight();
 						}
-						else{//rotation 90° donc on inverse la hauteur et la largeur
-							imagy = image.getWidth();
-							imagx = image.getHeight();
+						else{//rotation 90° donc on inverse la hauteur et la largeur et on prend en compte que le point (x,y) de l'image
+							//n'est plus en haut a gauche de l'image visuel.
+							imagy = image.getWidth() - 25;
+							imagx = image.getHeight() - 25;
 						}
 
 						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
