@@ -4,7 +4,7 @@ import components.Type;
 import javafx.scene.image.ImageView;
 
 /** Classe qui definie un composant pour l interface graphique
- * Created by tanguy on 15/04/16.
+ * @author Tanguy
  */
 public class GraphicalComponent {
     ImageView object;

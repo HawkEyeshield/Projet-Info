@@ -2,6 +2,7 @@ package graphics;
 import circuit.Breadboard;
 import components.AbstractDipole;
 import components.Type;
+import exceptions.AbstractDipoleError;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -54,9 +55,6 @@ public class GraphicalFunctions
 	/** Breadboard qui traduira le schéma interface en graphe pour le solveur.
 	 * Permet également de donner à chaque composant les potentiels à ses pattes et les courants après résolution*/
     private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
-	
-	/** Entier indiquant le numéro d'un sommet pour la création de composant*/
-	private static int vertexIndex=0;
 
 	/** Permet de savoir si la rotation d'une image est possible, ou si il existe déjà des liens*/
 	public static boolean rotationPossible;
@@ -258,6 +256,7 @@ public class GraphicalFunctions
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
                 arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
+                
                 //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
                 //breadboard.addLink(arrayListOfLink.get(-1));Erreur ici
             }
@@ -316,8 +315,8 @@ public class GraphicalFunctions
 	 * @param composant composant à supprimer.
 	 * @param anchorPane2 zone de travail
      */
-	public  static void deleteComponent(GraphicalComponent composant, AnchorPane anchorPane2){
-		//TODO supprimer le composant de la breadboard et les liens qui existent avec lui !
+	public  static void deleteComponent(GraphicalComponent composant, AnchorPane anchorPane2)
+	{
 		int[] a = new int[arrayListOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
 		int b = 0; //Compte le nombre de composants relies avec celui qui doit etre supprimer
 		for ( int i =0 ; i < arrayListOfLink.size(); i++){
@@ -339,6 +338,9 @@ public class GraphicalFunctions
 		}
 		//Enfin on supprime le composant en lui meme
 		anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
+		
+		// Supression du composant dans la breadboard
+		breadboard.deleteComponent(composant);
 	}
 
 	/**
@@ -412,9 +414,8 @@ public class GraphicalFunctions
             //On creer l'objet
 			GraphicalComponent componentVoltageGenerator = new GraphicalComponent(tensionGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de tension " + idVoltageGenerator, 10, Type.VOLTAGEGENERATOR);
 			
-			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
-			// breadboard.addComponent(new VoltageGenerator(componentVoltageGenerator.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
-			// vertexIndex+=2;
+			// Ajout du générateur dans la breadboard
+			breadboard.addComponent(componentVoltageGenerator);
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
             tensionGenerator.setOnMouseEntered(event3 -> {
@@ -546,7 +547,17 @@ public class GraphicalFunctions
 						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
 						try {
 							x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
-							//TODO Actualiser la valeur dans la breadboard
+							
+							//Actualise la valeur dans la breadboard
+							try 
+							{
+								breadboard.getDipole(componentVoltageGenerator).setCurrent(x);
+							} 
+							catch (AbstractDipoleError e) 
+							{
+								zonePourChangerValeur.setText(e.getMessage());
+							}
+							
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentVoltageGenerator.courant = x;
 							etat = "d";
@@ -588,7 +599,10 @@ public class GraphicalFunctions
 						System.out.println("Excellent choix !");
 					}
 					componentVoltageGenerator.name = a;
-					//TODO Actualiser le nom dans la breadboard
+					
+					//Actualise le nom dans la breadboard
+					breadboard.getDipole(componentVoltageGenerator).setName(a);
+					
 					anchorPane2.getChildren().remove(zonePourChangerName);//on enleve la zone d'affichage du message
 
 				});
@@ -615,7 +629,17 @@ public class GraphicalFunctions
 					//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
 					try {x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
 						componentVoltageGenerator.value = x;
-						//TODO Actualiser la valeur dans la breadboard
+						
+						//Actualise la valeur dans la breadboard
+						try
+						{
+							breadboard.getDipole(componentVoltageGenerator).setVoltage(x);
+						}
+						catch(AbstractDipoleError e)
+						{
+							zonePourChangerValeur.setText(e.getMessage());
+						}
+						
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
 						anchorPane2.getChildren().remove(info);
 						componentVoltageGenerator.voltage = x;
@@ -813,9 +837,8 @@ public class GraphicalFunctions
 			idCourantgeGenerator += 1;
 			GraphicalComponent componentCourantGenerator = new GraphicalComponent(courantGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR);
 
-			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
-			//breadboard.addComponent(new CurrentGenerator(componentCourantGenerator.name, new Vertex(vertexIndex), new Vertex(vertexIndex+1)));
-			//vertexIndex+=2;
+			// Ajout du générateur à la breadboard
+			breadboard.addComponent(componentCourantGenerator);
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
 			courantGenerator.setOnMouseEntered(event3 -> {
@@ -951,13 +974,24 @@ public class GraphicalFunctions
 						//On essaie de mettre la valeur rentrer dans un double
 						//Ce qui permet d'avoir que des double de partout mais aussi de verifier qu on a bien un nombre et pas un mot
 						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
-						try {x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
-							//TODO Actualiser la valeur dans la breadboard
-							anchorPane2.getChildren().remove(zonePourChangerValeur);
-							componentCourantGenerator.voltage = x;
-							etat = "d";
-							TensionAImposer.setText("Tension à imposer");
-							anchorPane2.getChildren().remove(info);
+						try 
+						{x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
+
+						//Actualise la valeur dans la breadboard
+						try
+						{
+							breadboard.getDipole(componentCourantGenerator).setVoltage(x);
+						}
+						catch(AbstractDipoleError e)
+						{
+							zonePourChangerValeur.setText(e.getMessage());
+						}
+
+						anchorPane2.getChildren().remove(zonePourChangerValeur);
+						componentCourantGenerator.voltage = x;
+						etat = "d";
+						TensionAImposer.setText("Tension à imposer");
+						anchorPane2.getChildren().remove(info);
 						}
 						catch(NumberFormatException erreur){//Sinon on demande a l utilisateur de remettre une autre valeur
 							zonePourChangerValeur.setText("Entrer une valeur correct");
@@ -991,7 +1025,10 @@ public class GraphicalFunctions
 						System.out.println("Excellent choix !");
 					}
 					componentCourantGenerator.name = a;
-					//TODO Actualiser le nom dans la breadboard
+					
+					//Actualise le nom dans la breadboard
+					breadboard.getDipole(componentCourantGenerator).setName(a);
+					
 					anchorPane2.getChildren().remove(zonePourChangerName);
 
 				});
@@ -1014,7 +1051,17 @@ public class GraphicalFunctions
 					double x;
 					try {x = Double.parseDouble(a);
 						componentCourantGenerator.value = x;
-						//TODO Actualiser la valeur dans la breadboard
+						
+						//Actualise la valeur dans la breadboard
+						try
+						{
+							breadboard.getDipole(componentCourantGenerator).setCurrent(x);
+						}
+						catch(AbstractDipoleError e)
+						{
+							zonePourChangerValeur.setText(e.getMessage());
+						}
+						
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
 						anchorPane2.getChildren().remove(info);
 						componentCourantGenerator.courant = x;
@@ -1408,11 +1455,8 @@ public class GraphicalFunctions
 			//On creer l'objet
 			GraphicalComponent componentResistance = new GraphicalComponent(resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, Type.RESISTANCE);
 
-			// TODO Pour Sterenn : faire en sorte d'ajouter correctement un nouveau composant avec les vertex adéquats
-			// breadboard.addComponent(new Resistance(componentResistance.name,new Vertex(vertexIndex),new Vertex(vertexIndex+1)));
-			// vertexIndex+=2;
-
-
+			// Ajout de la résistance dans la breadboard
+			breadboard.addComponent(componentResistance);
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
 			resistance.setOnMouseEntered(event3 -> {
@@ -1542,7 +1586,17 @@ public class GraphicalFunctions
 						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
 						try {
 							x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
-							//TODO Actualiser la valeur dans la breadboard
+							
+							//Actualise la valeur dans la breadboard
+							try
+							{
+								breadboard.getDipole(componentResistance).setVoltage(x);
+							}
+							catch(AbstractDipoleError e)
+							{
+								zonePourChangerValeur.setText(e.getMessage());
+							}
+							
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentResistance.voltage = x;
 							etat = "d";
@@ -1573,7 +1627,17 @@ public class GraphicalFunctions
 						//On suppose que l utilisateur n est pas idiot et ne va pas rentrer une valeur de resistance negative par exemple
 						try {
 							x = Double.parseDouble(a);//Si on arrive a cast alors on fait les actions qui suivent
-							//TODO Actualiser la valeur dans la breadboard
+							
+							//Actualise la valeur dans la breadboard
+							try
+							{
+								breadboard.getDipole(componentResistance).setCurrent(x);
+							}
+							catch(AbstractDipoleError e)
+							{
+								zonePourChangerValeur.setText(e.getMessage());
+							}
+							
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentResistance.courant = x;
 							etat = "d";
@@ -1612,7 +1676,10 @@ public class GraphicalFunctions
 						System.out.println("Excellent choix !");
 					}
 					componentResistance.name = a;
-					//TODO Actualiser le nom dans la breadboard
+					
+					//Actualise le nom dans la breadboard
+					breadboard.getDipole(componentResistance).setName(a);
+					
 					anchorPane2.getChildren().remove(zonePourChangerName);
 
 				});
@@ -1637,7 +1704,17 @@ public class GraphicalFunctions
 					double x;
 					try {x = Double.parseDouble(a);
 						componentResistance.value = x;
-						//TODO Actualiser la valeur dans la breadboard
+						
+						//Actualise la valeur dans la breadboard
+						try
+						{
+							breadboard.getDipole(componentResistance).setValue(x);
+						}
+						catch(AbstractDipoleError e)
+						{
+							zonePourChangerValeur.setText(e.getMessage());
+						}
+						
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
 						anchorPane2.getChildren().remove(info);
 					}

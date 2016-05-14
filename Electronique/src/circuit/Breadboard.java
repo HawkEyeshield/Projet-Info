@@ -2,15 +2,15 @@ package circuit;
 
 import components.*;
 import graphStructure.CircuitGraph;
+import graphStructure.Vertex;
 import graphics.GraphicalComponent;
 import graphics.Link;
 import resolution.Extracteur;
-
 import java.util.ArrayList;
 
 /**
  * Classe pour une breadboard
- * Endroit fictif où le circuit est réalisé d'après l'interface graphique, puis traduit sous forme de graphe pour la résolution
+ * Endroit fictif où le circuit physique est réalisé d'après l'interface graphique, puis le traduit sous forme de graphe pour la résolution
  * @author François, Sterenn
  */
 
@@ -25,6 +25,9 @@ public class Breadboard
 
 	/** liste des composants du circuit */
 	private ArrayList<AbstractDipole> components;
+	
+	/** indice pour la création de nouveau vertices*/
+	int vertexIndex=0;
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -39,8 +42,9 @@ public class Breadboard
 /* Déclaration des méthodes */
 /* ======================== */
 	
-	/** Méthode faisant appel au solveur pour la résolution */
-	public void compute()
+	/** Méthode faisant appel au solveur pour la résolution 
+	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur*/
+	public void compute() throws IllegalArgumentException
 	{	// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
 		CircuitGraph g = new CircuitGraph();
 		for(int i=0;i<components.size();i++)
@@ -66,31 +70,26 @@ public class Breadboard
 		e.printVariables();
 	}
 	
-	/** Méthode ajoutant des composants (dans la breadboard) */
-	public void addComponent(GraphicalComponent c)
+	/** Méthode ajoutant un composant physique dans la breadboard à partir de l'homologue graphique
+	 *  @param graphical le composant que l'on souhaite ajouter 
+	 *  */
+	public void addComponent(GraphicalComponent graphical)
 	{
-		// TODO Pour Sterenn : mettre en place la méthode d'ajout de composant, pour la breadboard et au sein de l'interface graphique
-
-		if (c.getCtype().equals(Type.ADMITTANCE)) 
+		if (graphical.getCtype().equals(Type.ADMITTANCE)) 
 		{
-            components.add(new Admittance(c.getCname(), null, null, c.getCvalue()));
+            components.add(new Admittance(graphical.getCname(), null, null, graphical.getCvalue()));
         }
-       else if (c.getCtype().equals(Type.CURRENTGENERATOR))
+       else if (graphical.getCtype().equals(Type.CURRENTGENERATOR))
         {
-            components.add(new CurrentGenerator(c.getCname(), null, null, c.getCvalue()));
+            components.add(new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
         }
-        else if (c.getCtype().equals(Type.VOLTAGEGENERATOR))
+        else if (graphical.getCtype().equals(Type.VOLTAGEGENERATOR))
         {
-            components.add(new VoltageGenerator(c.getCname(), null, null, c.getCvalue()));
-        }
-        else 
-        {
-            throw new IllegalArgumentException("Composant inconnu");
+            components.add(new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
         }
 	}
 
-    // TODO Pour Sterenn : mettre en place les liens entre composants,
-        // voir si un ré-indexage des vertex serait nécessaire pour le solveur
+
 	/** Méthode liant deux composants à partir du lien donné en paramètre
 	 * @param l : le lien
 	 */
@@ -110,7 +109,7 @@ public class Breadboard
                     AbstractDipole C2 = components.get(j);
                     if (B.getCname().equals(C2.getName()))
                     {
-                        LinkAB(C1, C2);
+                        link(C1, C2);
                     }
                 }
             }
@@ -123,27 +122,31 @@ public class Breadboard
      * @param a : premier composant
      * @param b : second composant
      */
-    public void LinkAB(AbstractDipole a, AbstractDipole b)
+    public void link(AbstractDipole a, AbstractDipole b)
 	{
-        b.setFirstLink(a.getSecondLink());
+    	if(a.getFirstLink().equals(null) || a.getSecondLink().equals(null))
+    	{
+    		
+    	}
+        //b.setFirstLink(a.getSecondLink());
+        
+        //on incrémente l'indice des vertices si on a du en rajouter un
+        this.vertexIndex++;
 	}
 
 
     /**
-     * Méthode supprimant un composant
-     * @param c
+     * Méthode supprimant un composant physique à partir de son homologue graphique
+     * @param graphical le composant que l'on souhaite supprimer
      */
-    public void deleteComponent(AbstractDipole c)
+    public void deleteComponent(GraphicalComponent graphical)
 	{
-		//TODO supprimer un composant c.
         for (int i=0;i<components.size();i++)
         {
-            AbstractDipole C1 = components.get(i);
-            if (C1.getName().equals(c.getName()))
+            AbstractDipole dipole = components.get(i);
+            if (dipole.getName().equals(graphical.getCname()))
             {
                 components.remove(i); 
-                //on a supprimé le composant abstractdipole dans la liste mais pas le composant GraphicalComponent...
-                // Mais du coup comme ça on ne peut plus le relier à rien.
             }
         }
 	}
@@ -165,6 +168,23 @@ public class Breadboard
 	public ArrayList<AbstractDipole> getComponents()
 	{
 		return this.components;
+	}
+	
+	/**
+	 * Méthode renvoyant un composant physique à partir de son homologue graphique
+	 * @param graphical le composant que l'on souhaite récupérer
+	 * @return le composant physique correspondant à graphical
+	 */
+	public AbstractDipole getDipole(GraphicalComponent graphical)
+	{
+		for(int i=0;i<this.components.size();i++)
+		{
+			if(components.get(i).getName().equals(graphical.getCname()))
+			{
+				return components.get(i);
+			}
+		}
+		return null;
 	}
 
 	/**
