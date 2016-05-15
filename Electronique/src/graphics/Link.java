@@ -43,4 +43,14 @@ public class Link
     public GraphicalComponent getImage2 (){
         return this.image2;
     }
+    
+    public int getFirstArea()
+    {
+    	return this.linkAreaUsed1;
+    }
+    
+    public int getSecondArea()
+    {
+    	return this.linkAreaUsed2;
+    }
 }

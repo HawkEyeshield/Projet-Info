@@ -8,7 +8,6 @@ package components;
 public enum Type 
 {
 	ADMITTANCE,
-	RESISTANCE,
 	VOLTAGEGENERATOR,
 	CURRENTGENERATOR,
 	NULL;

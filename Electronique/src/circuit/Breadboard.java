@@ -43,10 +43,18 @@ public class Breadboard
 /* ======================== */
 	
 	/** Méthode faisant appel au solveur pour la résolution 
+	 * @param links liste des liens entre composants graphiques pour les traduire en liens physiques
 	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur*/
-	public void compute() throws IllegalArgumentException
-	{	// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
+	public void compute(ArrayList<Link> links) throws IllegalArgumentException
+	{	
+		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
 		CircuitGraph g = new CircuitGraph();
+		
+		for(int i=0;i<links.size();i++)
+		{
+			addLink(links.get(i));
+		}
+		
 		for(int i=0;i<components.size();i++)
 		{
 			// Attention ! Il faut d'abord ajouter les vertices au graphe, sinon il renvoie IllegalArgumentException lors de l'ajout du composant !
@@ -77,7 +85,7 @@ public class Breadboard
 	{
 		if (graphical.getCtype().equals(Type.ADMITTANCE)) 
 		{
-            components.add(new Admittance(graphical.getCname(), null, null, graphical.getCvalue()));
+            components.add(new Admittance(graphical.getCname(), null, null, 1));
         }
        else if (graphical.getCtype().equals(Type.CURRENTGENERATOR))
         {
@@ -97,43 +105,13 @@ public class Breadboard
     {
         GraphicalComponent A = l.getImage1();
         GraphicalComponent B = l.getImage2();
+        Vertex v = new Vertex(vertexIndex);
+        vertexIndex++;
         
-        // Parcours des composants connus pour récupérer les deux que l'on souhaite lier
-        for (int i=0;i<components.size();i++)
-        {
-            AbstractDipole C1 = components.get(i);
-            if (A.getCname().equals(C1.getName()))
-            {
-                for (int j=0;j<components.size();j++)
-                {
-                    AbstractDipole C2 = components.get(j);
-                    if (B.getCname().equals(C2.getName()))
-                    {
-                        link(C1, C2);
-                    }
-                }
-            }
-        }
+        
         //Else : exception = les composants ne sont pas encore arrivés/enregistés dans la breadboard/ont été supprimés.
           // et sinon on a supposé que personne n'a le même nom
     }
-    
-    /** Ajoute un lien entre deux composants donnés
-     * @param a : premier composant
-     * @param b : second composant
-     */
-    public void link(AbstractDipole a, AbstractDipole b)
-	{
-    	if(a.getFirstLink().equals(null) || a.getSecondLink().equals(null))
-    	{
-    		
-    	}
-        //b.setFirstLink(a.getSecondLink());
-        
-        //on incrémente l'indice des vertices si on a du en rajouter un
-        this.vertexIndex++;
-	}
-
 
     /**
      * Méthode supprimant un composant physique à partir de son homologue graphique
@@ -141,24 +119,7 @@ public class Breadboard
      */
     public void deleteComponent(GraphicalComponent graphical)
 	{
-        for (int i=0;i<components.size();i++)
-        {
-            AbstractDipole dipole = components.get(i);
-            if (dipole.getName().equals(graphical.getCname()))
-            {
-                components.remove(i); 
-            }
-        }
-	}
-
-	/**
-	 * Méthode supprimmant des liens
-     */
-
-	public void deleteLink(Link l)
-	{
-        //Ne sert à rien si on met les liens et les composants à la fin : à partir du bouton "run"
-        // (comme ça on tient compte seulement de la liste des liens ?)
+        this.components.remove(this.getDipole(graphical));
 	}
 	
 	/**
@@ -174,8 +135,9 @@ public class Breadboard
 	 * Méthode renvoyant un composant physique à partir de son homologue graphique
 	 * @param graphical le composant que l'on souhaite récupérer
 	 * @return le composant physique correspondant à graphical
+	 * @throws NullPointerException si aucun composant ne correspond
 	 */
-	public AbstractDipole getDipole(GraphicalComponent graphical)
+	public AbstractDipole getDipole(GraphicalComponent graphical) throws NullPointerException
 	{
 		for(int i=0;i<this.components.size();i++)
 		{
@@ -184,7 +146,7 @@ public class Breadboard
 				return components.get(i);
 			}
 		}
-		return null;
+		throw new NullPointerException();
 	}
 
 	/**

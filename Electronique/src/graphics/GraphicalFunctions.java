@@ -71,7 +71,7 @@ public class GraphicalFunctions
 	public  static ArrayList<Text> informationsList = new ArrayList<Text>();
 
 	/**
-     * Permet d'ajouter ou d'actualiser un lien aussi bien visuellement que dans la breadboard
+     * Permet d'ajouter ou d'actualiser un lien graphique
      * @param premiereImageDuLien Premier composant a relier
      * @param secondeImageDuLien Second composant a relier
      * @param linkAreaUsed1 Premiere zone a relier(1 pour a gauche, 2 pour en haut, 3 a droite et 4 en bas)
@@ -118,7 +118,7 @@ public class GraphicalFunctions
         Line line2 = new Line(0, 0, 0, 0);
         Line line3 = new Line(0, 0, 0, 0);
 
-		/**Tout les if suivent le même schema, on regarde les zones utilise et on agit en consequence
+		/*Tout les if suivent le même schema, on regarde les zones utilise et on agit en consequence
 		 * On part toujours d un cote de la zone utiliser pour le premier composant et de l autre pour le second composant
 		 * On relie ces deux traits avec un dernier
 		 * Ceci a pour unique but de clarifier visuellement la schema, en evitant les traits droit qui serait illisible
@@ -256,9 +256,6 @@ public class GraphicalFunctions
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
                 arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
-                
-                //TODO Pour Sterenn : mettre la fonction qui ajoute le lien dans la breadboard
-                //breadboard.addLink(arrayListOfLink.get(-1));Erreur ici
             }
         }
         else{ //Si k!= -1 c'est que c'est qu'il faut juste actualiser les liens
@@ -279,7 +276,6 @@ public class GraphicalFunctions
 	 * @param anchorPane2 Zone de travail dans lequel le lien apparait
      */
 	static  public void deleteLink(Line lien, AnchorPane anchorPane2){
-		//TODO enlever le lien qui relie deux composants
 		for (int i = 0; i < arrayListOfLink.size();i++){//On retrouve les liens qui lui sont associé (ils vont par trois) et on les supprime
 			if(arrayListOfLink.get(i).lien1 == lien || arrayListOfLink.get(i).lien2 == lien || arrayListOfLink.get(i).lien3 == lien){
 				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
@@ -1453,7 +1449,7 @@ public class GraphicalFunctions
 			resistance.setLayoutX(idResistance); // Donne un identifiant unique a la resistance
 			idResistance += 1;
 			//On creer l'objet
-			GraphicalComponent componentResistance = new GraphicalComponent(resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, Type.RESISTANCE);
+			GraphicalComponent componentResistance = new GraphicalComponent(resistance,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Resistance " + idResistance, Type.ADMITTANCE);
 
 			// Ajout de la résistance dans la breadboard
 			breadboard.addComponent(componentResistance);
@@ -1858,6 +1854,7 @@ public class GraphicalFunctions
 
 	public static void showResult(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result, Button Run){
 		//TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
+		//breadboard.compute(arrayListOfLink);
 
 		//Supprime le message
 		anchorPane3.getChildren().remove(programmeLaunch);
