@@ -51,8 +51,9 @@ public class CircuitGraph {
      * @param src       : sommet source
      * @param dst       : sommet destination
      * @param composant : composant entre ces sommets
+     * @throws IllegalArgumentException exception levée s'il manque un des vertex 
      */
-    public void addComponent(Vertex src, Vertex dst, AbstractDipole composant) {
+    public void addComponent(Vertex src, Vertex dst, AbstractDipole composant) throws IllegalArgumentException{
         //On commence par rechercher si une arete existe déjà entre les deux points
         boolean b = isComponentBetween(src, dst);
         if (!b) {//si on doit creer une arrete

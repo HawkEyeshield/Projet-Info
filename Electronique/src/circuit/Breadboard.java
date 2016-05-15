@@ -48,18 +48,20 @@ public class Breadboard
 	public void compute(ArrayList<Link> links) throws IllegalArgumentException
 	{	
 		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
+		// Création du graphe pour la résolution
 		CircuitGraph g = new CircuitGraph();
 		
-		for(int i=0;i<links.size();i++)
-		{
-			addLink(links.get(i));
-		}
+		// Création des liens entre composants
+		this.addLink(links);
 		
+		// Ajout des sommets et composants du graphe
 		for(int i=0;i<components.size();i++)
 		{
 			// Attention ! Il faut d'abord ajouter les vertices au graphe, sinon il renvoie IllegalArgumentException lors de l'ajout du composant !
 			g.addVertex(components.get(i).getFirstLink());
 			g.addVertex(components.get(i).getSecondLink());
+			System.out.println(components.get(i).getFirstLink());
+			System.out.println(components.get(i).getSecondLink());
 			try
 			{
 				g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
@@ -67,6 +69,7 @@ public class Breadboard
 			catch(IllegalArgumentException e)
 			{
 				System.out.println("Le circuit à un problème de sommet ! Veuillez le vérifier !");
+				e.printStackTrace();
 				return;
 			}
 		}
@@ -98,16 +101,100 @@ public class Breadboard
 	}
 
 
-	/** Méthode liant deux composants à partir du lien donné en paramètre
-	 * @param l : le lien
+	/** Méthode liant les composants physiques à partir des liens graphiques
+	 * @param links listes de liens graphiques existant
 	 */
-    public void addLink(Link l)
-    {
-        GraphicalComponent A = l.getImage1();
-        GraphicalComponent B = l.getImage2();
-        Vertex v = new Vertex(vertexIndex);
-        vertexIndex++;
-        
+    public void addLink(ArrayList<Link> links)
+    {   
+        //Pour chaque lien, on regarde les composants en commun et on fixe un même sommet
+        for(Link l : links)
+        {
+        	Vertex node = new Vertex(vertexIndex);
+        	for(Link k : links)
+        	{
+        		// On regarde chaque couple possibe de composant en commun, puis on fixe un même sommet
+        		if(l.getImage1().equals(k.getImage1()))
+        		{
+        			if(l.getFirstArea()==1 || l.getFirstArea()==2)
+        			{
+        				this.getDipole(l.getImage1()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(l.getImage1()).setSecondLink(node);
+        			}
+        			if(k.getFirstArea()==1 || k.getFirstArea()==2)
+        			{
+        				this.getDipole(k.getImage1()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(k.getImage1()).setSecondLink(node);
+        			}	
+        		}
+        		else if(l.getImage1().equals(k.getImage2()))
+        		{
+        			if(l.getFirstArea()==1 || l.getFirstArea()==2)
+        			{
+        				this.getDipole(l.getImage1()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(l.getImage1()).setSecondLink(node);
+        			}
+        			if(k.getSecondArea()==1 || k.getSecondArea()==2)
+        			{
+        				this.getDipole(k.getImage2()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(k.getImage2()).setSecondLink(node);
+        			}	
+        		}
+        		
+        		else if(l.getImage2().equals(k.getImage1()))
+        		{
+        			if(l.getFirstArea()==1 || l.getFirstArea()==2)
+        			{
+        				this.getDipole(l.getImage2()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(l.getImage2()).setSecondLink(node);
+        			}
+        			if(k.getFirstArea()==1 || k.getFirstArea()==2)
+        			{
+        				this.getDipole(k.getImage1()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(k.getImage1()).setSecondLink(node);
+        			}	
+        		}
+        		
+        		else if(l.getImage2().equals(k.getImage2()))
+        		{
+        			if(l.getFirstArea()==1 || l.getFirstArea()==2)
+        			{
+        				this.getDipole(l.getImage2()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(l.getImage2()).setSecondLink(node);
+        			}
+        			if(k.getFirstArea()==1 || k.getFirstArea()==2)
+        			{
+        				this.getDipole(k.getImage2()).setFirstLink(node);
+        			}
+        			else
+        			{
+        				this.getDipole(k.getImage2()).setSecondLink(node);
+        			}	
+        		}
+        		this.vertexIndex++;
+        	}
+        }
+
         
         //Else : exception = les composants ne sont pas encore arrivés/enregistés dans la breadboard/ont été supprimés.
           // et sinon on a supposé que personne n'a le même nom
