@@ -8,6 +8,10 @@ import components.Admittance;
 import components.VoltageGenerator;
 import graphStructure.Vertex;
 
+/**
+ * Test unitaire pour l'appel du solveur par la breadboard
+ * @author François
+ */
 public class TestBreadboard extends AbstractUnit
 {
 	private Breadboard b;
@@ -42,7 +46,7 @@ public class TestBreadboard extends AbstractUnit
 	@Override
 	public void after() 
 	{
-		
+		System.out.println("Test terminé");
 	}
 
 }

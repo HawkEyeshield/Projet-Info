@@ -44,7 +44,7 @@ public class Breadboard
 	
 	/** Méthode faisant appel au solveur pour la résolution 
 	 * @param links liste des liens entre composants graphiques pour les traduire en liens physiques
-	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur*/
+	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
 	public void compute(ArrayList<Link> links) throws IllegalArgumentException
 	{	
 		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
@@ -52,7 +52,7 @@ public class Breadboard
 		CircuitGraph g = new CircuitGraph();
 		
 		// Création des liens entre composants
-		this.addLink(links);
+		//this.addLink(links);
 		
 		// Ajout des sommets et composants du graphe
 		for(int i=0;i<components.size();i++)
@@ -62,16 +62,9 @@ public class Breadboard
 			g.addVertex(components.get(i).getSecondLink());
 			System.out.println(components.get(i).getFirstLink());
 			System.out.println(components.get(i).getSecondLink());
-			try
-			{
-				g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
-			}
-			catch(IllegalArgumentException e)
-			{
-				System.out.println("Le circuit à un problème de sommet ! Veuillez le vérifier !");
-				e.printStackTrace();
-				return;
-			}
+			
+			// Si l'ajout de composant renvoie IllegalArgumentException, l'interface graphique doit le catch pour faire apparaître un message d'erreur
+			g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
 		}
 		// La "clé" devient l'indice du composant dans la liste "components". En bijection avec les noms, donc.
 		//Ne fonctionne que si on travaille avec une seule liste - un seul type ?

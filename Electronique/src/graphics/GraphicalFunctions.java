@@ -1854,7 +1854,15 @@ public class GraphicalFunctions
 
 	public static void showResult(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result, Button Run){
 		//TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
-		breadboard.compute(arrayListOfLink);
+		try
+		{
+			breadboard.compute(arrayListOfLink);
+		}
+		catch(IllegalArgumentException e)
+		{
+			//TODO faire apparaître une fenêtre avec un message d'erreur
+			System.out.println("Problème de sommets !");
+		}
 
 		//Supprime le message
 		anchorPane3.getChildren().remove(programmeLaunch);
