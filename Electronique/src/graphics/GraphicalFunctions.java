@@ -10,82 +10,79 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-
 import java.util.ArrayList;
-
-//import java.awt.event.ActionEvent;
 
 /** Classe donnant les différentes fonctions utilisées dans l'interface graphique.
  * Fait appel à la breadboard pour faire le lien avec le solveur
- * @author Tanguy, Sterenn
+ * @author Tanguy, Sterenn, François
  */
 public class GraphicalFunctions
 {
 
 	/** Permet de définir si on peut faire du drag and drop ou si on est entrain de créer des liens*/
-	public static String etat = "d";
+	public static String state = "d";
 	
-	/** Premiere image du lien que l'on va creer*/
-	public static GraphicalComponent premiereImageDuLien;
+	/** Première image du lien que l'on va créer*/
+	public static GraphicalComponent firstImageOfLink;
 	
-	/**Compte le nombre de generateur de tension*/
+	/**Compte le nombre de générateur de tension*/
 	public static int idVoltageGenerator = 0;
 	
-	/** Compte le nombre de generateur de courant*/
-	public static int idCourantgeGenerator = 0;
+	/** Compte le nombre de générateur de courant*/
+	public static int idCurrentGenerator = 0;
 
-	/** Compte le nombre de generateur de courant*/
+	/** Compte le nombre d'admittance*/
 	public static int idResistance = 0;
 
-	/**Compte  le nombre de noeud*/
+	/**Compte le nombre de noeud*/
 	public static int idNode = 0; 
 	
-	/**liste qui liste les liens*/
-	public  static ArrayList<Link> arrayListOfLink = new ArrayList<Link>();
+	/**liste des liens*/
+	public static ArrayList<Link> listOfLink = new ArrayList<Link>();
 
-	/**Permet de retenir quel est la valeur a afficher*/
+	/**Permet de retenir quelle est la valeur à afficher*/
 	public static GraphicalComponent valueToShow = null;
 
-	/** Boolean qui permet de savoir si le programme tourne ou non*/
-	public static boolean launch = false;
+	/** Booléen qui permet de savoir si le programme tourne ou non*/
+	public static boolean isProgramRunning = false;
 
-	/**Va servir pour garder en memoire la premiere zone de lien utilise*/
+	/**Va servir pour garder en mémoire la première zone de lien utilisée*/
 	public static int linkArea;
 	
-	/** Breadboard qui traduira le schéma interface en graphe pour le solveur.
+	/** Breadboard qui traduira le schéma de l'interface en graphe pour le solveur.
 	 * Permet également de donner à chaque composant les potentiels à ses pattes et les courants après résolution*/
     private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
 
 	/** Permet de savoir si la rotation d'une image est possible, ou si il existe déjà des liens*/
 	public static boolean rotationPossible;
 
-	/** String qui sont utilise pour affiche le faite qu'on ne connaisse pas encore une valeur*/
-	public  static  String componentCourantToShow;
+	/** String qui sont utilisées pour un affichage de valeurs par défaut*/
+	public  static  String componentCurrentToShow;
 	public  static  String componentVoltageToShow;
 	public  static  String componentValueToShow;
 
 	/** Permet de retenir le texte qui indique si le programme peut se lancer ou non*/
 	public static Text bug;
 
-	/** Permet de retenir les informations que l'on affiche a la fin du programme pour pouvoir les supprimer*/
+	/** Permet de retenir les informations que l'on affiche à la fin du programme pour les supprimer*/
 	public  static ArrayList<Text> informationsList = new ArrayList<Text>();
 
 	/**
      * Permet d'ajouter ou d'actualiser un lien graphique
      * @param premiereImageDuLien Premier composant a relier
      * @param secondeImageDuLien Second composant a relier
-     * @param linkAreaUsed1 Premiere zone a relier(1 pour a gauche, 2 pour en haut, 3 a droite et 4 en bas)
-     * @param linkAreaUsed2 Seconde zone a relier
+     * @param linkAreaUsed1 Première zone à relier(1 pour a gauche, 2 pour en haut, 3 a droite et 4 en bas)
+     * @param linkAreaUsed2 Seconde zone à relier
      * @param k Permet de savoir si il faut l'ajouter ou juste actualiser
      * @param anchorPane2 Zone de travail
      */
     public static void addLink(GraphicalComponent premiereImageDuLien, GraphicalComponent secondeImageDuLien, int linkAreaUsed1, int linkAreaUsed2, int k, AnchorPane anchorPane2) {
-		//On initialise des variables qui vont nous simplifier la compréhension
+		//On initialise des variables qui vont simplifier la compréhension
         double centreXLinkArea1 = 0;
         double centreYLinkArea1 = 0;
         double centreXLinkArea2 = 0;
         double centreYLinkArea2 = 0;
-		//Les variables prennent les valeurs des zones utilise
+		//Les variables prennent les valeurs des zones utilisées
         if (linkAreaUsed1 == 1) {
             centreXLinkArea1 = premiereImageDuLien.square1.getX() + 5;
             centreYLinkArea1 = premiereImageDuLien.square1.getY() + 5;
@@ -113,15 +110,15 @@ public class GraphicalFunctions
             centreYLinkArea2 = secondeImageDuLien.square4.getY() + 5;
         }
 
-		//On initialise les lignescar elles se seront pas toujours toutes utilisees, mais toujours toutes affichees
+		//On initialise les lignes car elles se seront pas toujours toutes utilisées, mais toujours toutes affichées
         Line line1 = new Line(0, 0, 0, 0);
         Line line2 = new Line(0, 0, 0, 0);
         Line line3 = new Line(0, 0, 0, 0);
 
-		/*Tout les if suivent le même schema, on regarde les zones utilise et on agit en consequence
-		 * On part toujours d un cote de la zone utiliser pour le premier composant et de l autre pour le second composant
+		/*Tous les if suivent le même schéma, on regarde les zones utilisées et on agit en conséquence
+		 * On part toujours d'un côté de la zone utilisée pour le premier composant et de l'autre pour le second composant
 		 * On relie ces deux traits avec un dernier
-		 * Ceci a pour unique but de clarifier visuellement la schema, en evitant les traits droit qui serait illisible
+		 * Ceci a pour unique but de clarifier visuellement le schéma, en évitant les traits droit qui seraient illisibles
 		*/
         if((linkAreaUsed1 == 3 && linkAreaUsed2 == 1) || (linkAreaUsed1 == 1 && linkAreaUsed2 == 3)){
             line1 = new Line(centreXLinkArea1, centreYLinkArea1, (centreXLinkArea1 + centreXLinkArea2) / 2, centreYLinkArea1);
@@ -237,9 +234,9 @@ public class GraphicalFunctions
 		}
 
         if (k == -1) { //Si on ajoute un nouveau lien k = -1
-            boolean a = true; //Permet de véfifier si il n'existe pas déjà un lien qui part de cet endroit la.
-            for (int i = 0; i < arrayListOfLink.size(); i++) {
-                if ((premiereImageDuLien == secondeImageDuLien) ||(premiereImageDuLien == arrayListOfLink.get(i).image1 && linkAreaUsed1 == arrayListOfLink.get(i).linkAreaUsed1) || (premiereImageDuLien == arrayListOfLink.get(i).image2 && linkAreaUsed1 == arrayListOfLink.get(i).linkAreaUsed2) || (secondeImageDuLien == arrayListOfLink.get(i).image1 && linkAreaUsed2 == arrayListOfLink.get(i).linkAreaUsed1) || (secondeImageDuLien == arrayListOfLink.get(i).image2 && linkAreaUsed2 == arrayListOfLink.get(i).linkAreaUsed2)) {
+            boolean a = true; //Permet de vérifier si il n'existe pas déjà un lien qui part de cet endroit.
+            for (int i = 0; i < listOfLink.size(); i++) {
+                if ((premiereImageDuLien == secondeImageDuLien) ||(premiereImageDuLien == listOfLink.get(i).image1 && linkAreaUsed1 == listOfLink.get(i).linkAreaUsed1) || (premiereImageDuLien == listOfLink.get(i).image2 && linkAreaUsed1 == listOfLink.get(i).linkAreaUsed2) || (secondeImageDuLien == listOfLink.get(i).image1 && linkAreaUsed2 == listOfLink.get(i).linkAreaUsed1) || (secondeImageDuLien == listOfLink.get(i).image2 && linkAreaUsed2 == listOfLink.get(i).linkAreaUsed2)) {
                     a = false;//On indique qu'il ne faut pas afficher le lien, ni l'enregistrer et on affiche un message d'erreur
                     Text informations = new Text("Mettre un noeud pour relier ces deux éléments");
                     informations.setLayoutX(5);
@@ -248,60 +245,60 @@ public class GraphicalFunctions
                     informations.setOnMouseClicked(event ->{ //Permet d'enlever le message d'erreur si la personne clique dessus.
                         anchorPane2.getChildren().remove(informations);
                     });
-                    break; //On quitte la boucle pour eviter d'ecrire deux message d'erreur
+                    break; //On quitte la boucle pour éviter d'écrire deux messages d'erreur
                 }
             }
-            if (a) {//Si on est dans le cas ou il n existe pas encore de lien, alors on affiche tout
+            if (a) {//Si on est dans le cas où il n'existe pas encore de lien, alors on affiche tout
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
-                arrayListOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
+                listOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
             }
         }
-        else{ //Si k!= -1 c'est que c'est qu'il faut juste actualiser les liens
+        else{ //Si k!= -1 c'est qu'il faut juste actualiser les liens
             anchorPane2.getChildren().add(line1);
             anchorPane2.getChildren().add(line2);
             anchorPane2.getChildren().add(line3);
-			//Et on remet en memoire les nouveaux liens
-			arrayListOfLink.get(k).lien1 = line1;
-			arrayListOfLink.get(k).lien2 = line2;
-			arrayListOfLink.get(k).lien3 = line3;
+			//Et on remet en mémoire les nouveaux liens
+			listOfLink.get(k).lien1 = line1;
+			listOfLink.get(k).lien2 = line2;
+			listOfLink.get(k).lien3 = line3;
         }
 
     }
 
 	/**
-	 * Fonction qui permet de supprimer un lien, mais ne me parrait pas tres pertinent apres reflexion donc ne sera sans doute pas utiliser
-	 * @param lien Lelien a surpprimer
-	 * @param anchorPane2 Zone de travail dans lequel le lien apparait
+	 * Fonction qui permet de supprimer un lien, mais ne paraît pas très pertinent apres réflexion donc ne sera sans doute pas utilisée
+	 * @param lien le lien à surpprimer
+	 * @param anchorPane2 Zone de travail dans laquelle le lien apparait
      */
 	static  public void deleteLink(Line lien, AnchorPane anchorPane2){
-		for (int i = 0; i < arrayListOfLink.size();i++){//On retrouve les liens qui lui sont associé (ils vont par trois) et on les supprime
-			if(arrayListOfLink.get(i).lien1 == lien || arrayListOfLink.get(i).lien2 == lien || arrayListOfLink.get(i).lien3 == lien){
-				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
-				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien2);
-				anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien3);
-				arrayListOfLink.remove(i);
+		for (int i = 0; i < listOfLink.size();i++){//On retrouve les liens qui lui sont associés (ils vont par trois) et on les supprime
+			if(listOfLink.get(i).lien1 == lien || listOfLink.get(i).lien2 == lien || listOfLink.get(i).lien3 == lien){
+				anchorPane2.getChildren().remove(listOfLink.get(i).lien1);
+				anchorPane2.getChildren().remove(listOfLink.get(i).lien2);
+				anchorPane2.getChildren().remove(listOfLink.get(i).lien3);
+				listOfLink.remove(i);
 			}
 		}
 	}
 
     /**
      * Actualise les liens entre les objets.
-     * L'idée est de regarder tous les liens existant avec la boucle et si il y a un lien qui est relier d'un cote a l'image alors on
-     * supprime les liens et on appel AddLink pour les remettre au bon endroit
-     * @param image objet que l'on deplace
-     * @param anchorPane2 zone ou l'on travail
+     * L'idée est de regarder tous les liens existant avec la boucle et si il y a un lien qui est relié d'un côté à l'image alors on
+     * supprime les liens et on appelle AddLink pour les remettre au bon endroit
+     * @param image objet que l'on déplace
+     * @param anchorPane2 zone ou l'on travaille
      */
     public static void actualiseViewOfLink(GraphicalComponent image, AnchorPane anchorPane2) {
-        for (int i = 0; i < arrayListOfLink.size();i++){
-			//On trouve tous les liens associes a l image et on les supprime pour les reaffiches comme si n existait pas
-			//(avec k != -1 donc pas d ajout dans le breadboard)
-            if(arrayListOfLink.get(i).image1 == image || arrayListOfLink.get(i).image2 == image){
-                anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien1);
-                anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien2);
-                anchorPane2.getChildren().remove(arrayListOfLink.get(i).lien3);
-                addLink(arrayListOfLink.get(i).image1,arrayListOfLink.get(i).image2,arrayListOfLink.get(i).linkAreaUsed1,arrayListOfLink.get(i).linkAreaUsed2,i, anchorPane2);
+        for (int i = 0; i < listOfLink.size();i++){
+			//On trouve tous les liens associés à l'image et on les supprime pour les réafficheer comme si ils n'existaient pas
+			//(avec k != -1 donc pas d'ajout dans la breadboard)
+            if(listOfLink.get(i).image1 == image || listOfLink.get(i).image2 == image){
+                anchorPane2.getChildren().remove(listOfLink.get(i).lien1);
+                anchorPane2.getChildren().remove(listOfLink.get(i).lien2);
+                anchorPane2.getChildren().remove(listOfLink.get(i).lien3);
+                addLink(listOfLink.get(i).image1,listOfLink.get(i).image2,listOfLink.get(i).linkAreaUsed1,listOfLink.get(i).linkAreaUsed2,i, anchorPane2);
             }
         }
     }
@@ -313,13 +310,13 @@ public class GraphicalFunctions
      */
 	public  static void deleteComponent(GraphicalComponent composant, AnchorPane anchorPane2)
 	{
-		int[] a = new int[arrayListOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
+		int[] a = new int[listOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
 		int b = 0; //Compte le nombre de composants relies avec celui qui doit etre supprimer
-		for ( int i =0 ; i < arrayListOfLink.size(); i++){
+		for ( int i =0 ; i < listOfLink.size(); i++){
 			//On garde que les valeurs qui sont en lien avec le composant a supprimer
-			if(arrayListOfLink.get(i).image1 == composant || arrayListOfLink.get(i).image2 == composant){
+			if(listOfLink.get(i).image1 == composant || listOfLink.get(i).image2 == composant){
 				//On supprime les liens
-				anchorPane2.getChildren().removeAll(arrayListOfLink.get(i).lien1,arrayListOfLink.get(i).lien2,arrayListOfLink.get(i).lien3);
+				anchorPane2.getChildren().removeAll(listOfLink.get(i).lien1,listOfLink.get(i).lien2,listOfLink.get(i).lien3);
 				a[b]=i;//On garde en memoire dans les premiers cases les valeurs qui correspondent au lien a supprimer
 				b += 1;
 			}
@@ -327,7 +324,7 @@ public class GraphicalFunctions
 		}
 		for(int j = 0; j < b;j++){
 			//On regarde toutes les valeurs retenu en memoire
-			arrayListOfLink.remove(a[j]);//On les supprime
+			listOfLink.remove(a[j]);//On les supprime
 			for(int k = j + 1 ; k < b;k++){//On enleve ensuite 1 au valeur de a[k] car le remove a decaler le arrayListOfLink de 1...
 				a[k] -= 1;
 			}
@@ -418,10 +415,10 @@ public class GraphicalFunctions
 				//On met les bonnes valeur dans les variables qu on va affiche, on affiche qu il faut determiner les parametre si ils n ont pas encore ete
 				//donnee en argument
 				if(componentVoltageGenerator.courant == null){
-					componentCourantToShow = "à determiner";
+					componentCurrentToShow = "à determiner";
 				}
 				else{
-					componentCourantToShow = "" + componentVoltageGenerator.courant; // C'est un cast de double dans un String
+					componentCurrentToShow = "" + componentVoltageGenerator.courant; // C'est un cast de double dans un String
 				}
 				if(componentVoltageGenerator.voltage == null){
 					componentVoltageToShow = "à determiner";
@@ -437,9 +434,9 @@ public class GraphicalFunctions
 				}
 				//On cree deux messages en fonctions de l'orientation de l'image
 				Text informationsh = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentValueToShow
-						+ "\nValeur du courant : " + componentCourantToShow + "\nValeur de tension : " + componentVoltageToShow);
+						+ "\nValeur du courant : " + componentCurrentToShow + "\nValeur de tension : " + componentVoltageToShow);
 				Text informationsv = new Text("Nom : " + componentVoltageGenerator.name + "\nValeur : " + componentValueToShow
-						+ "\nValeur du courant : " + componentCourantToShow + "\nValeur de tension : " + componentVoltageToShow);
+						+ "\nValeur du courant : " + componentCurrentToShow + "\nValeur de tension : " + componentVoltageToShow);
 
 				// On definie la zone des deux informations.
 				informationsh.setX(tensionGenerator.getX());
@@ -465,49 +462,49 @@ public class GraphicalFunctions
 			//Permet de creer un lien en cliquant sur les deux zones
 			linkArea1.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,1,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentVoltageGenerator,linkArea,1,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentVoltageGenerator; // On enregistre l'image
 					linkArea = 1;//C est la premier zone qui a ete utilise
 				}
 			});
 			linkArea2.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,2,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentVoltageGenerator,linkArea,2,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentVoltageGenerator; // On enregistre l'image
 					linkArea = 2;
 				}
 			});
 			linkArea3.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,3,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentVoltageGenerator,linkArea,3,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentVoltageGenerator; // On enregistre l'image
 					linkArea = 3;
 				}
 			});
 			linkArea4.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentVoltageGenerator,linkArea,4,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentVoltageGenerator,linkArea,4,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentVoltageGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentVoltageGenerator; // On enregistre l'image
 					linkArea = 4;
 				}
 			});
@@ -516,16 +513,16 @@ public class GraphicalFunctions
 			//Permet de selectionner la valeur à déterminer.
 
 			tensionGenerator.setOnMouseClicked(event1 -> {
-				if(etat == "v"){
+				if(state == "v"){
 					valueToShow = componentVoltageGenerator;
-					etat = "d";
+					state = "d";
 					valeurADeterminer.setText("Choix pris en compte");
 				}
 
-				if(etat == "tai"){
+				if(state == "tai"){
 					System.out.println("On va eviter de faire des betises...");
 				}
-				if(etat == "cai") {
+				if(state == "cai") {
 					Text info = new Text("Par convention, fleche du courant est oriente \n de bas en haut ou de gauche a droite");
 					info.setX(tensionGenerator.getX() + 100);
 					info.setY(tensionGenerator.getY() + 60);
@@ -556,7 +553,7 @@ public class GraphicalFunctions
 							
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentVoltageGenerator.courant = x;
-							etat = "d";
+							state = "d";
 							CourantAImposer.setText("Courant à imposer");
 							anchorPane2.getChildren().remove(info);
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
@@ -649,9 +646,9 @@ public class GraphicalFunctions
 			rotation.setOnAction(event1 -> {
 				//Permet d'effectuer une rotation pour mettre le composant a la verticale ou a l horizontale
 				rotationPossible = true; //impossible de faire une rotation si des liens existent deja
-				for(int i = 0; i < arrayListOfLink.size(); i++){
+				for(int i = 0; i < listOfLink.size(); i++){
 					//On regarde si des liens existent deja, on pourrait limite faire un "break" pour quitter la boucle
-					if(arrayListOfLink.get(i).image1.object == tensionGenerator || arrayListOfLink.get(i).image2.object == tensionGenerator){
+					if(listOfLink.get(i).image1.object == tensionGenerator || listOfLink.get(i).image2.object == tensionGenerator){
 						rotationPossible = false;
 					}
 				}
@@ -703,7 +700,7 @@ public class GraphicalFunctions
 			tensionGenerator.setOnMouseDragged(event1 -> 
 			{
 				if (event1.isPrimaryButtonDown()) {
-					if (etat == "d") { //En position Drag and Drop
+					if (state == "d") { //En position Drag and Drop
 						// position de l'image
 						double imagx;
 						double imagy;
@@ -829,9 +826,9 @@ public class GraphicalFunctions
 			linkArea3.setY(courantGenerator.getY() + image.getHeight()/2);
 			anchorPane2.getChildren().add(linkArea3);
 
-			courantGenerator.setLayoutX(idCourantgeGenerator);
-			idCourantgeGenerator += 1;
-			GraphicalComponent componentCourantGenerator = new GraphicalComponent(courantGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de courant " + idCourantgeGenerator,10, Type.CURRENTGENERATOR);
+			courantGenerator.setLayoutX(idCurrentGenerator);
+			idCurrentGenerator += 1;
+			GraphicalComponent componentCourantGenerator = new GraphicalComponent(courantGenerator,linkArea1,linkArea2,linkArea3,linkArea4,'h',"Generateur de courant " + idCurrentGenerator,10, Type.CURRENTGENERATOR);
 
 			// Ajout du générateur à la breadboard
 			breadboard.addComponent(componentCourantGenerator);
@@ -841,10 +838,10 @@ public class GraphicalFunctions
 				//On met les bonnes valeur dans les variables qu on va affiche, on affiche qu il faut determiner les parametre si ils n ont pas encore ete
 				//donnee en argument
 				if(componentCourantGenerator.courant == null){
-					componentCourantToShow = "à determiner";
+					componentCurrentToShow = "à determiner";
 				}
 				else{
-					componentCourantToShow = "" + componentCourantGenerator.courant; // C'est un cast de double dans un String
+					componentCurrentToShow = "" + componentCourantGenerator.courant; // C'est un cast de double dans un String
 				}
 				if(componentCourantGenerator.voltage == null){
 					componentVoltageToShow = "à determiner";
@@ -860,9 +857,9 @@ public class GraphicalFunctions
 				}
 				//On cree deux messages en fonctions de l'orientation de l'image
 				Text informationsh = new Text("Nom : " + componentCourantGenerator.name + "\nValeur : " + componentValueToShow
-						+ "\nValeur du courant : " + componentCourantToShow + "\nValeur de tension : " + componentVoltageToShow);
+						+ "\nValeur du courant : " + componentCurrentToShow + "\nValeur de tension : " + componentVoltageToShow);
 				Text informationsv = new Text("Nom : " + componentCourantGenerator.name + "\nValeur : " + componentValueToShow
-						+ "\nValeur du courant : " + componentCourantToShow + "\nValeur de tension : " + componentVoltageToShow);
+						+ "\nValeur du courant : " + componentCurrentToShow + "\nValeur de tension : " + componentVoltageToShow);
 
 
 
@@ -892,55 +889,55 @@ public class GraphicalFunctions
 
 			linkArea1.setOnMouseClicked(event1 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentCourantGenerator,linkArea,1,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentCourantGenerator,linkArea,1,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentCourantGenerator; // On enregistre l'image
 					linkArea = 1;
 				}
 			});
 
 			linkArea2.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentCourantGenerator,linkArea,2,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentCourantGenerator,linkArea,2,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentCourantGenerator; // On enregistre l'image
 					linkArea = 2;
 				}
 			});
 
 			linkArea3.setOnMouseClicked(event3 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentCourantGenerator,linkArea,3,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentCourantGenerator,linkArea,3,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentCourantGenerator; // On enregistre l'image
 					linkArea = 3;
 				}
 			});
 
 			linkArea4.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentCourantGenerator,linkArea,4,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentCourantGenerator,linkArea,4,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentCourantGenerator; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentCourantGenerator; // On enregistre l'image
 					linkArea = 4;
 				}
 			});
@@ -948,13 +945,13 @@ public class GraphicalFunctions
 			//Permet de selectionner la valeur à déterminer.
 
 			courantGenerator.setOnMouseClicked(event1 -> {
-				if(etat == "v"){
+				if(state == "v"){
 					valueToShow = componentCourantGenerator;
-					etat = "d";
+					state = "d";
 					valeurADeterminer.setText("Choix pris en compte");
 				}
 
-				if(etat == "tai"){
+				if(state == "tai"){
 					Text info = new Text("Par convention, fleche de la tension est oriente \n de bas en haut ou de gauche a droite");
 					info.setX(courantGenerator.getX() + 100);
 					info.setY(courantGenerator.getY() + 60);
@@ -985,7 +982,7 @@ public class GraphicalFunctions
 
 						anchorPane2.getChildren().remove(zonePourChangerValeur);
 						componentCourantGenerator.voltage = x;
-						etat = "d";
+						state = "d";
 						TensionAImposer.setText("Tension à imposer");
 						anchorPane2.getChildren().remove(info);
 						}
@@ -1070,8 +1067,8 @@ public class GraphicalFunctions
 
 			rotation.setOnAction(event1 -> {
 				rotationPossible = true;
-				for(int i = 0; i < arrayListOfLink.size(); i++){
-					if(arrayListOfLink.get(i).image1.object == courantGenerator || arrayListOfLink.get(i).image2.object == courantGenerator){
+				for(int i = 0; i < listOfLink.size(); i++){
+					if(listOfLink.get(i).image1.object == courantGenerator || listOfLink.get(i).image2.object == courantGenerator){
 						rotationPossible = false;
 					}
 				}
@@ -1117,7 +1114,7 @@ public class GraphicalFunctions
 
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
-				if (etat == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
+				if (state == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
 					// position de l'image
 					double imagx;
 					double imagy;
@@ -1257,54 +1254,54 @@ public class GraphicalFunctions
 			//Permet de creer un lien
 			linkArea1.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentNode,linkArea,1,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentNode,linkArea,1,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 1;
-					premiereImageDuLien = componentNode; // On enregistre l'image
+					firstImageOfLink = componentNode; // On enregistre l'image
 				}
 			});
 			linkArea2.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentNode,linkArea,2,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentNode,linkArea,2,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 2;
-					premiereImageDuLien = componentNode; // On enregistre l'image
+					firstImageOfLink = componentNode; // On enregistre l'image
 				}
 			});
 			linkArea3.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentNode,linkArea,3,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentNode,linkArea,3,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 3;
-					premiereImageDuLien = componentNode; // On enregistre l'image
+					firstImageOfLink = componentNode; // On enregistre l'image
 				}
 			});
 			linkArea4.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentNode,linkArea,4,-1,anchorPane2);
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentNode,linkArea,4,-1,anchorPane2);
 
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
 					linkArea = 4;
-					premiereImageDuLien = componentNode; // On enregistre l'image
+					firstImageOfLink = componentNode; // On enregistre l'image
 				}
 			});
 
@@ -1313,7 +1310,7 @@ public class GraphicalFunctions
 			node.setOnMouseDragged(event1 ->
 			{
 				if (event1.isPrimaryButtonDown()) {
-					if (etat == "d") { //En position Drag and Drop
+					if (state == "d") { //En position Drag and Drop
 						// position de l'image
 						double imagx;
 						double imagy;
@@ -1459,10 +1456,10 @@ public class GraphicalFunctions
 				//On met les bonnes valeur dans les variables qu on va affiche, on affiche qu il faut determiner les parametre si ils n ont pas encore ete
 				//donnee en argument
 				if(componentResistance.courant == null){
-					componentCourantToShow = "à determiner";
+					componentCurrentToShow = "à determiner";
 				}
 				else{
-					componentCourantToShow = "" + componentResistance.courant; // C'est un cast de double dans un String
+					componentCurrentToShow = "" + componentResistance.courant; // C'est un cast de double dans un String
 				}
 
 				if(componentResistance.voltage == null){
@@ -1479,9 +1476,9 @@ public class GraphicalFunctions
 				}
 				//On cree deux messages en fonctions de l'orientation de l'image
 				Text informationsh = new Text("Nom : " + componentResistance.name + "\nValeur : " + componentValueToShow
-						+ "\nValeur du courant : " + componentCourantToShow + "\nValeur de tension : " + componentVoltageToShow);
+						+ "\nValeur du courant : " + componentCurrentToShow + "\nValeur de tension : " + componentVoltageToShow);
 				Text informationsv = new Text("Nom : " + componentResistance.name + "\nValeur : " + componentValueToShow
-						+ "\nValeur du courant : " + componentCourantToShow + "\nValeur de tension : " + componentVoltageToShow);
+						+ "\nValeur du courant : " + componentCurrentToShow + "\nValeur de tension : " + componentVoltageToShow);
 
 
 
@@ -1509,62 +1506,62 @@ public class GraphicalFunctions
 			//Permet de creer un lien
 			linkArea1.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentResistance,linkArea,1,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentResistance,linkArea,1,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentResistance; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentResistance; // On enregistre l'image
 					linkArea = 1;
 				}
 			});
 			linkArea2.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentResistance,linkArea,2,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentResistance,linkArea,2,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentResistance; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentResistance; // On enregistre l'image
 					linkArea = 2;
 				}
 			});
 			linkArea3.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentResistance,linkArea,3,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentResistance,linkArea,3,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentResistance; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentResistance; // On enregistre l'image
 					linkArea = 3;
 				}
 			});
 			linkArea4.setOnMouseClicked(event2 ->
 			{
-				if(etat == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
-					addLink(premiereImageDuLien,componentResistance,linkArea,4,-1,anchorPane2);
-					etat = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
+				if(state == "l2"){ // lance la lien si c'est le deuxième objet sur lequel on a cliqué
+					addLink(firstImageOfLink,componentResistance,linkArea,4,-1,anchorPane2);
+					state = "l1"; // On repasse dans l'etat 1 car le lien a ete creer
 				}
-				else if (etat == "l1"){ // ajoute un objet
-					etat = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
-					premiereImageDuLien = componentResistance; // On enregistre l'image
+				else if (state == "l1"){ // ajoute un objet
+					state = "l2"; // On change l'etat pour indiquer que l'utilisateur a bien cliqué sur une image
+					firstImageOfLink = componentResistance; // On enregistre l'image
 					linkArea = 4;
 				}
 			});
 
 
 			resistance.setOnMouseClicked(event1 -> {
-				if(etat == "v"){
+				if(state == "v"){
 					valueToShow = componentResistance;
-					etat = "d";
+					state = "d";
 					valeurADeterminer.setText("Choix pris en compte");
 				}
 
-				if(etat == "tai") {
+				if(state == "tai") {
 					Text info = new Text("Par convention, fleche de la tension est oriente \n de bas en haut ou de gauche a droite");
 					info.setX(resistance.getX() + 100);
 					info.setY(resistance.getY() + 60);
@@ -1595,7 +1592,7 @@ public class GraphicalFunctions
 							
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentResistance.voltage = x;
-							etat = "d";
+							state = "d";
 							TensionAImposer.setText("Tension à imposer");
 							anchorPane2.getChildren().remove(info);
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
@@ -1605,7 +1602,7 @@ public class GraphicalFunctions
 					});
 
 				}
-				if(etat == "cai") {
+				if(state == "cai") {
 					Text info = new Text("Par convention, fleche du courant est oriente \n de bas en haut ou de gauche a droite");
 					info.setX(resistance.getX() + 100);
 					info.setY(resistance.getY() + 60);
@@ -1636,7 +1633,7 @@ public class GraphicalFunctions
 							
 							anchorPane2.getChildren().remove(zonePourChangerValeur);
 							componentResistance.courant = x;
-							etat = "d";
+							state = "d";
 							CourantAImposer.setText("Courant à imposer");
 							anchorPane2.getChildren().remove(info);
 						} catch (NumberFormatException erreur) {//Sinon on demande a l utilisateur de remettre une autre valeur
@@ -1722,8 +1719,8 @@ public class GraphicalFunctions
 
 			rotation.setOnAction(event1 -> {
 				rotationPossible = true;
-				for(int i = 0; i < arrayListOfLink.size(); i++){
-					if(arrayListOfLink.get(i).image1.object == resistance || arrayListOfLink.get(i).image2.object == resistance){
+				for(int i = 0; i < listOfLink.size(); i++){
+					if(listOfLink.get(i).image1.object == resistance || listOfLink.get(i).image2.object == resistance){
 						rotationPossible = false;
 					}
 				}
@@ -1769,7 +1766,7 @@ public class GraphicalFunctions
 			resistance.setOnMouseDragged(event1 ->
 			{
 				if (event1.isPrimaryButtonDown()) {
-					if (etat == "d") { //En position Drag and Drop
+					if (state == "d") { //En position Drag and Drop
 						// position de l'image
 						double imagx;
 						double imagy;
@@ -1856,7 +1853,7 @@ public class GraphicalFunctions
 		//TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
 		try
 		{
-			breadboard.compute(arrayListOfLink);
+			breadboard.compute(listOfLink);
 		}
 		catch(IllegalArgumentException e)
 		{
@@ -1900,7 +1897,7 @@ public class GraphicalFunctions
 				informationsList.add(informationsh); //On ajoute les info a la liste pour pouvoir les supprimer plus tard
 			}
 		}
-		GraphicalFunctions.launch = false;//On aurtorise a l utilisateur de relancer le programme
+		GraphicalFunctions.isProgramRunning = false;//On aurtorise a l utilisateur de relancer le programme
 
 	}
 }

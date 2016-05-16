@@ -3,7 +3,7 @@ package graphics;
 import components.Type;
 import javafx.scene.image.ImageView;
 
-/** Classe qui definie un composant pour l interface graphique
+/** Classe qui définit un composant pour l'interface graphique
  * @author Tanguy
  */
 public class GraphicalComponent {
@@ -21,13 +21,13 @@ public class GraphicalComponent {
     int indexation;
 
     /**
-     * Contructeur d un composant
-     * @param object Image du composant en lui meme
-     * @param square1 Premiere zone de lien
+     * Contructeur d'un composant
+     * @param object Image du composant en lui même
+     * @param square1 Première zone de lien
      * @param square2 Seconde zone de lien
-     * @param square3 Troisieme zone de lien
-     * @param square4 Quatrieme zone de lien
-     * @param orientation Definie si l image est horizontale ou verticale
+     * @param square3 Troisième zone de lien
+     * @param square4 Quatrième zone de lien
+     * @param orientation Définit si l'image est horizontale ou verticale
      * @param name Nom du composant
      * @param value valeur du composant
      * @param type Type du composant
@@ -62,7 +62,7 @@ public class GraphicalComponent {
         this.type = type;
         indexation = -1;
     }
-    //Quelques fonctions pour acceder a differente valeur
+    //Quelques fonctions pour acceder à différente valeurs
     public String getCname (){
         return this.name;
     }

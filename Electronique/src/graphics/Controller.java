@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class Controller implements javafx.fxml.Initializable//implement tres tres utile qui permet de lancer la fonction d'initialisation
+public class Controller implements javafx.fxml.Initializable//implement très utile qui permet de lancer la fonction d'initialisation
 {
 
 
@@ -18,10 +18,10 @@ public class Controller implements javafx.fxml.Initializable//implement tres tre
     @Override
     public void initialize(URL location, ResourceBundle resources) 
     {
-        //Juste pour bien voir que le programme ce lance
+        //Juste pour bien voir que le programme se lance
 
 
-        // On génère toute les images à la suite en les positionnant au bon endroit
+        // On génère toutes les images à la suite en les positionnant au bon endroit
 
         anchorPane3.setPrefHeight(3000);
         anchorPane3.setPrefWidth(3000);
@@ -33,38 +33,38 @@ public class Controller implements javafx.fxml.Initializable//implement tres tre
         GraphicalFunctions.addResistance(anchorPane3, anchorPane4, scrollPane, anchorPane,ValeurADeterminer, TensionAImposer, CourantAImposer);
 
 
-        //permet d'executer le programme
+        //permet d'exécuter le programme
         Run.setOnMouseClicked(event ->{
-            //On regarde si l utilisateur n a pas deja appuyer sur le bouton Run
-            if(!GraphicalFunctions.launch) {
-                //On echange de nom a chaque clic
+            //On regarde si l'utilisateur n'a pas déjà appuyé sur le bouton Run
+            if(!GraphicalFunctions.isProgramRunning) {
+                //On échange de nom à chaque clic
                 if(Run.getText().equals("Run")) {
                     Run.setText("StopRun");
                     Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
-                    double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relaive de la fenetre
-                    programmeLaunch.setX(550 + scrollPosition[0]);//On definie la zone
+                    double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relative de la fenêtre
+                    programmeLaunch.setX(550 + scrollPosition[0]);//On définit la zone
                     programmeLaunch.setY(20 + scrollPosition[1]);
                     anchorPane3.getChildren().add(programmeLaunch);//et on affiche
-                    //TODO Mettre la fonction qui lance le programme de raph
+                    //TODO Mettre la fonction qui lance le programme de raphaël
                     //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,boutton Run
 
-                    GraphicalFunctions.launch = true;//on indique que le programme est lance
+                    GraphicalFunctions.isProgramRunning = true;//on indique que le programme est lancé
                     anchorPane3.getChildren().remove(GraphicalFunctions.bug);
 
-                    //Fonction de test pour voir si le renvoie de valeur fonctionne
-                    GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.arrayListOfLink.size()];
-                    for(int i = 0; i < GraphicalFunctions.arrayListOfLink.size();i++){
-                        a[i] = GraphicalFunctions.arrayListOfLink.get(i).image1;
+                    //Fonction de test pour voir si le renvoi de valeur fonctionne
+                    GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.listOfLink.size()];
+                    for(int i = 0; i < GraphicalFunctions.listOfLink.size();i++){
+                        a[i] = GraphicalFunctions.listOfLink.get(i).image1;
                     }
                     GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);
                 }
                 else{
                     anchorPane4.getChildren().remove(GraphicalFunctions.informationsList.get(0));//On met ici le premier, car il est dans anchorPane4
                     Run.setText("Run");
-                    for (int i = 1; i < GraphicalFunctions.informationsList.size(); i++) {//On supprime les infos quand l utilisateur clic sur StopRun
+                    for (int i = 1; i < GraphicalFunctions.informationsList.size(); i++) {//On supprime les infos quand l'utilisateur clic sur StopRun
                         anchorPane3.getChildren().remove(GraphicalFunctions.informationsList.get(i));
                     }
-                    GraphicalFunctions.informationsList = new ArrayList<Text>();//On supprime toute les valeurs présente car elles ont été supprimées
+                    GraphicalFunctions.informationsList = new ArrayList<Text>();//On supprime toutes les valeurs présentes car elles ont été supprimées
                 }
             }
             else{
@@ -74,51 +74,51 @@ public class Controller implements javafx.fxml.Initializable//implement tres tre
         });
 
         TensionAImposer.setOnMouseClicked(event -> {
-            if(TensionAImposer.getText().endsWith("Tension à imposer")) {//Evite qu on puisse definir deux fois une tension
-                TensionAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
-                GraphicalFunctions.etat = "tai";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
+            if(TensionAImposer.getText().endsWith("Tension à imposer")) {//Evite qu'on puisse définir deux fois une tension
+                TensionAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que doit faire l'utilisateur
+                GraphicalFunctions.state = "tai";//Ce changement d'état va permettre d'activer la sélection dans GraphicalFonction
             }
         });
 
         CourantAImposer.setOnMouseClicked(event -> {
             if(CourantAImposer.getText().endsWith("Courant à imposer")) {//Evite qu on puisse definir deux fois une tension
-                CourantAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
-                GraphicalFunctions.etat = "cai";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
+                CourantAImposer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que doit faire l'utilisateur
+                GraphicalFunctions.state = "cai";//Ce changement d'etat va permettre d'activer la sélection dans GraphicalFonction
             }
         });
 
-        ValeurADeterminer.setOnMouseClicked(event -> {//Permet a l utilisateur de donner un composant, la tension et le courant lui seront rendu a la fin du calcul
-            if(ValeurADeterminer.getText().endsWith("Valeur à déterminer")) {//Evite qu on puisse definir deux fois une valeur a determiner
-                GraphicalFunctions.etat = "v";//Ce changement d etat va permettre d active la selection dans GraphicalFonction
-                ValeurADeterminer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que dois faire l utilisateur
+        ValeurADeterminer.setOnMouseClicked(event -> {//Permet à l'utilisateur de donner un composant, la tension et le courant lui seront rendus à la fin du calcul
+            if(ValeurADeterminer.getText().endsWith("Valeur à déterminer")) {//Evite qu on puisse définir deux fois une valeur à determiner
+                GraphicalFunctions.state = "v";//Ce changement d'état va permettre d'activer la sélection dans GraphicalFonction
+                ValeurADeterminer.setText("Choisir un composant");//On change le texte du bouton et on indique ce que doit faire l'utilisateur
             }
         });
 
         Debugge.setOnMouseClicked(event -> {
-            //Fonction qui determine si le solveur va pouvoir donner un resultat ou si il existe des problemes dans le schema electrique
+            //Fonction qui détermine si le solveur va pouvoir donner un résultat ou si il existe des problèmes dans le schéma électrique
             Text bug = new Text("Le programme devrait pouvoir se lancer correctement");
             double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane);
             bug.setX(2 + scrollPosition[0]);
             bug.setY(20 + scrollPosition[1]);
             anchorPane3.getChildren().add(bug);
-            //TODO si des gens veullent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
+            //TODO si des gens veulent faire des vérifications, c'est ici qu'il faut appeler leurs fonctions
             GraphicalFunctions.bug = bug;
         });
 
         CreerUnLien.setOnMouseClicked(event -> {
-            //Permet de creer un lien entre deux composants
-            if(GraphicalFunctions.etat == "l1" || GraphicalFunctions.etat =="l2") {//On regarde si l utilisateur veut arreter de creer des liens
-                GraphicalFunctions.etat = "d";//Si il etait dans entrain de creer des liens, c est qu il veut arreter, donc on repasse en Drag and Drop
+            //Permet de créer un lien entre deux composants
+            if(GraphicalFunctions.state == "l1" || GraphicalFunctions.state =="l2") {//On regarde si l'utilisateur veut arrêter de créer des liens
+                GraphicalFunctions.state = "d";//Si il était entrain de créer des liens, c'est qu'il veut arrêter, donc on repasse en Drag and Drop
                 CreerUnLien.setText("Creer un lien"); //On remet le texte d'origine
             }
             else{
-                GraphicalFunctions.etat = "l1";
+                GraphicalFunctions.state = "l1";
                 CreerUnLien.setText("Arreter de creer des liens");
             }
         });
     }
 
-    //Liste creer automatiquement par SceneBuilder des objets graphique
+    //Liste créée automatiquement par SceneBuilder des objets graphiques
 
     @FXML
     private MenuItem Delete;

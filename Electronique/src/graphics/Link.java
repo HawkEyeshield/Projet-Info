@@ -17,11 +17,11 @@ public class Link
     int linkAreaUsed2 = 0;
 
     /**
-     * Constructeur d un lien pour l interface graphique entre deux composants
-     * @param image1 Image du premier composant relie
-     * @param image2 Image du second composant relie
-     * @param linkAreaUsed1 Premiere zone (carre noir) utilisee
-     * @param linkAreaUsed2 Seconde zone (carre noir) utilisee
+     * Constructeur d'un lien pour l'interface graphique entre deux composants
+     * @param image1 Image du premier composant relié
+     * @param image2 Image du second composant relié
+     * @param linkAreaUsed1 Première zone (carré noir) utilisée
+     * @param linkAreaUsed2 Seconde zone (carré noir) utilisée
      * @param lien1 Lien graphique
      * @param lien2 Lien graphique
      * @param lien3 Lien graphique
@@ -36,7 +36,7 @@ public class Link
         this.lien2 = lien2;
         this.lien3 = lien3;
     }
-    //Quelques fonctions qui permettent d'acceder a differente valeur
+    //Quelques fonctions qui permettent d'acceder à differentes valeurs
     public GraphicalComponent getImage1 (){
         return this.image1;
     }

@@ -29,9 +29,9 @@ public class Main extends Application
 
         Parent root = (Parent) fxmlLoader.load(location.openStream());
 
-        primaryStage.setTitle("Circuit Electrique"); //permet de donner un titre a la fenetre
-        primaryStage.setScene(new Scene(root, 1100, 690)); //definie la taille
-        primaryStage.show(); //affiche l interface
+        primaryStage.setTitle("Circuit Electrique"); //permet de donner un titre à la fenêtre
+        primaryStage.setScene(new Scene(root, 1100, 690)); //définit la taille
+        primaryStage.show(); //affiche l'interface
     }
 
 
