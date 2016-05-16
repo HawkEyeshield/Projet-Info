@@ -40,8 +40,8 @@ public class Wheatstone extends AbstractUnit
 		g.addComponent(v0, v1, new Admittance("Y0", v0, v1, 1));
 		g.addComponent(v0, v2, new Admittance("Y0", v0, v2, 1));
 		g.addComponent(v1, v2, new Admittance("Y0", v1, v2, 1));
-		g.addComponent(v1, v3, new Admittance("Y0", v1, v3, 1));
-		g.addComponent(v2, v3, new Admittance("Y0", v2, v3, 1));
+		g.addComponent(v1, v3, new Admittance("Y0", v1, v3, 2));
+		g.addComponent(v2, v3, new Admittance("Y0", v2, v3, 3));
 
 		//création de l'extracteur
 		e = new Extracteur(g);

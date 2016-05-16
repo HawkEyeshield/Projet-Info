@@ -72,16 +72,6 @@ public class Extracteur
             logn("\t Fait\n");
         }
 
-        //Etape 0 : verification qu'il n'y ait pas d'admittances paralleles
-        logn("PAS DE Verification des composants paralleles...");
-        /*for (int i = 0; i < nbNodes; i++) {
-            for (int j = 0; j < i; j++) {
-                if (graph.existMultiAdmittances(vertices[i], vertices[j])) {
-                    logn("Deux Admittances sont connectees en parallele, je ne peux résoudre ce systeme pour l'instant.");
-                    return false;
-                }
-            }
-        }*/
         logn("Fait\n");
 
         logn("Tout a l'air correct.\n\nRecherche des generateurs ... ");
@@ -100,9 +90,30 @@ public class Extracteur
                 logn(nbGenerators + " generateurs trouvés.");
         }
 
+        ArrayList<Integer> indexes = new ArrayList<>();
+        if (!resetting) {
+            logn("Verifcation des indices des generateurs");
+            for (AbstractGenerator g:generateurs) {
+                if (indexes.contains(g.index)) {
+                    logn("Deux generateurs ont le meme indice, Arret.");
+                    return false;
+                }
+                indexes.add(g.index);
+            }
+        }
+        else {
+            logn("Reparametrage des indices des generateurs");
+            for (int g = 0;g<generateurs.size();g++) {
+                generateurs.get(g).index = g;
+            }
+        }
+        logn("tout est clean.");
+
         logn("Activation ...");
         //Step 3 : extinction de tous les générateurs et allumage du concerné.
-        for (AbstractGenerator gen : generateurs) gen.turnOn();
+        for (AbstractGenerator gen : generateurs) {
+            gen.turnOn();
+        }
         logn("fait!\n");
 
 
@@ -202,7 +213,6 @@ public class Extracteur
         int signe;//La variable de coefficients
         Tableau<Double> eqCurrents;//La matrice de courants pour les equations
         double[][] powerCurrents;
-        ArrayList<AbstractGenerator> genOrder;
 
 
 
@@ -229,17 +239,15 @@ public class Extracteur
                 voltages.get(i,i,0).found = true;
 
 
-
-
         powerCurrents = new double[nbGenerators][2];
-        genOrder = new ArrayList<>();
+        ArrayList<Integer> addedGens = new ArrayList<>();
+
+
 
         //tableau du courant pour les equations aux noeuds
         double[] equationCurrents;
         //compteur d'ajout des generateurs
-        int iGen = 0;
-        //variable d'index des generateurs déja ajoutée (on l'initialisera avec un ArrayList.indexOf(generateur))
-        int previousIndex;
+        int iGen;
         //ArrayList de ComponentMaps
         ArrayList<ComponentMap> connections;
 
@@ -268,20 +276,18 @@ public class Extracteur
                 //Ajout du generateur dans les tableaux
                 if ((type == Type.VOLTAGEGENERATOR) || (type == Type.CURRENTGENERATOR)) {
                     gen = (AbstractGenerator) m.component();
-                    previousIndex = genOrder.indexOf(gen);//on regarde si on a pas déja le générateur
-                    if (previousIndex == -1) {//Si on ne l'a pas ajouté (pas trouvé dans l'arraylist des generateurs)
+                    iGen = gen.index;
+                    if (addedGens.contains(iGen)) {//Si on ne l'a pas ajouté (pas trouvé dans l'arraylist des generateurs)
                         if (type == Type.CURRENTGENERATOR)//Si c'est un generateur de courant, on ajoute le courant donné dans le tableau des generateurs de courant
                             powerCurrents[iGen] = new double[]{1, signe * gen.getCurrent()};
-                        genOrder.add(gen);//on ajoute le generateur
+                        addedGens.add(iGen);//on ajoute le generateur
 
                         //on map le generateur, pour avoir la correspondance indice - (sommetdepart/sommetarrivée)
                         if (m.incoming()) genVertices[iGen] = new int[]{x, y};
                         else genVertices[iGen] = new int[]{y, x};
 
-                        previousIndex = iGen;//la variable est utilisée juste après
-                        iGen++;
                     }
-                    equationCurrents[previousIndex] = signe;
+                    equationCurrents[iGen] = signe;
                 }
 
                 //disonction des types du composant
@@ -391,15 +397,27 @@ public class Extracteur
 
     }
 
-    /**fonction de somme de tableaux : ajoute AU PREMIER TABLEAU le second (ie la somme est faite sur le premier, le second est juste lu.*/
-    private void ajout(Tableau<Double>[] b) {
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < nbNodes; j++)
-                for (int k = 0; k < nbNodes; k++)
-                    for (int l = 0; l< nbNodes; l++)
-                        if (!varFix[i].get(j,k,l).found)
-                            resultVariables[i].get(j,k).set(l,resultVariables[i].get(j,k,l) + b[i].get(j,k,l));
+    public double getVoltage(int i,int j) {
+        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)) return 0;
+        return resultVariables[1].get(i,j,0);
     }
+
+    public double getCurrent(int i, int j, int k){
+        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)||(j>=resultVariables[0].size(i,j))||(k<0)) return 0;
+        return resultVariables[0].get(i,j,k);
+    }
+
+    public double getAdmittance(int i, int j, int k){
+        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)||(j>=resultVariables[2].size(i, j))||(k<0)) return 0;
+        return resultVariables[2].get(i,j,k);
+    }
+
+    public double getGeneratorCurrent(int i){
+        if ((!solved)||(i>=nbGenerators)||(i<0)) return 0;
+        return resultCurrents[i];
+    }
+
+
 
 
     public void printVariables() {
@@ -424,7 +442,7 @@ public class Extracteur
         System.out.println("");
         System.out.println("Courants Generateurs :");
         for (int i = 0; i < nbGenerators; i++) {
-            System.out.println("Generateur " + genVertices[i][0] + "" + genVertices[i][1] + " : " + resultCurrents[i]);
+            System.out.println("Generateur " + i + " : " + resultCurrents[i]);
         }
 
     }
