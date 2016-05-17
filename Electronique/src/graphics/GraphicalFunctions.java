@@ -748,16 +748,22 @@ public class GraphicalFunctions
 						}
 
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
-						tensionGenerator.setX(x - imagx / 2);
-						tensionGenerator.setY(y - imagy / 2);
+						if(tensionGenerator.getRotate() == 0) {
+							tensionGenerator.setX(x - imagx / 2);
+							tensionGenerator.setY(y - imagy / 2);
+						}
+						else{
+							tensionGenerator.setX(x - 50);
+							tensionGenerator.setY(y - 25);
+						}
 
 						linkArea3.setX(tensionGenerator.getX() + image.getWidth());
 						linkArea3.setY(tensionGenerator.getY() + image.getHeight() / 2);
 						linkArea1.setX(tensionGenerator.getX());
 						linkArea1.setY(tensionGenerator.getY() + image.getHeight() / 2);
-						linkArea2.setX(tensionGenerator.getX() + imagx);
+						linkArea2.setX(tensionGenerator.getX() + imagx + 25);
 						linkArea2.setY(tensionGenerator.getY() - 25);
-						linkArea4.setX(tensionGenerator.getX() + imagx);
+						linkArea4.setX(tensionGenerator.getX() + imagx + 25);
 						linkArea4.setY(tensionGenerator.getY() + 75);
 
 						actualiseViewOfLink(componentVoltageGenerator, anchorPane2); //On actualise les liens
@@ -1162,16 +1168,22 @@ public class GraphicalFunctions
 					}
 
 					//Ici on repositionne l'image est les 4 potentiel carré noir autour
-					courantGenerator.setX(x - imagx / 2);
-					courantGenerator.setY(y - imagy / 2);
+					if(courantGenerator.getRotate() == 0) {
+						courantGenerator.setX(x - imagx / 2);
+						courantGenerator.setY(y - imagy / 2);
+					}
+					else{
+						courantGenerator.setX(x - 50);
+						courantGenerator.setY(y - 25);
+					}
 
 					linkArea3.setX(courantGenerator.getX() + image.getWidth());
 					linkArea3.setY(courantGenerator.getY() + image.getHeight() / 2);
 					linkArea1.setX(courantGenerator.getX());
 					linkArea1.setY(courantGenerator.getY() + image.getHeight() / 2);
-					linkArea2.setX(courantGenerator.getX() + imagx);
+					linkArea2.setX(courantGenerator.getX() + imagx + 25);
 					linkArea2.setY(courantGenerator.getY() - 25);
-					linkArea4.setX(courantGenerator.getX() + imagx);
+					linkArea4.setX(courantGenerator.getX() + imagx + 25);
 					linkArea4.setY(courantGenerator.getY() + 75);
 
 					actualiseViewOfLink(componentCourantGenerator,anchorPane2);
@@ -1791,39 +1803,49 @@ public class GraphicalFunctions
 						//alors que celles du composant à partir de anchorPane2
 						y = y - 60;
 
-						// Permet de ne pas sortir du cadre
-						if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
-							x = (imagx / 2);
-						}
-						if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
-							y = (imagy / 2);
-						}
-
 						double mx = anchorPane2.getWidth();
 
 						double my = anchorPane2.getHeight();
+						if(resistance.getRotate() == 0) {
+							// Permet de ne pas sortir du cadre
+							if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
+								System.out.println(x);
+								x = (imagx / 2);
+							}
+							if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+								y = (imagy / 2);
+							}
 
-						if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
-							x = mx - imagx / 2 ;
-						}
+
+							if (x + imagx / 2 > mx) {// on evite de sortir du cadre a droite
+								x = mx - imagx / 2;
+							}
 
 						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
 						 * c est a dire le centre x plus la largeur de l image divise par 2 */
-						if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
-							y = my - imagy / 2 ;
+							if (y + imagy / 2 > my) {// on evite de sortir du cadre en bas
+								y = my - imagy / 2;
+							}
 						}
 
+
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
-						resistance.setX(x - imagx / 2);
-						resistance.setY(y - imagy / 2);
+						if(resistance.getRotate() == 0) {
+							resistance.setX(x - imagx / 2);
+							resistance.setY(y - imagy / 2);
+						}
+						else{
+							resistance.setX(x - 50);
+							resistance.setY(y - 25);
+						}
 
 						linkArea3.setX(resistance.getX() + image.getWidth());
 						linkArea3.setY(resistance.getY() + image.getHeight() / 2);
 						linkArea1.setX(resistance.getX());
 						linkArea1.setY(resistance.getY() + image.getHeight() / 2);
-						linkArea2.setX(resistance.getX() + imagx);
+						linkArea2.setX(resistance.getX() + imagx + 25);
 						linkArea2.setY(resistance.getY() - 25);
-						linkArea4.setX(resistance.getX() + imagx);
+						linkArea4.setX(resistance.getX() + imagx + 25);
 						linkArea4.setY(resistance.getY() + 75);
 
 						actualiseViewOfLink(componentResistance, anchorPane2); //On actualise les liens
