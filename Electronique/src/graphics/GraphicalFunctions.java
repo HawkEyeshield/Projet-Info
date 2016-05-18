@@ -51,7 +51,7 @@ public class GraphicalFunctions
 	
 	/** Breadboard qui traduira le schéma de l'interface en graphe pour le solveur.
 	 * Permet également de donner à chaque composant les potentiels à ses pattes et les courants après résolution*/
-    private static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
+    public static Breadboard breadboard = new Breadboard(new ArrayList<AbstractDipole>());
 
 	/** Permet de savoir si la rotation d'une image est possible, ou si il existe déjà des liens*/
 	public static boolean rotationPossible;
@@ -66,6 +66,9 @@ public class GraphicalFunctions
 
 	/** Permet de retenir les informations que l'on affiche à la fin du programme pour les supprimer*/
 	public  static ArrayList<Text> informationsList = new ArrayList<Text>();
+
+	/** Indice qui indique les potentiels commun, une même valeur indique un potentiel commun*/
+	public static int potentielCommun = 0;
 
 	/**
      * Permet d'ajouter ou d'actualiser un lien graphique
@@ -252,6 +255,7 @@ public class GraphicalFunctions
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
+				System.out.println("on ajoute bien un ruc connard");
                 listOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
             }
         }
@@ -1872,16 +1876,7 @@ public class GraphicalFunctions
 	}
 
 	public static void showResult(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result, Button Run){
-		//TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
-		try
-		{
-			breadboard.compute(listOfLink);
-		}
-		catch(IllegalArgumentException e)
-		{
-			//TODO faire apparaître une fenêtre avec un message d'erreur
-			System.out.println("Problème de sommets !");
-		}
+
 
 		//Supprime le message
 		anchorPane3.getChildren().remove(programmeLaunch);

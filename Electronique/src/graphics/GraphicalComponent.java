@@ -42,7 +42,13 @@ public class GraphicalComponent {
         this.name = name;
         this.value = value;
         this.type = type;
-        this.indexation = -1;
+        if(type == Type.NULL) {
+            this.indexation = GraphicalFunctions.potentielCommun;
+            GraphicalFunctions.potentielCommun += 1;
+        }
+        else{
+            this.indexation = -1;
+        }
         if(type == Type.VOLTAGEGENERATOR){
             this.voltage = value;
         }
@@ -60,7 +66,13 @@ public class GraphicalComponent {
         this.orientation = orientation;
         this.name = name;
         this.type = type;
-        indexation = -1;
+        if(type == Type.NULL) {
+            this.indexation = GraphicalFunctions.potentielCommun;
+            GraphicalFunctions.potentielCommun += 1;
+        }
+        else{
+            this.indexation = -1;
+        }
     }
     //Quelques fonctions pour acceder à différente valeurs
     public String getCname (){
@@ -72,5 +84,6 @@ public class GraphicalComponent {
     public Type getCtype (){
         return this.type;
     }
-
+    public  int getCindexation() {return this.indexation;}
+    public void setCindexation(int a) {this.indexation =a;}
     }

@@ -12,8 +12,6 @@ import java.util.ResourceBundle;
 
 public class Controller implements javafx.fxml.Initializable//implement très utile qui permet de lancer la fonction d'initialisation
 {
-
-
     /** cette méthode avec l'implements "javafx.fxml.Initializable" permet de lancer une méthode au lancement du controller */
     @Override
     public void initialize(URL location, ResourceBundle resources) 
@@ -45,18 +43,26 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     programmeLaunch.setX(550 + scrollPosition[0]);//On définit la zone
                     programmeLaunch.setY(20 + scrollPosition[1]);
                     anchorPane3.getChildren().add(programmeLaunch);//et on affiche
+
                     //TODO Mettre la fonction qui lance le programme de raphaël
                     //Attention il faut prendre en argument AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4,boutton Run
+
 
                     GraphicalFunctions.isProgramRunning = true;//on indique que le programme est lancé
                     anchorPane3.getChildren().remove(GraphicalFunctions.bug);
 
-                    //Fonction de test pour voir si le renvoi de valeur fonctionne
-                    GraphicalComponent [] a = new GraphicalComponent[GraphicalFunctions.listOfLink.size()];
-                    for(int i = 0; i < GraphicalFunctions.listOfLink.size();i++){
-                        a[i] = GraphicalFunctions.listOfLink.get(i).image1;
+                    //TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
+                    try
+                    {
+                        System.out.println("coucou");
+                        System.out.println(GraphicalFunctions.listOfLink);
+                        GraphicalFunctions.breadboard.breadboardLaunch(GraphicalFunctions.listOfLink);
                     }
-                    GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4,a,Run);
+                    catch(IllegalArgumentException e)
+                    {
+                        //TODO faire apparaître une fenêtre avec un message d'erreur
+                        System.out.println("Problème de sommets !");
+                    }
                 }
                 else{
                     anchorPane4.getChildren().remove(GraphicalFunctions.informationsList.get(0));//On met ici le premier, car il est dans anchorPane4

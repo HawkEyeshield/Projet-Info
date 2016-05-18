@@ -15,6 +15,7 @@ public class Link
     Line lien3 = null;
     int linkAreaUsed1 = 0;
     int linkAreaUsed2 = 0;
+    int potentielLink = 0;
 
     /**
      * Constructeur d'un lien pour l'interface graphique entre deux composants
@@ -35,6 +36,8 @@ public class Link
         this.lien1 = lien1;
         this.lien2 = lien2;
         this.lien3 = lien3;
+        this.potentielLink = GraphicalFunctions.potentielCommun;
+        GraphicalFunctions.potentielCommun += 1;
     }
     //Quelques fonctions qui permettent d'acceder à differentes valeurs
     public GraphicalComponent getImage1 (){
@@ -53,4 +56,8 @@ public class Link
     {
     	return this.linkAreaUsed2;
     }
+
+    public  int getPotentielLink() {return this.potentielLink;}
+
+    public void setPotentielLink(int a) {this.potentielLink =a;}
 }

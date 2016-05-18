@@ -29,6 +29,9 @@ public class Breadboard
 	/** indice pour la création de nouveau vertices*/
 	int vertexIndex=0;
 
+	/** Indique les noeuds deja utilises pour mettre tous les potentiels au mêmes points*/
+	public static ArrayList<GraphicalComponent> nodeAlreadyUsed = new ArrayList<GraphicalComponent>();
+
 /* =========================== */
 /* Déclaration du constructeur */
 /* =========================== */
@@ -241,5 +244,84 @@ public class Breadboard
 			//string+=a.toString() + "\n";
 		}
 		return string;
+	}
+
+	/**
+	 * Main de la breadboard qui est lance lors du lancement de la touche run
+	 * @param links Liste des liens
+     */
+	public void breadboardLaunch(ArrayList<Link> links){
+		System.out.println("taille de la liste " + links.size());
+
+		//La premiere partie permet de faire un parcourt de graphe et de mettre tous les fils relie au meme potentiel
+		for(int i = 0 ; i < links.size() ; i++ ){
+			System.out.println("affiche si ce Node est deja utiliser ou non " + isNeverUsed(links.get(i).getImage2(),nodeAlreadyUsed));
+
+			if(links.get(i).getImage1().getCtype() == Type.NULL && isNeverUsed(links.get(i).getImage1(),nodeAlreadyUsed)){
+				System.out.println("on a trouver un noeud " + links.get(i).getImage1().getCindexation());
+				nodeAlreadyUsed.add(links.get(i).getImage1());
+				links.get(i).setPotentielLink(links.get(i).getImage1().getCindexation());
+				findLink(links,links.get(i).getImage1(),links.get(i).getImage1().getCindexation());
+			}
+			else if(links.get(i).getImage2().getCtype() == Type.NULL && isNeverUsed(links.get(i).getImage2(),nodeAlreadyUsed)){
+				System.out.println("on a trouver un noeud " + links.get(i).getImage2().getCindexation());
+				nodeAlreadyUsed.add(links.get(i).getImage2());
+				links.get(i).setPotentielLink(links.get(i).getImage2().getCindexation());
+				findLink(links,links.get(i).getImage2(),links.get(i).getImage2().getCindexation());
+			}
+		}
+		System.out.println("Donne une info sur le nombre de noeud trouver durant le parcourt : " + nodeAlreadyUsed.size());
+
+
+
+		//TODO suite du programme main de la breadboard ici
+
+	}
+
+	/**
+	 * Trouve tous les liens et les noeuds qui ont le même potentiel pour les mettre au même potentiel
+	 */
+	public void findLink(ArrayList<Link> links, GraphicalComponent node, int i){
+		for(int j = 0 ; j < links.size() ; j++ ) {
+			if (links.get(j).getImage1() == node) {
+				if (links.get(j).getImage2().getCtype() != Type.NULL) {
+					System.out.println("il y a un lien relier a la node qui est un composant");
+					links.get(j).setPotentielLink(i);
+				}
+				else if (links.get(j).getImage2().getCtype() == Type.NULL && isNeverUsed(links.get(j).getImage2(),nodeAlreadyUsed)) {
+					System.out.println("il y a un lien relier a la node qui est un noeud, on le emt au potentiel " + i);
+					links.get(j).setPotentielLink(i);
+					nodeAlreadyUsed.add(links.get(j).getImage2());
+					findLink(links, links.get(j).getImage2(),i);
+				}
+			}
+			else if (links.get(j).getImage2() == node) {
+				if (links.get(j).getImage1().getCtype() != Type.NULL) {
+					System.out.println("il y a un lien relier a la node qui est un noeud, on le emt au potentiel " + i);
+					links.get(j).setPotentielLink(i);
+				}
+				else if (links.get(j).getImage1().getCtype() == Type.NULL && isNeverUsed(links.get(j).getImage1(),nodeAlreadyUsed)) {
+					links.get(j).setPotentielLink(i);
+					System.out.println("il y a un lien relier a la node qui est un composant");
+					nodeAlreadyUsed.add(links.get(j).getImage1());
+					findLink(links, links.get(j).getImage1(),i);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Indique si le composant est dans la liste donner
+	 * @param node composant a utiliser
+	 * @param nodeAlreadyUsed liste des composants
+     * @return
+     */
+	public boolean isNeverUsed(GraphicalComponent node,ArrayList<GraphicalComponent> nodeAlreadyUsed){
+		for(int i = 0 ; i < nodeAlreadyUsed.size(); i ++){
+			if(nodeAlreadyUsed.get(i) == node){
+				return(false);
+			}
+		}
+		return true;
 	}
 }
