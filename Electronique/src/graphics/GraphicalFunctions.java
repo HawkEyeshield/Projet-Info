@@ -579,6 +579,7 @@ public class GraphicalFunctions
 			delete.setOnAction(event1 -> {
 				//Permet de supprimer le composant et les liens qui vont avec
 				deleteComponent(componentVoltageGenerator,anchorPane2);
+				breadboard.deleteComponent(componentVoltageGenerator);
 			});
 
 			changeName.setOnAction(event1 -> {//Permet de changer le nom du composant
@@ -1015,6 +1016,7 @@ public class GraphicalFunctions
 
 			delete.setOnAction(event1 -> {
 				deleteComponent(componentCourantGenerator,anchorPane2);
+				breadboard.deleteComponent(componentCourantGenerator);
 			});
 
 			changeName.setOnAction(event1 -> {
@@ -1670,6 +1672,7 @@ public class GraphicalFunctions
 
 			delete.setOnAction(event1 -> {
 				deleteComponent(componentResistance,anchorPane2);
+				breadboard.deleteComponent(componentResistance);
 			});
 
 			changeName.setOnAction(event1 -> {

@@ -10,7 +10,7 @@ import graphStructure.Vertex;
 import resolution.Extracteur;
 
 /**
- * Classe définissant un test pour le pont de wheatstone
+ * Classe définissant un test pour l'utilisation de deux générateurs
  * @author Raphaël
  */
 public class TestDual extends AbstractUnit
