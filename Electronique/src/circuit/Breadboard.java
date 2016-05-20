@@ -3,7 +3,7 @@ package circuit;
 import components.*;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
-import graphics.GraphicalComponent;
+import graphics.*;
 import graphics.Link;
 import resolution.Extracteur;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author François, Sterenn
  */
 
-//TODO remarque de tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichant
+//TODO remarque de Tanguy, le mieux serait que chaque composant soit mis avec son ImageView ce qui me permettra de rendre les valeurs en les affichant
 
 public class Breadboard
 {
@@ -31,6 +31,17 @@ public class Breadboard
 
 	/** Indique les noeuds deja utilises pour mettre tous les potentiels au mêmes points*/
 	public static ArrayList<GraphicalComponent> nodeAlreadyUsed = new ArrayList<GraphicalComponent>();
+
+    /**Prégraphe*/
+    public int nbComposants = GraphicalFunctions.Graphics.size();
+    public static int[][] Pregraphe = new int[nbComposants][4] ;
+    for (int i = 0, i< nbComposants, i++)
+    {
+        for (int j=0, j<4, j++)
+        {
+            Pregraphe[i][j] = 0;
+        }
+    }
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -98,29 +109,49 @@ public class Breadboard
 	 * Méthode de traduction du circuit graphique vers le solveur
 	 * @param links Liste des liens
      */
-	public void breadboardLaunch(ArrayList<Link> links){
-		System.out.println("taille de la liste " + links.size());
 
-		//La premiere partie permet de faire un parcourt de graphe et de mettre tous les fils relie au meme potentiel
-		for(int i = 0 ; i < links.size() ; i++ ){
-			System.out.println("affiche si ce Node est deja utiliser ou non " + isNeverUsed(links.get(i).getImage2(),nodeAlreadyUsed));
+	public void Intermediaire (this.Pregraphe)
+	{
+        int k = 1;
+        boolean B = false;
+        for (int i = 0, i < GraphicalFunctions.Graphics.size(), i++ )
+        {
+            GraphicalComponent Composant = GraphicalFunctions.Graphics.get(i);
 
-			if(links.get(i).getImage1().getCtype() == Type.NULL && isNeverUsed(links.get(i).getImage1(),nodeAlreadyUsed)){
-				System.out.println("on a trouver un noeud " + links.get(i).getImage1().getCindexation());
-				nodeAlreadyUsed.add(links.get(i).getImage1());
-				links.get(i).setPotentielLink(links.get(i).getImage1().getCindexation());
-				findLink(links,links.get(i).getImage1(),links.get(i).getImage1().getCindexation());
-			}
-			else if(links.get(i).getImage2().getCtype() == Type.NULL && isNeverUsed(links.get(i).getImage2(),nodeAlreadyUsed)){
-				System.out.println("on a trouver un noeud " + links.get(i).getImage2().getCindexation());
-				nodeAlreadyUsed.add(links.get(i).getImage2());
-				links.get(i).setPotentielLink(links.get(i).getImage2().getCindexation());
-				findLink(links,links.get(i).getImage2(),links.get(i).getImage2().getCindexation());
-			}
-		}
-		System.out.println("Donne une info sur le nombre de noeud trouver durant le parcourt : " + nodeAlreadyUsed.size());
-		//TODO suite du programme main de la breadboard ici
+            for (a=0, a < listOfLink.size(), a++){
+                if (Composant == listOflink.get(a).get(0) ){
+                    if (Pregraphe[i][listOfLink.get(a).get(2)] == 0){
+                        findVertex(listOfLink.get(a).get(1) , listOfLink.get(a).get(3), k);
+                        Pregraphe[i][listOfLink.get(a).get(2)] =k;
+                        k++;
+                    }
+                }
+                else if (Composant == listOflink.get(a).get(1) ){
+                    if (Pregraphe[i][listOfLink.get(a).get(3)] == 0){
+                        findVertex(listOfLink.get(a).get(0) , listOfLink.get(a).get(2), k);
+                        Pregraphe[i][listOfLink.get(a).get(3)] =k;
+                        k++;
+                    }
+                }
+            }
+            // if (Pregraphe[i][j] == ){
+                   // chercher les voisins linkarea1
+
+
+                   // chercher les voisins linkarea2
+               }
+        }
+
+
+
 	}
+    public void findVertex (GraphicalComponent Image, int LinkArea, int k, int ){
+        if (Image.getCtype() != Type.NULL){
+            // On considère Type(Noeud graphique) = NULL
+            
+        }
+    }
+
 	
 	/**
 	 * Trouve tous les liens et les noeuds qui ont le même potentiel pour les mettre au même potentiel
@@ -129,11 +160,11 @@ public class Breadboard
 		for(int j = 0 ; j < links.size() ; j++ ) {
 			if (links.get(j).getImage1() == node) {
 				if (links.get(j).getImage2().getCtype() != Type.NULL) {
-					System.out.println("il y a un lien relier a la node qui est un composant");
+					System.out.println("il y a un lien relié a la node qui est un composant");
 					links.get(j).setPotentielLink(i);
 				}
 				else if (links.get(j).getImage2().getCtype() == Type.NULL && isNeverUsed(links.get(j).getImage2(),nodeAlreadyUsed)) {
-					System.out.println("il y a un lien relier a la node qui est un noeud, on le emt au potentiel " + i);
+					System.out.println("il y a un lien relié a la node qui est un noeud, on le emt au potentiel " + i);
 					links.get(j).setPotentielLink(i);
 					nodeAlreadyUsed.add(links.get(j).getImage2());
 					findLink(links, links.get(j).getImage2(),i);
@@ -141,12 +172,12 @@ public class Breadboard
 			}
 			else if (links.get(j).getImage2() == node) {
 				if (links.get(j).getImage1().getCtype() != Type.NULL) {
-					System.out.println("il y a un lien relier a la node qui est un noeud, on le emt au potentiel " + i);
+					System.out.println("il y a un lien relié a la node qui est un noeud, on le emt au potentiel " + i);
 					links.get(j).setPotentielLink(i);
 				}
 				else if (links.get(j).getImage1().getCtype() == Type.NULL && isNeverUsed(links.get(j).getImage1(),nodeAlreadyUsed)) {
 					links.get(j).setPotentielLink(i);
-					System.out.println("il y a un lien relier a la node qui est un composant");
+					System.out.println("il y a un lien relié a la node qui est un composant");
 					nodeAlreadyUsed.add(links.get(j).getImage1());
 					findLink(links, links.get(j).getImage1(),i);
 				}
@@ -155,7 +186,7 @@ public class Breadboard
 	}
 
 	/**
-	 * Indique si le composant est dans la liste donner
+	 * Indique si le composant est dans la liste donneé
 	 * @param node composant a utiliser
 	 * @param nodeAlreadyUsed liste des composants
      * @return
