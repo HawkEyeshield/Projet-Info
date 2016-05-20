@@ -42,6 +42,8 @@ public class Breadboard
             Pregraphe[i][j] = 0;
         }
     }
+    /** Graphe*/
+    CircuitGraph g = new CircuitGraph();
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -63,8 +65,6 @@ public class Breadboard
 	{	
 		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
 		// Création du graphe pour la résolution
-		CircuitGraph g = new CircuitGraph();
-		
 		// Création des liens entre composants
 		//this.addLink(links);
 		
@@ -107,10 +107,11 @@ public class Breadboard
 	
 	/**
 	 * Méthode de traduction du circuit graphique vers le solveur
-	 * @param links Liste des liens
+	 * @param Pregraphe décrit l'ensemble des aretes
+     * @param Graphe (voilà)
      */
 
-	public void Intermediaire (this.Pregraphe)
+	public int Intermediaire ()
 	{
         int k = 1;
         boolean B = false;
@@ -120,39 +121,68 @@ public class Breadboard
 
             for (a=0, a < listOfLink.size(), a++){
                 if (Composant == listOflink.get(a).get(0) ){
-                    if (Pregraphe[i][listOfLink.get(a).get(2)] == 0){
+                    if (this.Pregraphe[i][listOfLink.get(a).get(2)] == 0){
                         findVertex(listOfLink.get(a).get(1) , listOfLink.get(a).get(3), k);
-                        Pregraphe[i][listOfLink.get(a).get(2)] =k;
+                        this.Pregraphe[i][listOfLink.get(a).get(2)] =k;
                         k++;
                     }
                 }
                 else if (Composant == listOflink.get(a).get(1) ){
-                    if (Pregraphe[i][listOfLink.get(a).get(3)] == 0){
+                    if (this.Pregraphe[i][listOfLink.get(a).get(3)] == 0){
                         findVertex(listOfLink.get(a).get(0) , listOfLink.get(a).get(2), k);
-                        Pregraphe[i][listOfLink.get(a).get(3)] =k;
+                        this.Pregraphe[i][listOfLink.get(a).get(3)] =k;
                         k++;
                     }
                 }
             }
-            // if (Pregraphe[i][j] == ){
-                   // chercher les voisins linkarea1
-
-
-                   // chercher les voisins linkarea2
-               }
         }
+        return k-1;
+     }
 
+	/** Pour Intermédiaire */
 
-
-	}
     public void findVertex (GraphicalComponent Image, int LinkArea, int k, int ){
         if (Image.getCtype() != Type.NULL){
             // On considère Type(Noeud graphique) = NULL
-            
+            this.Pregraphe [IndiceImage(Image)][LinkArea-1]=k;
+        }
+        else {
+            // On tombe sur un noeud. On trouve tous les composants reliés à ce noeud
+            // findVertex for composants in trouvés if Image.linkarea != LinkArea
+        }
+    }
+    public int IndiceImage (GraphicalComponent Image){
+        for (l=0, l<GraphicalFunctions.Graphics.size(), l++){
+            if (GraphicalFunctions.Graphics.get(l).equals(Image) ){
+                return  l ;
+            }
+        }
+        return null ;
+    }
+    /** Construction du graphe (nouveau compute) */
+    public void Construct (){
+        int k = Intermediaire();
+        Vertex[] v = new Vertex[k];
+        for (i =0, i<k, i++){
+            v[i] = new Vertex(i);
+            g.addVertex(v[i]);
+        }
+        for (i=0, i<this.Pregraphe.size(), i++){
+            int u = 0;
+            int w ;
+            for (j=0, j<4, j++){
+                if (this.Pregraphe[i][j] != 0) {
+                    if (u==0){
+                        u = this.Pregraphe[i][j];
+                    }
+                    else  {w = this.Pregraphe[i][j];
+                    }
+                }
+            }
+            g.addComponent ( v[u], v[w], GraphicalFunctions.Graphics.get(i));
         }
     }
 
-	
 	/**
 	 * Trouve tous les liens et les noeuds qui ont le même potentiel pour les mettre au même potentiel
 	 */
