@@ -16,8 +16,6 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
     @Override
     public void initialize(URL location, ResourceBundle resources) 
     {
-        //Juste pour bien voir que le programme se lance
-
 
         // On génère toutes les images à la suite en les positionnant au bon endroit
 
@@ -40,7 +38,7 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     Run.setText("StopRun");
                     Text programmeLaunch = new Text("Le programme tourne, veuillez patienter...");//On change le texte du bouton
                     double [] scrollPosition = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relative de la fenêtre
-                    programmeLaunch.setX(550 + scrollPosition[0]);//On définit la zone
+                    programmeLaunch.setX(5 + scrollPosition[0]);//On définit la zone
                     programmeLaunch.setY(20 + scrollPosition[1]);
                     anchorPane3.getChildren().add(programmeLaunch);//et on affiche
 
@@ -54,14 +52,18 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     //TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
                     try
                     {
-                        System.out.println("coucou");
-                        System.out.println(GraphicalFunctions.listOfLink);
-                        GraphicalFunctions.breadboard.breadboardLaunch(GraphicalFunctions.listOfLink);
+                        GraphicalFunctions.breadboard.breadboardLaunch(GraphicalFunctions.listOfLink,anchorPane3,programmeLaunch, anchorPane4,Run);
                     }
                     catch(IllegalArgumentException e)
                     {
                         //TODO faire apparaître une fenêtre avec un message d'erreur
+                        Text erreur = new Text("Erreur, le programme ne peut être resolu" + e);//On change le texte du bouton
+                        double [] scrollPosition2 = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relative de la fenêtre
+                        erreur.setX(550 + scrollPosition2[0]);//On définit la zone
+                        erreur.setY(20 + scrollPosition2[1]);
+                        anchorPane3.getChildren().add(erreur);//et on affiche
                         System.out.println("Problème de sommets !");
+                        GraphicalFunctions.erreur = erreur;
                     }
                 }
                 else{
@@ -76,6 +78,7 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
             else{
                 System.out.println("Arreter de spammer la touche run !");
                 anchorPane3.getChildren().remove(GraphicalFunctions.bug);
+                anchorPane3.getChildren().remove(GraphicalFunctions.erreur);
             }
         });
 

@@ -67,6 +67,9 @@ public class GraphicalFunctions
 	/** Permet de retenir le texte qui indique si le programme peut se lancer ou non*/
 	public static Text bug;
 
+	/** texte qui sa ffiche en cas de non resolution possible*/
+	public static Text erreur = new Text (" ");
+
 	/** Permet de retenir les informations que l'on affiche à la fin du programme pour les supprimer*/
 	public  static ArrayList<Text> informationsList = new ArrayList<Text>();
 
