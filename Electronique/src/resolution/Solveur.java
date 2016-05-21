@@ -66,7 +66,6 @@ public class Solveur
         //symetrisation des  tableaux de vars.
         makeSymetries();
 
-        System.out.println("ducon");
         printVariables();
 
 
@@ -93,7 +92,6 @@ public class Solveur
 
         logn("parameters saved "+nbUnknown);
 
-        System.out.println("ducon");
         printVariables();
 
 

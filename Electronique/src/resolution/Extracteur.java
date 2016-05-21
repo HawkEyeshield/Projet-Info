@@ -69,12 +69,12 @@ public class Extracteur
         nbNodes = vertices.length;
 
         if (!resetting) {
-            logn("Le reparametrage desactive, je ne toucherai pas aux sommets.\n");
+            //logn("Le reparametrage desactive, je ne toucherai pas aux sommets.\n");
         } else {
             logn("Parametrage des sommets...");
             //Etape -1 : parametrage des vertices, on leur attribue des entiers consecutifs
             for (int i = 0; i < nbNodes; i++) vertices[i].set(i);
-            logn("\t Fait\n");
+            //logn("\t Fait\n");
         }
 
         logn("Fait\n");

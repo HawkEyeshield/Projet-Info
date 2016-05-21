@@ -52,7 +52,7 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     //TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
                     try
                     {
-                        
+                        GraphicalFunctions.breadboard.compute(true);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -65,6 +65,9 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                         System.out.println("Problème de sommets !");
                         GraphicalFunctions.erreur = erreur;
                     }
+                    Run.setText("Run");
+                    GraphicalFunctions.isProgramRunning=false;
+                    anchorPane3.getChildren().remove(programmeLaunch);
                 }
                 else{
                     anchorPane4.getChildren().remove(GraphicalFunctions.informationsList.get(0));//On met ici le premier, car il est dans anchorPane4

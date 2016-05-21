@@ -261,7 +261,6 @@ public class GraphicalFunctions
                 anchorPane2.getChildren().add(line1);
                 anchorPane2.getChildren().add(line2);
                 anchorPane2.getChildren().add(line3);
-				System.out.println("on ajoute bien un ruc connard");
                 listOfLink.add(new Link(premiereImageDuLien, secondeImageDuLien, linkAreaUsed1, linkAreaUsed2, line1, line2, line3));
             }
         }
@@ -320,6 +319,9 @@ public class GraphicalFunctions
      */
 	public  static void deleteComponent(GraphicalComponent composant, AnchorPane anchorPane2)
 	{
+		// Supression du composant dans la breadboard
+		breadboard.deleteComponent(composant);
+		
 		int[] a = new int[listOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
 		int b = 0; //Compte le nombre de composants relies avec celui qui doit etre supprimer
 		for ( int i =0 ; i < listOfLink.size(); i++){
@@ -341,9 +343,6 @@ public class GraphicalFunctions
 		}
 		//Enfin on supprime le composant en lui meme
 		anchorPane2.getChildren().removeAll(composant.object,composant.square1,composant.square2,composant.square3,composant.square4);
-		
-		// Supression du composant dans la breadboard
-		breadboard.deleteComponent(composant);
 	}
 
 	/**
@@ -586,7 +585,6 @@ public class GraphicalFunctions
 			delete.setOnAction(event1 -> {
 				//Permet de supprimer le composant et les liens qui vont avec
 				deleteComponent(componentVoltageGenerator,anchorPane2);
-				breadboard.deleteComponent(componentVoltageGenerator);
 			});
 
 			changeName.setOnAction(event1 -> {//Permet de changer le nom du composant
@@ -1024,7 +1022,6 @@ public class GraphicalFunctions
 
 			delete.setOnAction(event1 -> {
 				deleteComponent(componentCourantGenerator,anchorPane2);
-				breadboard.deleteComponent(componentCourantGenerator);
 			});
 
 			changeName.setOnAction(event1 -> {
@@ -1682,7 +1679,6 @@ public class GraphicalFunctions
 
 			delete.setOnAction(event1 -> {
 				deleteComponent(componentResistance,anchorPane2);
-				breadboard.deleteComponent(componentResistance);
 			});
 
 			changeName.setOnAction(event1 -> {

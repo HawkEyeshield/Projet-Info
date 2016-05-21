@@ -94,12 +94,18 @@ public abstract class AbstractDipole
 	// Setters de links, ne permet qu'une seule valeur
 	public void setFirstLink(Vertex l)
 	{
-		this.firstLink =l;
+		if((this.firstLink==null))
+		{
+			this.firstLink =l;
+		}
 	}
 	
 	public void setSecondLink(Vertex l)
 	{
-		this.secondLink=l;
+		if(this.secondLink==null)
+		{
+			this.secondLink=l;
+		}
 	}
 
 
