@@ -1,12 +1,12 @@
 package jUnit;
 
-import java.util.ArrayList;
-
 import circuit.Breadboard;
 import components.AbstractDipole;
 import components.Admittance;
 import components.VoltageGenerator;
 import graphStructure.Vertex;
+
+import java.util.ArrayList;
 
 /**
  * Test unitaire pour l'appel du solveur par la breadboard
