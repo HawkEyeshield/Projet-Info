@@ -4,8 +4,13 @@ import components.*;
 import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
-import graphics.*;
+import graphics.GraphicalComponent;
+import graphics.GraphicalFunctions;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import resolution.Extracteur;
+
 import java.util.ArrayList;
 
 /**
@@ -59,7 +64,7 @@ public class Breadboard
 	 * @param console booléen indiquant si la résolution est purement via la console, le cas contraire étant avec l'interface graphique
 	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
 
-    public void compute(boolean console) throws IllegalArgumentException
+    public void compute(boolean console, AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run) throws IllegalArgumentException
 	{	
 //    	if(!console)
 //    	{
@@ -125,6 +130,10 @@ public class Breadboard
         	System.out.println(p.getMessage());
         }
 		extractor.printVariables();
+
+		//Je sais pas si c'est ici qu'il fauut mettre la fonction, mais
+		//GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4, GraphicalComponent[] result,Run);
+		//Et je sais pasqu'elle est la variable qui conteint le tableau de GraphicalComponent[]
 	}
     
     /**
