@@ -38,7 +38,7 @@ public class GraphicalFunctions
 	public static int idNode = 0;
 
 	/**liste des composants*/
-	public static ArrayList<GraphicalComponent> Graphics = new ArrayList<GraphicalComponent>();
+	public static ArrayList<GraphicalComponent> graphicalComponentsList = new ArrayList<GraphicalComponent>();
 	
 	/**liste des liens*/
 	public static ArrayList<Link> listOfLink = new ArrayList<Link>();
@@ -419,7 +419,7 @@ public class GraphicalFunctions
 			
 			// Ajout du générateur dans la breadboard
 			breadboard.addComponent(componentVoltageGenerator);
-			Graphics.add(componentVoltageGenerator);
+			graphicalComponentsList.add(componentVoltageGenerator);
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
             tensionGenerator.setOnMouseEntered(event3 -> {
@@ -850,7 +850,7 @@ public class GraphicalFunctions
 
 			// Ajout du générateur à la breadboard
 			breadboard.addComponent(componentCourantGenerator);
-			Graphics.add(componentCourantGenerator);
+			graphicalComponentsList.add(componentCourantGenerator);
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image
 			courantGenerator.setOnMouseEntered(event3 -> {
@@ -1476,7 +1476,7 @@ public class GraphicalFunctions
 
 			// Ajout de la résistance dans la breadboard
 			breadboard.addComponent(componentResistance);
-			Graphics.add(componentResistance);
+			graphicalComponentsList.add(componentResistance);
 
 
 			//Permet de voir le nom et la valeur du composant quand la souris entre dans l'image

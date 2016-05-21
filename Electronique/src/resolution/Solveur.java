@@ -36,7 +36,8 @@ public class Solveur
     /* Déclaration du constructeur */
     /* =========================== */
     
-    public Solveur(Tableau<Couple> volt, Tableau<Couple> curr, Tableau<Couple> adm, double[][] cg, Equation[] eq) {
+    @SuppressWarnings("unchecked")
+	public Solveur(Tableau<Couple> volt, Tableau<Couple> curr, Tableau<Couple> adm, double[][] cg, Equation[] eq) {
         //currents : matrice de tableaux contenant les courants passant à travers les composants entre i et j -> double[nV][nV][][2]
         //voltages : matrice de tableaux contenant la tension entre i et j (tj la meme) -> double[nV][nV][1][2]
         //admittances : matrice de tableaux contenant l'admittance des composants entre i et j -> double[nV][nV][][2]
@@ -111,7 +112,8 @@ public class Solveur
 
     //getter des vars
     public Tableau<Double>[] variables() {
-        Tableau<Double>[] ret = (Tableau<Double>[])new Tableau[3];
+        @SuppressWarnings("unchecked")
+		Tableau<Double>[] ret = (Tableau<Double>[])new Tableau[3];
         for (int c = 0; c < 3; c++) {
             ret[c] = new Tableau<>(nbNodes);
             for (int i = 0; i < nbNodes; i++)
@@ -381,8 +383,9 @@ public class Solveur
 
     }
 
-    /**Affichage des vars*/
-    public void printVariables() {
+    /**Affichage des vars
+     * @throws IndexOutOfBoundsException lancée si le tableau d'équation est vide*/
+    public void printVariables() throws IndexOutOfBoundsException{
         NumberFormat nf = new DecimalFormat("0.00###");
         char[] aff = equations[0].names;
         for (int t = 0; t < 3; t++) {

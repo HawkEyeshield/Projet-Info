@@ -35,7 +35,7 @@ public class TestBreadboard extends AbstractUnit
 		System.out.println(b.getComponents());
 		try
 		{
-			b.compute(null);
+			b.compute(true);
 		}
 		catch(Exception e)
 		{

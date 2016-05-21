@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 /**
- * Created by Raphaël on 19/04/2016.
+ * Created by Raphaï¿½l on 19/04/2016.
  */
 public class Tableau<T> {
     private int size;
     public ArrayList<T>[][] tab;
 
-    public Tableau(int n) {
+    @SuppressWarnings("unchecked")
+	public Tableau(int n) {
         size = n;
         tab = (ArrayList<T>[][]) new ArrayList[size][size];
         for (int i = 0;i<size;i++)

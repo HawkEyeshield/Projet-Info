@@ -33,7 +33,7 @@ public class TestComputeError extends AbstractUnit
 	{
 		try
 		{
-			b.compute(null);
+			b.compute(true);
 		}
 		catch(IllegalArgumentException e)
 		{
@@ -43,7 +43,7 @@ public class TestComputeError extends AbstractUnit
 		{
 			list.clear();
 			list.add(new Admittance("R2", new Vertex(0), null));
-			b.compute(null);
+			b.compute(true);
 		}
 		catch(NullPointerException e)
 		{

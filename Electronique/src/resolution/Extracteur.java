@@ -1,6 +1,7 @@
 package resolution;
 
 import components.*;
+import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
 import graphStructure.Edge;
 import graphStructure.Vertex;
@@ -9,8 +10,6 @@ import graphStructure.ComponentMap;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
-import java.util.function.Supplier;
 
 /**
  * @author Raphaël
@@ -57,7 +56,13 @@ public class Extracteur
         log("\n");
     }
 
-    public boolean extraction(boolean resetting) {//resetting determine si les vertices vont etre reparametres (proscrit si vous concevez vous meme votre circuit)
+    /**
+     * @param resetting determine si les vertices vont etre reparametres (proscrit si vous concevez vous meme votre circuit)
+     * @throws IndexOutOfBoundsException si le solveur possède un tableau vide dans la méthode printVariables
+     * @throws PowerSupplyException si aucun générateur de tension ou courant n'est détecté
+     */
+    @SuppressWarnings("unchecked")
+	public boolean extraction(boolean resetting) throws IndexOutOfBoundsException, PowerSupplyException{
         //Pour le moment, les admittances paralleles ne sont pas acceptées. Une version future les incluera, je n'ai pas le temps pour l'instant
 
         Vertex[] vertices = graph.getAllVertices();
@@ -81,8 +86,8 @@ public class Extracteur
         nbGenerators = generateurs.size();
         switch (nbGenerators) {
             case 0:
-                logn("Vous me prenez pour un idiot? Il n'y a pas de generateur. Arret...");
-                break;
+                logn("Il n'y a pas de generateur. Arret...");
+                throw new PowerSupplyException("Aucune source d'énergie détectée !");
             case 1:
                 logn("1 generateur trouvé.");
                 break;
@@ -322,6 +327,8 @@ public class Extracteur
                             currents.get(x,y,0).value  = signe * gen.getCurrent();//Si le generateur n'est pas actif, le courant sera parametre à 0;
                         }
                         break;
+				default:
+					break;
                 }
 
                 //Partie mise en memoire des parametres; La partie precedente s'occupait juste des coefficients dans les equations

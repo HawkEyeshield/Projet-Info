@@ -52,7 +52,7 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     //TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
                     try
                     {
-                        GraphicalFunctions.breadboard.breadboardLaunch(GraphicalFunctions.listOfLink,anchorPane3,programmeLaunch, anchorPane4,Run);
+                        
                     }
                     catch(IllegalArgumentException e)
                     {

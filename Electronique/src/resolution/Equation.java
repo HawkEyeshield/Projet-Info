@@ -1,10 +1,7 @@
 package resolution;
 
-import components.Couple;
 import components.Tableau;
 
-import java.util.ArrayList;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  * Classe définissant une équation, utilisée par la suite par le solveur et l'extracteur
@@ -55,7 +52,8 @@ public class Equation
     /* Déclaration du constructeur */
     /* =========================== */
     
-    public Equation(Tableau<Double> tens, Tableau<Double> cour,Tableau<Double> admit, double cst, char[] v, double[] courantAlim) {
+    @SuppressWarnings("unchecked")
+	public Equation(Tableau<Double> tens, Tableau<Double> cour,Tableau<Double> admit, double cst, char[] v, double[] courantAlim) {
         size = tens.size();
         constante = cst;
         names = v;
@@ -246,7 +244,8 @@ public class Equation
     /**fonction de recuperation des variables regulieres equivalentes à une variable (reguliere ou non)*/
     public Tableau<Double>[] getEquivalent(int[] id) {
         //init des variables
-        Tableau<Double>[] ret = new Tableau[3];
+        @SuppressWarnings("unchecked")
+		Tableau<Double>[] ret = new Tableau[3];
 
         double coeff;
 

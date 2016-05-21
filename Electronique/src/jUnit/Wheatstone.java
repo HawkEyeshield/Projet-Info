@@ -3,6 +3,7 @@ package jUnit;
 
 import components.Admittance;
 import components.VoltageGenerator;
+import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
 import resolution.Extracteur;
@@ -54,7 +55,14 @@ public class Wheatstone extends AbstractUnit
 		long t = System.currentTimeMillis();
 
 		//resolution du circuit
-		e.extraction(false);
+		try
+		{
+			e.extraction(false);
+		}
+		catch(PowerSupplyException e)
+		{
+			System.out.println(e.getMessage());
+		}
 		
 		System.out.println("temps d'execution : "+(System.currentTimeMillis()-t)+"ms");
 	}
