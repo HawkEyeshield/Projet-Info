@@ -38,7 +38,7 @@ public class GraphicalFunctions
 	public static int idNode = 0;
 
 	/**liste des composants*/
-	public static ArrayList<GraphicalComponent> Graphics = new ArrayList<GraphicalComponent>;
+	public static ArrayList<GraphicalComponent> Graphics = new ArrayList<GraphicalComponent>();
 	
 	/**liste des liens*/
 	public static ArrayList<Link> listOfLink = new ArrayList<Link>();

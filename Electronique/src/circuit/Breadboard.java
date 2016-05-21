@@ -44,8 +44,6 @@ public class Breadboard
 		}
 	}
 
-    /** Graphe*/
-    CircuitGraph g = new CircuitGraph();
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -63,27 +61,11 @@ public class Breadboard
 	/** Méthode faisant appel au solveur pour la résolution 
 	 * @param links liste des liens entre composants graphiques pour les traduire en liens physiques
 	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
-	public void compute(ArrayList<Link> links) throws IllegalArgumentException
-	{	
-		// TODO Pour Sterenn : faire en sorte que la résolution se passe bien, catch des exceptions issues du solveur, renvoie des résultats à l'interface
-		// Création du graphe pour la résolution
-		// Création des liens entre composants
-		//this.addLink(links);
-		
-		// Ajout des sommets et composants du graphe
-		for(int i=0;i<components.size();i++)
-		{
-			// Attention ! Il faut d'abord ajouter les vertices au graphe, sinon il renvoie IllegalArgumentException lors de l'ajout du composant !
-			g.addVertex(components.get(i).getFirstLink());
-			g.addVertex(components.get(i).getSecondLink());
-			
-			// Si l'ajout de composant renvoie IllegalArgumentException, l'interface graphique doit le catch pour faire apparaître un message d'erreur
-			g.addComponent(components.get(i).getFirstLink(), components.get(i).getSecondLink(), components.get(i));
-		}
-		// La "clé" devient l'indice du composant dans la liste "components". En bijection avec les noms, donc.
-		//Ne fonctionne que si on travaille avec une seule liste - un seul type ?
 
-		Extracteur e = new Extracteur(g);
+    public void compute(ArrayList<Link> links) throws IllegalArgumentException
+	{	
+        CircuitGraph g = Construct();
+        Extracteur e = new Extracteur(g);
 		e.extraction(false);
 		e.printVariables();
 	}
@@ -183,7 +165,7 @@ public class Breadboard
             }
         }
     }
-    
+
     public int IndiceImage (GraphicalComponent Image){
         for (int l=0; l<GraphicalFunctions.Graphics.size(); l++){
             if (GraphicalFunctions.Graphics.get(l).equals(Image) ){
@@ -192,9 +174,13 @@ public class Breadboard
         }
         return 0 ;
     }
-    /** Construction du graphe (nouveau compute) */
-    public void Construct (){
+
+    /** Construction du graphe
+     *
+      */
+    public CircuitGraph Construct (){
 		makePregraphe();
+        CircuitGraph g = new CircuitGraph();
         int k = Intermediaire();
         Vertex[] v = new Vertex[k];
         for (int i =0; i<k; i++){
@@ -216,54 +202,8 @@ public class Breadboard
             }
             g.addComponent ( v[u], v[w], getAbstract( GraphicalFunctions.Graphics.get(i) ));
         }
+        return g;
     }
-
-	/**
-	 * Trouve tous les liens et les noeuds qui ont le même potentiel pour les mettre au même potentiel
-	 */
-	public void findLink(ArrayList<Link> links, GraphicalComponent node, int i){
-		for(int j = 0 ; j < links.size() ; j++ ) {
-			if (links.get(j).getImage1() == node) {
-				if (links.get(j).getImage2().getCtype() != Type.NULL) {
-					System.out.println("il y a un lien relié a la node qui est un composant");
-					links.get(j).setPotentielLink(i);
-				}
-				else if (links.get(j).getImage2().getCtype() == Type.NULL && isNeverUsed(links.get(j).getImage2(),nodeAlreadyUsed)) {
-					System.out.println("il y a un lien relié a la node qui est un noeud, on le emt au potentiel " + i);
-					links.get(j).setPotentielLink(i);
-					nodeAlreadyUsed.add(links.get(j).getImage2());
-					findLink(links, links.get(j).getImage2(),i);
-				}
-			}
-			else if (links.get(j).getImage2() == node) {
-				if (links.get(j).getImage1().getCtype() != Type.NULL) {
-					System.out.println("il y a un lien relié a la node qui est un noeud, on le emt au potentiel " + i);
-					links.get(j).setPotentielLink(i);
-				}
-				else if (links.get(j).getImage1().getCtype() == Type.NULL && isNeverUsed(links.get(j).getImage1(),nodeAlreadyUsed)) {
-					links.get(j).setPotentielLink(i);
-					System.out.println("il y a un lien relié a la node qui est un composant");
-					nodeAlreadyUsed.add(links.get(j).getImage1());
-					findLink(links, links.get(j).getImage1(),i);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Indique si le composant est dans la liste donneé
-	 * @param node composant a utiliser
-	 * @param nodeAlreadyUsed liste des composants
-     * @return
-     */
-	public boolean isNeverUsed(GraphicalComponent node,ArrayList<GraphicalComponent> nodeAlreadyUsed){
-		for(int i = 0 ; i < nodeAlreadyUsed.size(); i ++){
-			if(nodeAlreadyUsed.get(i) == node){
-				return(false);
-			}
-		}
-		return true;
-	}
 
     /**
      * Méthode supprimant un composant physique à partir de son homologue graphique
