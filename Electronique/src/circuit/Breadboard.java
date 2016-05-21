@@ -144,14 +144,14 @@ public class Breadboard
 
 
             for (int a=0; a < GraphicalFunctions.listOfLink.size(); a++){
-                if (Composant == GraphicalFunctions.listOfLink.get(a).getImage1() ){
+                if (Composant.equals( GraphicalFunctions.listOfLink.get(a).getImage1()) ){
                     if (this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getFirstArea()-1] == 0){
                         findVertex(GraphicalFunctions.listOfLink.get(a).getImage2() , GraphicalFunctions.listOfLink.get(a).getSecondArea(), k);
                         this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getFirstArea()-1] =k;
                         k++;
                     }
                 }
-                else if (Composant == GraphicalFunctions.listOfLink.get(a).getImage2() ){
+                else if (Composant.equals( GraphicalFunctions.listOfLink.get(a).getImage2() )){
                     if (this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getSecondArea()-1] == 0){
                         findVertex(GraphicalFunctions.listOfLink.get(a).getImage1() , GraphicalFunctions.listOfLink.get(a).getFirstArea(), k);
                         this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getSecondArea()-1] =k;
@@ -175,11 +175,11 @@ public class Breadboard
             this.pregraphe[IndiceImage(Image)][LinkArea - 1] = k;
         } else {
             for (int a = 0; a < GraphicalFunctions.listOfLink.size(); a++) {
-                if (Image == GraphicalFunctions.listOfLink.get(a).getImage1()) {
+                if (Image.equals( GraphicalFunctions.listOfLink.get(a).getImage1())) {
                     if (GraphicalFunctions.listOfLink.get(a).getFirstArea() != LinkArea) {
                         findVertex(GraphicalFunctions.listOfLink.get(a).getImage2(), GraphicalFunctions.listOfLink.get(a).getSecondArea(), k);
                     }
-                } else if (Image == GraphicalFunctions.listOfLink.get(a).getImage2()) {
+                } else if (Image.equals(GraphicalFunctions.listOfLink.get(a).getImage2())) {
                     if (GraphicalFunctions.listOfLink.get(a).getSecondArea() != LinkArea) {
                         findVertex(GraphicalFunctions.listOfLink.get(a).getImage1(), GraphicalFunctions.listOfLink.get(a).getFirstArea(), k);
                     }
