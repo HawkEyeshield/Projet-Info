@@ -6,6 +6,7 @@ import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
 import graphics.GraphicalComponent;
 import graphics.GraphicalFunctions;
+import graphics.Link;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -64,7 +65,7 @@ public class Breadboard
 	 * @param console booléen indiquant si la résolution est purement via la console, le cas contraire étant avec l'interface graphique
 	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
 
-    public void compute(boolean console, AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run) throws IllegalArgumentException
+    public void compute(boolean console/*, AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run*/) throws IllegalArgumentException
 	{	
 //    	if(!console)
 //    	{
