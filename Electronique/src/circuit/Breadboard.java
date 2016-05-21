@@ -33,15 +33,17 @@ public class Breadboard
 	public static ArrayList<GraphicalComponent> nodeAlreadyUsed = new ArrayList<GraphicalComponent>();
 
     /**Prégraphe*/
-    public int nbComposants = GraphicalFunctions.Graphics.size();
+    public static int nbComposants = GraphicalFunctions.Graphics.size();
     public static int[][] Pregraphe = new int[nbComposants][4] ;
-    for (int i = 0, i< nbComposants, i++)
-    {
-        for (int j=0, j<4, j++)
-        {
-            Pregraphe[i][j] = 0;
-        }
-    }
+
+	public void makePregraphe() {
+		for (int i = 0; i < nbComposants; i++) {
+			for (int j = 0; j < 4; j++) {
+				this.Pregraphe[i][j] = 0;
+			}
+		}
+	}
+
     /** Graphe*/
     CircuitGraph g = new CircuitGraph();
 
@@ -104,33 +106,50 @@ public class Breadboard
             components.add(new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
         }
 	}
+    /** Méthode faisant correspondre un abstractDipole à un composant graphique
+     *
+     */
+    public AbstractDipole getAbstract (GraphicalComponent graphical) throws NullPointerException
+    {
+        if (graphical.getCtype().equals(Type.ADMITTANCE)) {
+            return new Admittance(graphical.getCname(), null, null, 1);
+        } else if (graphical.getCtype().equals(Type.CURRENTGENERATOR)) {
+            return new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue());
+        } else if (graphical.getCtype().equals(Type.VOLTAGEGENERATOR)) {
+            return (new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
+        }
+
+        throw new NullPointerException();
+    }
+
 	
 	/**
 	 * Méthode de traduction du circuit graphique vers le solveur
-	 * @param Pregraphe décrit l'ensemble des aretes
-     * @param Graphe (voilà)
+     * Pregraphe : tableau des arêtes  (une ligne par composant, les deux valeurs non nulles sont les vertex)
      */
 
 	public int Intermediaire ()
 	{
         int k = 1;
-        boolean B = false;
-        for (int i = 0, i < GraphicalFunctions.Graphics.size(), i++ )
+        for (int i = 0; i < GraphicalFunctions.Graphics.size(); i++ )
         {
             GraphicalComponent Composant = GraphicalFunctions.Graphics.get(i);
+//On choisit on composant, on cherche ses voisins. Le composant est reliés à deux vertex, les liens parcourus seront
+            //tous appartenant à l'un ou l'autre des vertex.
 
-            for (a=0, a < listOfLink.size(), a++){
-                if (Composant == listOflink.get(a).get(0) ){
-                    if (this.Pregraphe[i][listOfLink.get(a).get(2)] == 0){
-                        findVertex(listOfLink.get(a).get(1) , listOfLink.get(a).get(3), k);
-                        this.Pregraphe[i][listOfLink.get(a).get(2)] =k;
+
+            for (int a=0; a < GraphicalFunctions.listOfLink.size(); a++){
+                if (Composant == GraphicalFunctions.listOfLink.get(a).getImage1() ){
+                    if (this.Pregraphe[i][GraphicalFunctions.listOfLink.get(a).getFirstArea()-1] == 0){
+                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage2() , GraphicalFunctions.listOfLink.get(a).getSecondArea(), k);
+                        this.Pregraphe[i][GraphicalFunctions.listOfLink.get(a).getFirstArea()-1] =k;
                         k++;
                     }
                 }
-                else if (Composant == listOflink.get(a).get(1) ){
-                    if (this.Pregraphe[i][listOfLink.get(a).get(3)] == 0){
-                        findVertex(listOfLink.get(a).get(0) , listOfLink.get(a).get(2), k);
-                        this.Pregraphe[i][listOfLink.get(a).get(3)] =k;
+                else if (Composant == GraphicalFunctions.listOfLink.get(a).getImage2() ){
+                    if (this.Pregraphe[i][GraphicalFunctions.listOfLink.get(a).getSecondArea()-1] == 0){
+                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage1() , GraphicalFunctions.listOfLink.get(a).getFirstArea(), k);
+                        this.Pregraphe[i][GraphicalFunctions.listOfLink.get(a).getSecondArea()-1] =k;
                         k++;
                     }
                 }
@@ -139,47 +158,63 @@ public class Breadboard
         return k-1;
      }
 
-	/** Pour Intermédiaire */
-
-    public void findVertex (GraphicalComponent Image, int LinkArea, int k, int ){
-        if (Image.getCtype() != Type.NULL){
+    /** Pour Intermédiaire
+     * Méthode récursive pour remplir Pregraphe
+     * @param Image
+     * @param LinkArea
+     * @param k
+     */
+    public void findVertex (GraphicalComponent Image, int LinkArea, int k ) {
+        if (Image.getCtype() != Type.NULL) {
             // On considère Type(Noeud graphique) = NULL
-            this.Pregraphe [IndiceImage(Image)][LinkArea-1]=k;
-        }
-        else {
-            // On tombe sur un noeud. On trouve tous les composants reliés à ce noeud
-            // findVertex for composants in trouvés if Image.linkarea != LinkArea
+            this.Pregraphe[IndiceImage(Image)][LinkArea - 1] = k;
+        } else {
+            for (int a = 0; a < GraphicalFunctions.listOfLink.size(); a++) {
+                if (Image == GraphicalFunctions.listOfLink.get(a).getImage1()) {
+                    if (GraphicalFunctions.listOfLink.get(a).getFirstArea() != LinkArea) {
+                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage2(), GraphicalFunctions.listOfLink.get(a).getSecondArea(), k);
+                    }
+                } else if (Image == GraphicalFunctions.listOfLink.get(a).getImage2()) {
+                    if (GraphicalFunctions.listOfLink.get(a).getSecondArea() != LinkArea) {
+                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage1(), GraphicalFunctions.listOfLink.get(a).getFirstArea(), k);
+                    }
+                }            // On tombe sur un noeud. On trouve tous les composants reliés à ce noeud
+                // findVertex for composants in trouvés if Image.linkarea != LinkArea
+            }
         }
     }
+    
     public int IndiceImage (GraphicalComponent Image){
-        for (l=0, l<GraphicalFunctions.Graphics.size(), l++){
+        for (int l=0; l<GraphicalFunctions.Graphics.size(); l++){
             if (GraphicalFunctions.Graphics.get(l).equals(Image) ){
                 return  l ;
             }
         }
-        return null ;
+        return 0 ;
     }
     /** Construction du graphe (nouveau compute) */
     public void Construct (){
+		makePregraphe();
         int k = Intermediaire();
         Vertex[] v = new Vertex[k];
-        for (i =0, i<k, i++){
+        for (int i =0; i<k; i++){
             v[i] = new Vertex(i);
             g.addVertex(v[i]);
         }
-        for (i=0, i<this.Pregraphe.size(), i++){
+        for (int i=0; i<this.Pregraphe.length; i++){
             int u = 0;
-            int w ;
-            for (j=0, j<4, j++){
+            int w = 0 ;
+            for (int j=0; j<4; j++){
                 if (this.Pregraphe[i][j] != 0) {
                     if (u==0){
                         u = this.Pregraphe[i][j];
                     }
-                    else  {w = this.Pregraphe[i][j];
+                    else  {
+						w = this.Pregraphe[i][j];
                     }
                 }
             }
-            g.addComponent ( v[u], v[w], GraphicalFunctions.Graphics.get(i));
+            g.addComponent ( v[u], v[w], getAbstract( GraphicalFunctions.Graphics.get(i) ));
         }
     }
 
