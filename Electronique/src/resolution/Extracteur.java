@@ -144,8 +144,8 @@ public class Extracteur
 
         int b,l,n;
         for (Edge e : graph.getAllEdges()) {
-            b = e.beginVertex().get();
-            l = e.endVertex().get();
+            b = e.beginVertex().getIndex();
+            l = e.endVertex().getIndex();
             n = e.AdmittancesNb()+1;//add the generator
             sizes[b][l] = n;
             sizes[l][b] = n;
@@ -172,13 +172,13 @@ public class Extracteur
                     s = 1;//les composants sont orientés en direct -> le signe vaut 1
                     if (det[d][0] == 1) {//pour chaque parametre fixe
                         //marquage de la determination du parametre
-                        varFix[d].get(dep.get(),arr.get(),a.index).found = true;
-                        varFix[d].get(arr.get(),dep.get(),a.index).found = true;
+                        varFix[d].get(dep.getIndex(),arr.getIndex(),a.index).found = true;
+                        varFix[d].get(arr.getIndex(),dep.getIndex(),a.index).found = true;
                         //on ajoute la valeur fixe en direct
-                        varFix[d].get(dep.get(),arr.get(),a.index).value = s * det[d][1];
+                        varFix[d].get(dep.getIndex(),arr.getIndex(),a.index).value = s * det[d][1];
                         if (d == 2) s = -1;//on inverse l'inversion dans le cas de l'admittance qui est symetrique.
                         //on ajoute la valeur fixe inverse, en opposant la valeur
-                        varFix[d].get(arr.get(),dep.get(),a.index).value = -s * det[d][1];
+                        varFix[d].get(arr.getIndex(),dep.getIndex(),a.index).value = -s * det[d][1];
                     }
                 }
             }
@@ -189,13 +189,13 @@ public class Extracteur
                     s = -1;//les composants sont orientés en indirect -> le signe vaut -1
                     if (det[d][0] == 1) {//pour chaque parametre fixe
                         //marquage de la determination du parametre
-                        varFix[d].get(dep.get(),arr.get(),a.index).found = true;
-                        varFix[d].get(arr.get(),dep.get(),a.index).found = true;
+                        varFix[d].get(dep.getIndex(),arr.getIndex(),a.index).found = true;
+                        varFix[d].get(arr.getIndex(),dep.getIndex(),a.index).found = true;
                         //on ajoute la valeur fixe en inverse
-                        varFix[d].get(arr.get(),dep.get(),a.index).value = s * det[d][1];
+                        varFix[d].get(arr.getIndex(),dep.getIndex(),a.index).value = s * det[d][1];
                         if (d == 2) s = 1;////on inverse l'opposition dans le cas de l'admittance qui est symetrique.
                         //on ajoute la valeur fixe inverse, en opposant la valeur
-                        varFix[d].get(dep.get(),arr.get(),a.index).value = -s * det[d][1];
+                        varFix[d].get(dep.getIndex(),arr.getIndex(),a.index).value = -s * det[d][1];
                     }
                 }
             }
@@ -259,7 +259,7 @@ public class Extracteur
         //ETAPE 3 : recuperation des equations aux noeuds
         logn("Equation aux noeuds ...");
         for (Vertex vertice : vertices) {
-            logn("Vertex "+ vertice.get());
+            logn("Vertex "+ vertice.getIndex());
 
             //initialisation
             eqCurrents = new Tableau<Double>(nbNodes, sizes, () -> 0.0);
@@ -275,8 +275,8 @@ public class Extracteur
                 if (m.incoming()) signe = 1;
                 else signe = -1;
 
-                int x = vertice.get();
-                int y = m.vertex().get();
+                int x = vertice.getIndex();
+                int y = m.vertex().getIndex();
 
                 //Ajout du generateur dans les tableaux
                 if ((type == Type.VOLTAGEGENERATOR) || (type == Type.CURRENTGENERATOR)) {

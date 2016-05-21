@@ -1271,7 +1271,7 @@ public class GraphicalFunctions
 
 			node.setLayoutX(idNode);
 			idNode += 1;
-			GraphicalComponent componentNode = new GraphicalComponent(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NULL);
+			GraphicalComponent componentNode = new GraphicalComponent(node,linkArea1,linkArea2,linkArea3,linkArea4,'t',"Noeud " + idNode,0, Type.NODE);
 
 
 			//Permet de creer un lien

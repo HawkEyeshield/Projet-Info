@@ -57,15 +57,17 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     catch(IllegalArgumentException e)
                     {
                         //TODO faire apparaître une fenêtre avec un message d'erreur
-                        Text erreur = new Text("Erreur, le programme ne peut être resolu" + e);//On change le texte du bouton
+                        Text erreur = new Text("Erreur, le programme ne peut être resolu" + e.getMessage());//On change le texte du bouton
                         double [] scrollPosition2 = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relative de la fenêtre
                         erreur.setX(550 + scrollPosition2[0]);//On définit la zone
                         erreur.setY(20 + scrollPosition2[1]);
                         anchorPane3.getChildren().add(erreur);//et on affiche
                         System.out.println("Problème de sommets !");
+                        e.printStackTrace();
                         GraphicalFunctions.erreur = erreur;
                     }
-                    Run.setText("Run");
+                    Run.setText("Résolu !");
+                    Run.setDisable(true);
                     GraphicalFunctions.isProgramRunning=false;
                     anchorPane3.getChildren().remove(programmeLaunch);
                 }

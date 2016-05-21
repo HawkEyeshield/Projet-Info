@@ -52,7 +52,7 @@ public class Vertex
     }
 
     //Getter du number
-    public int get() 
+    public int getIndex() 
     {
         return number;
     }

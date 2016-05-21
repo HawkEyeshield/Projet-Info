@@ -29,17 +29,17 @@ public class Breadboard
 	/**Extracteur de la breadboard*/
 	private Extracteur extractor;
 	
-	/** iste des sommets déjà instanciés*/
-	private ArrayList<Vertex> verticesInstancied = new ArrayList<>();
+	/** liste des sommets déjà ajoutés au graphe*/
+	private ArrayList<Vertex> verticesUsed = new ArrayList<>();
 
 	/** Indique les noeuds deja utilises pour mettre tous les potentiels au mêmes points*/
 	//private ArrayList<GraphicalComponent> nodeAlreadyUsed = new ArrayList<GraphicalComponent>();
 
     
-    private int nbComponents = GraphicalFunctions.graphicalComponentsList.size();
+    //private int nbComponents = GraphicalFunctions.graphicalComponentsList.size();
     
-    /**Prégraphe*/
-    private int[][] pregraphe = new int[nbComponents][4] ;
+    ///**Prégraphe*/
+    //private int[][] pregraphe = new int[nbComponents][4] ;
 
 
 /* =========================== */
@@ -80,8 +80,7 @@ public class Breadboard
     		for(int i=0; i<GraphicalFunctions.listOfLink.size();i++)
 			{
     			Vertex v=new Vertex(i);
-				getDipole(GraphicalFunctions.listOfLink.get(i).getImage1()).setFirstLink(v);
-				getDipole(GraphicalFunctions.listOfLink.get(i).getImage2()).setSecondLink(v);
+				setDipoleLinks(GraphicalFunctions.listOfLink.get(i), v);
 			}
     		
     		for(AbstractDipole a:components)
@@ -89,15 +88,25 @@ public class Breadboard
     			Vertex first = a.getFirstLink();
     			Vertex second = a.getSecondLink();
     			
-    			if(!verticesInstancied.contains(first))
+    			if(isAlreadyUsed(first))
     			{
-    				gConsole.addVertex(a.getFirstLink());
-    				verticesInstancied.add(first);
+    				a.setFirstLink(vertexToUse(first));
+    				gConsole.addVertex(vertexToUse(first));
     			}
-    			if(!verticesInstancied.contains(second))
+    			else
     			{
-    				gConsole.addVertex(a.getSecondLink());
-    				verticesInstancied.add(second);
+    				gConsole.addVertex(first);
+    				verticesUsed.add(first);
+    			}
+    			if(isAlreadyUsed(second))
+    			{
+    				a.setSecondLink(vertexToUse(second));
+    				gConsole.addVertex(vertexToUse(second));
+    			}
+    			else
+    			{
+    				gConsole.addVertex(second);
+    				verticesUsed.add(second);
     			}
     			gConsole.addComponent(a.getFirstLink(), a.getSecondLink(), a);
     		}
@@ -117,6 +126,113 @@ public class Breadboard
         }
 		extractor.printVariables();
 	}
+    
+    /**
+     * Méthode déterminant à quels composants concernés par le lien donné en argument associer le vertex donné en argument
+     * @param link le lien
+     * @param vertex le vertex
+     */
+    public void setDipoleLinks(Link link, Vertex vertex)
+    {
+    	boolean firstNode = link.getImage1().getCtype().equals(Type.NODE);
+    	boolean secondNode = link.getImage2().getCtype().equals(Type.NODE);
+    	
+    	if( ! (firstNode || secondNode))
+    	{
+    		decideFirstDipoleArea(link, vertex);
+    		decideSecondDipoleArea(link, vertex);
+    		if(!verticesUsed.contains(vertex))
+    		{
+    			verticesUsed.add(vertex);
+    		}
+    	}
+    	
+    	else if(firstNode)
+    	{
+    		Vertex firstTemp = new Vertex(link.getImage1().getCindexation());
+    		decideSecondDipoleArea(link, firstTemp);
+    		if(!verticesUsed.contains(firstTemp))
+    		{
+    			verticesUsed.add(firstTemp);
+    		}
+    	}
+    	else if(secondNode)
+    	{
+    		Vertex secondTemp = new Vertex(link.getImage2().getCindexation());
+    		decideFirstDipoleArea(link, secondTemp);
+    		if(!verticesUsed.contains(secondTemp))
+    		{
+    			verticesUsed.add(secondTemp);
+    		}
+    	}
+    }
+    
+    /**
+     * Méthode déterminant à quelle patte du premier composant du lien fixer un sommet
+     * @param link le lien
+     * @param vertex le sommet à lier au composant physique
+     */
+    public void decideFirstDipoleArea(Link link, Vertex vertex)
+    {
+    	if(link.getFirstArea()==1 || link.getFirstArea()==2)
+		{
+			getDipole(link.getImage1()).setFirstLink(vertex);
+		}
+		else
+		{
+			getDipole(link.getImage1()).setSecondLink(vertex);
+		}
+    }
+    
+    /**
+     * Méthode déterminant si l'indice du vertex en argument a déjà été utilisé
+     * @param vertex le sommet à tester
+     */
+    public boolean isAlreadyUsed(Vertex vertex)
+    {
+    	for(Vertex v : verticesUsed)
+    	{
+    		if(vertex.getIndex()==v.getIndex())
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Méthode renvoyant le vertex contenu dans verticesUsed de même indice que celui en argument 
+     * @param vertex argument
+     * @return le vertex unique à utiliser
+     */
+    public Vertex vertexToUse(Vertex vertex)
+    {
+    	for(Vertex v : verticesUsed)
+    	{
+    		if(vertex.getIndex()==v.getIndex())
+    		{
+    			return v;
+    		}
+    	}
+    	return null;
+    }
+    
+    /**
+     * Méthode déterminant à quelle patte du second composant du lien fixer un sommet
+     * @param link le lien
+     * @param vertex le sommet à lier au composant physique
+     */
+    public void decideSecondDipoleArea(Link link, Vertex vertex)
+    {
+    	if(link.getSecondArea()==1 || link.getSecondArea()==2)
+		{
+			getDipole(link.getImage2()).setFirstLink(vertex);
+		}
+		else
+		{
+			getDipole(link.getImage2()).setSecondLink(vertex);
+		}
+    }
 	
 	/** Méthode ajoutant un composant physique dans la breadboard à partir de l'homologue graphique
 	 *  @param graphical le composant que l'on souhaite ajouter 
@@ -125,7 +241,7 @@ public class Breadboard
 	{
 		if (graphical.getCtype().equals(Type.ADMITTANCE)) 
 		{
-            components.add(new Admittance(graphical.getCname(), null, null, 1));
+            components.add(new Admittance(graphical.getCname(), null, null));
         }
        else if (graphical.getCtype().equals(Type.CURRENTGENERATOR))
         {

@@ -42,7 +42,7 @@ public class GraphicalComponent {
         this.name = name;
         this.value = value;
         this.type = type;
-        if(type == Type.NULL) {
+        if(type == Type.NODE) {
             this.indexation = GraphicalFunctions.potentielCommun;
             GraphicalFunctions.potentielCommun += 1;
         }
@@ -66,7 +66,7 @@ public class GraphicalComponent {
         this.orientation = orientation;
         this.name = name;
         this.type = type;
-        if(type == Type.NULL) {
+        if(type == Type.NODE) {
             this.indexation = GraphicalFunctions.potentielCommun;
             GraphicalFunctions.potentielCommun += 1;
         }

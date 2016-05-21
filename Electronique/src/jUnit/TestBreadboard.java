@@ -6,6 +6,7 @@ import circuit.Breadboard;
 import components.AbstractDipole;
 import components.Admittance;
 import components.VoltageGenerator;
+import exceptions.AdmittanceError;
 import graphStructure.Vertex;
 
 /**
@@ -24,7 +25,15 @@ public class TestBreadboard extends AbstractUnit
 		Vertex v1 = new Vertex(1);
 		list.add(new VoltageGenerator("G1",v0,v1, 15));
 		list.add(new Admittance("R1", v0, v1, 10));
-		list.add(new Admittance("R2", v0, v1, 2));
+		Admittance a = new Admittance("R2", v0, v1);
+		list.add(a);
+		try 
+		{
+			a.setCurrent(5);
+		} catch (AdmittanceError e) 
+		{
+			e.printStackTrace();
+		}
 		b=new Breadboard(list);	
 	}
 
