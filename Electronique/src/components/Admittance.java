@@ -56,6 +56,13 @@ public class Admittance extends AbstractDipole
 		this.index=index;
 	}
 	
+	public Admittance(String name, Vertex firstLink, Vertex secondLink, int index)
+	{
+		super(name, Type.ADMITTANCE, firstLink, secondLink);
+		this.determination = new boolean[]{false,false,true};
+		this.index=index;
+	}
+	
 	/* ======================== */
 	/* Déclaration des méthodes */
 	/* ======================== */
