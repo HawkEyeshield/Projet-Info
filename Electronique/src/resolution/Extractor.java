@@ -414,12 +414,12 @@ public class Extractor
     }
 
     public double getCurrent(int i, int j, int k){
-        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)||(j>=resultVariables[0].size(i,j))||(k<0)) return 0;
+        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)||(k>=resultVariables[0].size(i,j))||(k<0)) return 0;
         return resultVariables[0].get(i,j,k);
     }
 
     public double getAdmittance(int i, int j, int k){
-        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)||(j>=resultVariables[2].size(i, j))||(k<0)) return 0;
+        if ((!solved)||(i>=nbNodes)||(i<0)||(j>=nbNodes)||(j<0)||(k>=resultVariables[2].size(i, j))||(k<0)) return 0;
         return resultVariables[2].get(i,j,k);
     }
 

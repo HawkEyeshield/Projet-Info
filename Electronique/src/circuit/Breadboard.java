@@ -170,7 +170,7 @@ public class Breadboard
 		ArrayList<GraphicalComponent> result = new ArrayList<>();
 		for(AbstractDipole a : components)
 		{
-			int k = a.getIndex();
+			int k = a.getIndex()-1;
 			int i = a.getFirstLink().getIndex();
 			int j = a.getSecondLink().getIndex();
 
@@ -182,12 +182,12 @@ public class Breadboard
 			else if(a.getType().equals(Type.CURRENTGENERATOR))
 			{
 				a=(CurrentGenerator)a;
-				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k+1),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
 			}
 			else if(a.getType().equals(Type.VOLTAGEGENERATOR))
 			{
 				a=(VoltageGenerator)a;
-				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k+1),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
 			}
 		}
 		GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4, result,Run);

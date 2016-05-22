@@ -116,9 +116,14 @@ public class Solver
             ret[c] = new Tableau<>(nbNodes);
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
-                    for (int k = 0; k< vars[c].size(i,j); k++)
-                        if (vars[c].get(i, j, k).found)
-                            ret[c].get(i,j).add(vars[c].get(i, j, k).value);
+                	if (vars[c].size(i,j)<2) {
+                		ret[c].get(i,j).add(vars[c].get(i, j, 0).value);
+                	}
+                	else {
+                		for (int k = 1; k< vars[c].size(i,j); k++)
+                			if (vars[c].get(i, j, k).found)
+                				ret[c].get(i,j).add(vars[c].get(i, j, k).value);
+                	}
         }
         return ret;
     }
