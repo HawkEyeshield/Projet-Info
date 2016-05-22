@@ -320,7 +320,9 @@ public class GraphicalFunctions
 	public  static void deleteComponent(GraphicalComponent composant, AnchorPane anchorPane2)
 	{
 		// Supression du composant dans la breadboard
-		breadboard.deleteComponent(composant);
+		if(composant.type != Type.NODE) {
+			breadboard.deleteComponent(composant);
+		}
 		
 		int[] a = new int[listOfLink.size()]; //Va permettre de sauvgarder en memoire les composant relies a celui qui doit etre supprimer
 		int b = 0; //Compte le nombre de composants relies avec celui qui doit etre supprimer
@@ -1328,6 +1330,20 @@ public class GraphicalFunctions
 				}
 			});
 
+			ContextMenu menu = new ContextMenu();
+			MenuItem delete = new MenuItem("Supprimer le composant");
+
+
+			delete.setOnAction(event1 -> {
+				deleteComponent(componentNode,anchorPane2);
+			});
+
+			menu.getItems().add(delete);
+
+
+			node.setOnContextMenuRequested(event11 ->{
+				menu.show(node, Side.BOTTOM,0,0);
+			});
 
             //Permet de deplacer le noeud d'un point a un autre
 			node.setOnMouseDragged(event1 ->

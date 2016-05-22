@@ -56,6 +56,7 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     }
                     catch(IllegalArgumentException e)
                     {
+                        System.out.println();
                         //TODO faire apparaître une fenêtre avec un message d'erreur
                         Text erreur = new Text("Erreur, le programme ne peut être resolu" + e.getMessage());//On change le texte du bouton
                         double [] scrollPosition2 = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relative de la fenêtre
