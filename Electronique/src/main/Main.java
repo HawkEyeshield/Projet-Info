@@ -24,16 +24,16 @@ public class Main extends AbstractUnit {
     private static int value = 0;
 
 
-    public static void main(String[] args) throws Exception 
-    {
-        System.out.println(args[0]);
-
-        if (args.length != 0) 
-        {
-            Main.value = Integer.parseInt(args[0]);
-        }
-        JUnitCore.main("main.Main");
-    }
+//    public static void main(String[] args) throws Exception 
+//    {
+//        System.out.println(args[0]);
+//
+//        if (args.length != 0) 
+//        {
+//            Main.value = Integer.parseInt(args[0]);
+//        }
+//        JUnitCore.main("main.Main");
+//    }
 
 
     @Test
