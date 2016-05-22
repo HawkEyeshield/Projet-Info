@@ -12,7 +12,7 @@ import resolution.Extractor;
  * Classe de test de l'extracteur
  * @author Raphaël
  */
-public class TestExtracteur extends AbstractUnit
+public class TestExtractor extends AbstractUnit
 {
 	
 	CircuitGraph g;
