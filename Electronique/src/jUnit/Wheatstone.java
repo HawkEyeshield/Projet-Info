@@ -18,7 +18,8 @@ public class Wheatstone extends AbstractUnit
 	Extracteur e;
 
 	@Override
-	public void setUp() {
+	public void setUp() 
+	{
 		
 		g = new CircuitGraph();
 		//les sommets du graphe sont definis ici.

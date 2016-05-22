@@ -11,6 +11,10 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
+/**
+ * Classe Main du projet, lance l'interface graphique utilisateur
+ * @author Tanguy
+ */
 public class Main extends Application 
 {
 

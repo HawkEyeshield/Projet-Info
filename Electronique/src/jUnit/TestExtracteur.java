@@ -21,7 +21,16 @@ public class TestExtracteur extends AbstractUnit
     Extracteur e;
     
 	@Override
-	public void setUp() {
+	public void setUp() 
+	{
+		System.out.println("Ce test réalise une simulation de deux admittances en série d'un générateur de tension.");
+		System.out.println("Le générateur délivrant 10 volts entre les sommets 0 et 2.");
+		System.out.println("La première résistance est contrainte avec un courant de 5 ampères, dont l'admittance est à déterminer par le solveur.");
+		System.out.println("La seconde résistance est contrainte avec une tension de 4 volts, dont l'admittance est à déterminer par le solveur.");
+		System.out.println("On s'attend à trouver dans les tableaux de résultats une tension de 10 volts entre les sommets 0 et 2.");
+		System.out.println("Il devrait également y avoir 6 volts entre les sommets 0 et 1, ainsi que 4 volts entre les sommets 1 et 2.");
+		System.out.println("Un courant générateur absolu de 5 ampères doit parcourir le générateur et les deux résistances.");
+		System.out.println("Enfin, les résistances calibrées devraient être égales à 1,2 et 0,8 ohms. \n");
 		g = new CircuitGraph();
 
 		//Les sommets du graphe sont definis ici.
@@ -54,8 +63,8 @@ public class TestExtracteur extends AbstractUnit
 			a.setCurrent(5.0);
 			g.addComponent(v0, v1, a);
 
-			a = new Admittance("Y0", v0, v1);
-			a.setVoltage(5.0);
+			a = new Admittance("Y0", v1, v2);
+			a.setVoltage(4.0);
 			g.addComponent(v1, v2, a);
 
 		} catch (AdmittanceError e) {
@@ -69,8 +78,9 @@ public class TestExtracteur extends AbstractUnit
 	}
 
 	@Override
-	public void test() {
-		
+	public void test() 
+	{
+		System.out.println("Début de test : \n");
 		long t = System.currentTimeMillis();
 		
         //resolution du circuit
@@ -88,11 +98,12 @@ public class TestExtracteur extends AbstractUnit
 	}
 
 	@Override
-	public void after() {
-		
+	public void after() 
+	{	
 		//affichage du résultat
         e.printVariables();
-		
+        
+        System.out.println("\nTest terminé !");
 	}
 
 	

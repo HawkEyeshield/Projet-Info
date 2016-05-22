@@ -1,7 +1,6 @@
 package jUnit;
 
 import java.util.ArrayList;
-
 import circuit.Breadboard;
 import components.AbstractDipole;
 import components.Admittance;
@@ -21,6 +20,9 @@ public class TestComputeError extends AbstractUnit
 	@Override
 	public void setUp() 
 	{
+		System.out.println("Ce test doit récupérer deux erreurs relatives à la contruction du graphe.");
+		System.out.println("La première concerne la présence d'une boucle dans le graphe.");
+		System.out.println("La seconde concerne la présence d'un sommet initialisé à null.\n");
 		Vertex v0 = new Vertex(0);
 		Vertex v1 = new Vertex(1);
 		list.add(new VoltageGenerator("G1",v0,v0, 15));
@@ -31,6 +33,7 @@ public class TestComputeError extends AbstractUnit
 	@Override
 	public void test() 
 	{
+		System.out.println("Début de test : \n");
 		try
 		{
 			b.compute(true);
@@ -54,7 +57,7 @@ public class TestComputeError extends AbstractUnit
 	@Override
 	public void after() 
 	{	
-		System.out.println("Test terminé !");
+		System.out.println("\nTest terminé !");
 	}
 
 }
