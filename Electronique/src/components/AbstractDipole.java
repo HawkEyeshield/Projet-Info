@@ -115,6 +115,10 @@ public abstract class AbstractDipole
 
 	//value
 	public double getValue(){return 0;}
+	
+	public Type getType(){return this.type;}
+	
+	public int getIndex(){return this.index;}
 
 	public abstract double[][] getParameters();
 

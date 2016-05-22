@@ -38,6 +38,14 @@ public class VoltageGenerator extends AbstractGenerator
 		this.value=v;
 	}
 	
+	public VoltageGenerator(String name, Vertex firstLink, Vertex secondLink, double v,int index) 
+	{
+		super(name, Type.VOLTAGEGENERATOR, firstLink, secondLink);
+		this.voltage = v;
+		this.value=v;
+		this.index=index;
+	}
+	
 	/* ======================== */
 	/* Déclaration des méthodes */
 	/* ======================== */
@@ -45,6 +53,10 @@ public class VoltageGenerator extends AbstractGenerator
 	//Recuperation de la tension
 	@Override
 	public double getVoltage() 
+	{
+		return this.voltage;
+	}
+	public double getValue()
 	{
 		return this.voltage;
 	}

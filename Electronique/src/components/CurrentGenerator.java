@@ -34,6 +34,15 @@ public class CurrentGenerator extends AbstractGenerator
 		this.value=v;
 	}
 	
+	public CurrentGenerator(String name, Vertex firstLink, Vertex secondLink, double v,int index) 
+	{
+		super(name, Type.CURRENTGENERATOR, firstLink, secondLink);
+		determination = true;
+		this.current = v;
+		this.value=v;
+		this.index=index;
+	}
+	
 	/* ======================== */
 	/* Déclaration des méthodes */
 	/* ======================== */
@@ -52,6 +61,11 @@ public class CurrentGenerator extends AbstractGenerator
 	//Recuperation du courant
 	@Override
 	public double getCurrent() 
+	{
+		return this.current;
+	}
+	
+	public double getValue()
 	{
 		return this.current;
 	}

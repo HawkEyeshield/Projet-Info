@@ -8,9 +8,10 @@ import graphics.GraphicalComponent;
 import graphics.GraphicalFunctions;
 import graphics.Link;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import resolution.Extracteur;
+import resolution.Extractor;
 
 import java.util.ArrayList;
 
@@ -33,20 +34,13 @@ public class Breadboard
 	private ArrayList<AbstractDipole> components;
 	
 	/**Extracteur de la breadboard*/
-	private Extracteur extractor;
+	private Extractor extractor;
 	
 	/** liste des sommets déjà ajoutés au graphe*/
 	private ArrayList<Vertex> verticesUsed = new ArrayList<>();
-
-	/** Indique les noeuds deja utilises pour mettre tous les potentiels au mêmes points*/
-	//private ArrayList<GraphicalComponent> nodeAlreadyUsed = new ArrayList<GraphicalComponent>();
-
-    
-    //private int nbComponents = GraphicalFunctions.graphicalComponentsList.size();
-    
-    ///**Prégraphe*/
-    //private int[][] pregraphe = new int[nbComponents][4] ;
-
+	
+	/** indice pour les admittances*/
+	private int index=0;
 
 /* =========================== */
 /* Déclaration du constructeur */
@@ -61,63 +55,47 @@ public class Breadboard
 /* Déclaration des méthodes */
 /* ======================== */
 	
-	/** Méthode faisant appel au solveur pour la résolution 
-	 * @param console booléen indiquant si la résolution est purement via la console, le cas contraire étant avec l'interface graphique
+	/** Méthode faisant appel au solveur pour la résolution via console
 	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
 
-    public void compute(boolean console/*, AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run*/) throws IllegalArgumentException
+    public void computeConsole() throws IllegalArgumentException
 	{	
-//    	if(!console)
-//    	{
-//    		try
-//    		{
-//    			CircuitGraph g = buildGraph();
-//    			extractor = new Extracteur(g);
-//    		}
-//    		catch(Exception e)
-//    		{
-//    			System.out.println("Impossible de résoudre : ");
-//    			e.printStackTrace();
-//    		}
-//    	}
-    	//else
+    	CircuitGraph gConsole = new CircuitGraph();
+    	for(int i=0; i<GraphicalFunctions.listOfLink.size();i++)
     	{
-    		CircuitGraph gConsole = new CircuitGraph();
-    		for(int i=0; i<GraphicalFunctions.listOfLink.size();i++)
-			{
-    			Vertex v=new Vertex(i);
-				setDipoleLinks(GraphicalFunctions.listOfLink.get(i), v);
-			}
-    		
-    		for(AbstractDipole a:components)
-    		{
-    			Vertex first = a.getFirstLink();
-    			Vertex second = a.getSecondLink();
-    			
-    			if(isAlreadyUsed(first))
-    			{
-    				a.setFirstLink(vertexToUse(first));
-    				gConsole.addVertex(vertexToUse(first));
-    			}
-    			else
-    			{
-    				gConsole.addVertex(first);
-    				verticesUsed.add(first);
-    			}
-    			if(isAlreadyUsed(second))
-    			{
-    				a.setSecondLink(vertexToUse(second));
-    				gConsole.addVertex(vertexToUse(second));
-    			}
-    			else
-    			{
-    				gConsole.addVertex(second);
-    				verticesUsed.add(second);
-    			}
-    			gConsole.addComponent(a.getFirstLink(), a.getSecondLink(), a);
-    		}
-    		extractor = new Extracteur(gConsole);
+    		Vertex v=new Vertex(i);
+    		setDipoleLinks(GraphicalFunctions.listOfLink.get(i), v);
     	}
+
+    	for(AbstractDipole a:components)
+    	{
+    		Vertex first = a.getFirstLink();
+    		Vertex second = a.getSecondLink();
+
+    		if(isAlreadyUsed(first))
+    		{
+    			a.setFirstLink(vertexToUse(first));
+    			gConsole.addVertex(vertexToUse(first));
+    		}
+    		else
+    		{
+    			gConsole.addVertex(first);
+    			verticesUsed.add(first);
+    		}
+    		if(isAlreadyUsed(second))
+    		{
+    			a.setSecondLink(vertexToUse(second));
+    			gConsole.addVertex(vertexToUse(second));
+    		}
+    		else
+    		{
+    			gConsole.addVertex(second);
+    			verticesUsed.add(second);
+    		}
+    		gConsole.addComponent(a.getFirstLink(), a.getSecondLink(), a);
+    	}
+    	extractor = new Extractor(gConsole);
+
         try
         {
         	extractor.extraction(false);
@@ -131,11 +109,120 @@ public class Breadboard
         	System.out.println(p.getMessage());
         }
 		extractor.printVariables();
-
-		//Je sais pas si c'est ici qu'il fauut mettre la fonction, mais
-		//GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4, GraphicalComponent[] result,Run);
-		//Et je sais pasqu'elle est la variable qui conteint le tableau de GraphicalComponent[]
 	}
+    
+    /** Méthode faisant appel au solveur pour la résolution via l'interface 
+	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
+
+    public void computeInterface(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run) throws IllegalArgumentException
+    {	
+    	CircuitGraph gConsole = new CircuitGraph();
+    	for(int i=0; i<GraphicalFunctions.listOfLink.size();i++)
+    	{
+    		Vertex v=new Vertex(i);
+    		setDipoleLinks(GraphicalFunctions.listOfLink.get(i), v);
+    	}
+
+    	for(AbstractDipole a:components)
+    	{
+    		Vertex first = a.getFirstLink();
+    		Vertex second = a.getSecondLink();
+
+    		if(isAlreadyUsed(first))
+    		{
+    			a.setFirstLink(vertexToUse(first));
+    			gConsole.addVertex(vertexToUse(first));
+    		}
+    		else
+    		{
+    			gConsole.addVertex(first);
+    			verticesUsed.add(first);
+    		}
+    		if(isAlreadyUsed(second))
+    		{
+    			a.setSecondLink(vertexToUse(second));
+    			gConsole.addVertex(vertexToUse(second));
+    		}
+    		else
+    		{
+    			gConsole.addVertex(second);
+    			verticesUsed.add(second);
+    		}
+    		gConsole.addComponent(a.getFirstLink(), a.getSecondLink(), a);
+    	}
+    	extractor = new Extractor(gConsole);
+
+        try
+        {
+        	extractor.extraction(false);
+        }
+        catch(IndexOutOfBoundsException ex)
+        {
+        	System.out.println("Le graphe est vide : " + ex);
+        }
+        catch(PowerSupplyException p)
+        {
+        	System.out.println(p.getMessage());
+        }
+		extractor.printVariables();
+		
+		ArrayList<GraphicalComponent> result = new ArrayList<>();
+		for(AbstractDipole a : components)
+		{
+			int k = a.getIndex();
+			int i = a.getFirstLink().getIndex();
+			int j = a.getSecondLink().getIndex();
+
+			if(a.getType().equals(Type.ADMITTANCE))
+			{
+				a=(Admittance) a;
+				result.add(new GraphicalComponent(a.getName(), extractor.getAdmittance(i, j, k), extractor.getVoltage(i,j), extractor.getCurrent(i, j, k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+			}
+			else if(a.getType().equals(Type.CURRENTGENERATOR))
+			{
+				a=(CurrentGenerator)a;
+				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+			}
+			else if(a.getType().equals(Type.VOLTAGEGENERATOR))
+			{
+				a=(VoltageGenerator)a;
+				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+			}
+		}
+		GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4, result,Run);
+	}
+    
+    /**
+     * Méthode renvoyant l'orientation d'un composant graphique existant avec le nom donné
+     * @param name le nom
+     */
+    public char getRelatedOrientation(String name)
+    {
+    	for(GraphicalComponent a : GraphicalFunctions.graphicalComponentsList)
+    	{
+    		if(a.getCname().equals(name))
+    		{
+    			return a.getCorientation();
+    		}
+    	}
+    	return 'v';
+    }
+    
+    /**
+     * Méthode renvoyant l'imageView d'un composant graphique existant avec le nom donné
+     * @param name le nom
+     */
+    public ImageView getRelatedImage(String name)
+    {
+    	for(GraphicalComponent a : GraphicalFunctions.graphicalComponentsList)
+    	{
+    		if(a.getCname().equals(name))
+    		{
+    			return a.getCimage();
+    		}
+    	}
+    	return null;
+    }
     
     /**
      * Méthode déterminant à quels composants concernés par le lien donné en argument associer le vertex donné en argument
@@ -251,148 +338,18 @@ public class Breadboard
 	{
 		if (graphical.getCtype().equals(Type.ADMITTANCE)) 
 		{
-            components.add(new Admittance(graphical.getCname(), null, null));
+            components.add(new Admittance(graphical.getCname(), null, null,index));
         }
        else if (graphical.getCtype().equals(Type.CURRENTGENERATOR))
         {
-            components.add(new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
+            components.add(new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue(),index));
         }
         else if (graphical.getCtype().equals(Type.VOLTAGEGENERATOR))
         {
-            components.add(new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
+            components.add(new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue(),index));
         }
+		index++;
 	}
-	
-//    /** Méthode faisant correspondre un abstractDipole à un composant graphique
-//     *
-//     */
-//    public AbstractDipole getAbstract(GraphicalComponent graphical) throws NullPointerException
-//    {
-//        if (graphical.getCtype().equals(Type.ADMITTANCE)) {
-//            return new Admittance(graphical.getCname(), null, null, 1);
-//        } else if (graphical.getCtype().equals(Type.CURRENTGENERATOR)) {
-//            return new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue());
-//        } else if (graphical.getCtype().equals(Type.VOLTAGEGENERATOR)) {
-//            return (new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue()));
-//        }
-//
-//        throw new NullPointerException();
-//    }
-//
-//	
-//	/**
-//	 * Méthode de traduction du circuit graphique vers le solveur
-//     * Pregraphe : tableau des arêtes  (une ligne par composant, les deux valeurs non nulles sont les vertex)
-//     */
-//
-//	public int Intermediaire()
-//	{
-//		
-//        int k = 1;
-//        for (int i = 0; i < GraphicalFunctions.graphicalComponentsList.size(); i++ )
-//        {
-//            GraphicalComponent Composant = GraphicalFunctions.graphicalComponentsList.get(i);
-//            /*On choisit on composant, on cherche ses voisins. 
-//             * Le composant est reliés à deux vertex, les liens parcourus seront tous appartenant à l'un ou l'autre des vertex */
-//
-//
-//            for (int a=0; a < GraphicalFunctions.listOfLink.size(); a++){
-//                if (Composant.equals( GraphicalFunctions.listOfLink.get(a).getImage1()) ){
-//                    if (this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getFirstArea()-1] == 0){
-//                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage2() , GraphicalFunctions.listOfLink.get(a).getSecondArea(), k);
-//                        this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getFirstArea()-1] =k;
-//                        k++;
-//                    }
-//                }
-//                else if (Composant.equals( GraphicalFunctions.listOfLink.get(a).getImage2() )){
-//                    if (this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getSecondArea()-1] == 0){
-//                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage1() , GraphicalFunctions.listOfLink.get(a).getFirstArea(), k);
-//                        this.pregraphe[i][GraphicalFunctions.listOfLink.get(a).getSecondArea()-1] =k;
-//                        k++;
-//                    }
-//                }
-//            }
-//        }
-//        return k-1;
-//     }
-//
-//    /** Pour Intermédiaire
-//     * Méthode récursive pour remplir Pregraphe
-//     * @param Image
-//     * @param LinkArea
-//     * @param k
-//     */
-//    public void findVertex (GraphicalComponent Image, int LinkArea, int k ) {
-//        if (Image.getCtype() != Type.NULL) {
-//            // On considère Type(Noeud graphique) = NULL
-//            this.pregraphe[IndiceImage(Image)][LinkArea - 1] = k;
-//        } else {
-//            for (int a = 0; a < GraphicalFunctions.listOfLink.size(); a++) {
-//                if (Image.equals( GraphicalFunctions.listOfLink.get(a).getImage1())) {
-//                    if (GraphicalFunctions.listOfLink.get(a).getFirstArea() != LinkArea) {
-//                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage2(), GraphicalFunctions.listOfLink.get(a).getSecondArea(), k);
-//                    }
-//                } else if (Image.equals(GraphicalFunctions.listOfLink.get(a).getImage2())) {
-//                    if (GraphicalFunctions.listOfLink.get(a).getSecondArea() != LinkArea) {
-//                        findVertex(GraphicalFunctions.listOfLink.get(a).getImage1(), GraphicalFunctions.listOfLink.get(a).getFirstArea(), k);
-//                    }
-//                }            // On tombe sur un noeud. On trouve tous les composants reliés à ce noeud
-//                // findVertex for composants in trouvés if Image.linkarea != LinkArea
-//            }
-//        }
-//    }
-//
-//    public int IndiceImage (GraphicalComponent Image){
-//        for (int l=0; l<GraphicalFunctions.graphicalComponentsList.size(); l++){
-//            if (GraphicalFunctions.graphicalComponentsList.get(l).equals(Image) ){
-//                return  l ;
-//            }
-//        }
-//        return 0 ;
-//    }
-//
-//    /** Construction du graphe équivalent à celui de l'interface graphique*/
-//    public CircuitGraph buildGraph()
-//    {
-//		initPregraphe();
-//        CircuitGraph g = new CircuitGraph();
-//        int k = Intermediaire();
-//        Vertex[] v = new Vertex[k];
-//        for (int i =0; i<k; i++){
-//            v[i] = new Vertex(i);
-//            g.addVertex(v[i]);
-//        }
-//        for (int i=0; i<this.pregraphe.length; i++){
-//            int u = 0;
-//            int w = 0 ;
-//            for (int j=0; j<4; j++){
-//                if (this.pregraphe[i][j] != 0) {
-//                    if (u==0){
-//                        u = this.pregraphe[i][j];
-//                    }
-//                    else  {
-//						w = this.pregraphe[i][j];
-//                    }
-//                }
-//            }
-//            g.addComponent ( v[u], v[w], getAbstract(GraphicalFunctions.graphicalComponentsList.get(i)));
-//        }
-//        return g;
-//    }
-//    
-//    /**
-//     * Initialise le tableau pregraphe avec des 0
-//     */
-//    public void initPregraphe() 
-//    {
-//		for (int i = 0; i < nbComponents; i++) 
-//		{
-//			for (int j = 0; j < 4; j++) 
-//			{
-//				this.pregraphe[i][j] = 0;
-//			}
-//		}
-//	}
 
     /**
      * Méthode supprimant un composant physique à partir de son homologue graphique

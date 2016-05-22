@@ -6,7 +6,7 @@ import exceptions.AdmittanceError;
 import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
-import resolution.Extracteur;
+import resolution.Extractor;
 
 /**
  * Classe de test de l'extracteur
@@ -18,7 +18,7 @@ public class TestExtracteur extends AbstractUnit
 	CircuitGraph g;
 	
 	//création de l'extracteur
-    Extracteur e;
+    Extractor e;
     
 	@Override
 	public void setUp() 
@@ -72,7 +72,7 @@ public class TestExtracteur extends AbstractUnit
 			return;
 		}
 		
-		e = new Extracteur(g);
+		e = new Extractor(g);
 
 
 	}

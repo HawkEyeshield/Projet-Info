@@ -36,7 +36,7 @@ public class TestComputeError extends AbstractUnit
 		System.out.println("Début de test : \n");
 		try
 		{
-			b.compute(true);
+			b.computeConsole();
 		}
 		catch(IllegalArgumentException e)
 		{
@@ -46,7 +46,7 @@ public class TestComputeError extends AbstractUnit
 		{
 			list.clear();
 			list.add(new Admittance("R2", new Vertex(0), null));
-			b.compute(true);
+			b.computeConsole();
 		}
 		catch(NullPointerException e)
 		{

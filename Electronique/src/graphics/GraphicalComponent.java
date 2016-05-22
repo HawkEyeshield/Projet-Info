@@ -74,6 +74,24 @@ public class GraphicalComponent {
             this.indexation = -1;
         }
     }
+    
+    /**
+     * Constructeur amoindri pour afficher les résultats
+     * @param name nom du composant
+     * @param value valeur caractéristique du composant
+     * @param voltage tension aux bornes du composant
+     * @param current courant traversant le composant
+     */
+    public GraphicalComponent(String name, double value, double voltage, double current,ImageView object,char orientation)
+    {
+    	this.name=name;
+    	this.value=value;
+    	this.courant=current;
+    	this.voltage=voltage;
+    	this.object=object;
+    	this.orientation=orientation;
+    }
+    
     //Quelques fonctions pour acceder à différente valeurs
     public String getCname (){
         return this.name;
@@ -84,6 +102,8 @@ public class GraphicalComponent {
     public Type getCtype (){
         return this.type;
     }
+    public char getCorientation(){return this.orientation;}
+    public ImageView getCimage(){return this.object;}
     public  int getCindexation() {return this.indexation;}
     public void setCindexation(int a) {this.indexation =a;}
     }

@@ -1884,7 +1884,7 @@ public class GraphicalFunctions
 		return(a);
 	}
 
-	public static void showResult(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, GraphicalComponent[] result, Button Run){
+	public static void showResult(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, ArrayList<GraphicalComponent> result, Button Run){
 
 
 		//Supprime le message
@@ -1898,23 +1898,23 @@ public class GraphicalFunctions
 			informationsList.add(informations);
 		}
 
-		for(int i = 0; i < result.length ; i++){//On affiche aussi toutes les valeurs
+		for(int i = 0; i < result.size() ; i++){//On affiche aussi toutes les valeurs
 			//On cree deux messages en fonctions de l'orientation de l'image
-			Text informationsh = new Text("Nom : " + result[i].name + "\nValeur : " + result[i].value
-					+ "\nValeur du courant = " + result[i].courant + "\nValeur de tension = " + result[i].voltage);
-			Text informationsv = new Text("Nom : " + result[i].name + "\nValeur : " + result[i].value
-					+ "\nValeur du courant = " + result[i].courant + "\nValeur de tension = " + result[i].voltage);
+			Text informationsh = new Text("Nom : " + result.get(i).name + "\nValeur : " + result.get(i).value
+					+ "\nValeur du courant = " + result.get(i).courant + "\nValeur de tension = " + result.get(i).voltage);
+			Text informationsv = new Text("Nom : " + result.get(i).name + "\nValeur : " + result.get(i).value
+					+ "\nValeur du courant = " + result.get(i).courant + "\nValeur de tension = " + result.get(i).voltage);
 
 
 			// On definie la zone des deux informations.
-			informationsh.setX(result[i].object.getX());
-			informationsh.setY(result[i].object.getY() + 60);
+			informationsh.setX(result.get(i).object.getX());
+			informationsh.setY(result.get(i).object.getY() + 60);
 
-			informationsv.setX(result[i].object.getX() + 80);
-			informationsv.setY(result[i].object.getY());
+			informationsv.setX(result.get(i).object.getX() + 80);
+			informationsv.setY(result.get(i).object.getY());
 
 			//On affiche le bon en fonction de l orientation
-			if(result[i].orientation == 'v') {
+			if(result.get(i).orientation == 'v') {
 				anchorPane3.getChildren().add(informationsv); //On affiche les informations
 				informationsList.add(informationsv);
 			}

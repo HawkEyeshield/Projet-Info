@@ -39,7 +39,7 @@ public class TestBreadboard extends AbstractUnit
 		System.out.println(b.getComponents());
 		try
 		{
-			b.compute(true);
+			b.computeConsole();
 		}
 		catch(Exception e)
 		{
@@ -50,7 +50,7 @@ public class TestBreadboard extends AbstractUnit
 	@Override
 	public void after() 
 	{
-		System.out.println("Test terminé !");
+		System.out.println("\nTest terminé !");
 	}
 
 }

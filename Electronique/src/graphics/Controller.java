@@ -52,7 +52,7 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     //TODO il me faudrait un tableau compose d'element du type GraphicalComponent pour que je puisse tout affiche
                     try
                     {
-                        GraphicalFunctions.breadboard.compute(true/*,anchorPane3,programmeLaunch,anchorPane4,Run*/);
+                        GraphicalFunctions.breadboard.computeInterface(anchorPane3,programmeLaunch,anchorPane4,Run);
                     }
                     catch(IllegalArgumentException e)
                     {
@@ -62,14 +62,12 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                         erreur.setX(550 + scrollPosition2[0]);//On définit la zone
                         erreur.setY(20 + scrollPosition2[1]);
                         anchorPane3.getChildren().add(erreur);//et on affiche
-                        System.out.println("Problème de sommets !");
                         e.printStackTrace();
                         GraphicalFunctions.erreur = erreur;
                     }
                     Run.setText("Résolu !");
                     Run.setDisable(true);
-                    GraphicalFunctions.isProgramRunning=false;
-                    anchorPane3.getChildren().remove(programmeLaunch);
+                    //GraphicalFunctions.showResult(anchorPane3, programmeLaunch, anchorPane4, result, CreerUnLien);
                 }
                 else{
                     anchorPane4.getChildren().remove(GraphicalFunctions.informationsList.get(0));//On met ici le premier, car il est dans anchorPane4

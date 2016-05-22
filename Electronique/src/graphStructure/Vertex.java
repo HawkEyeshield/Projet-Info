@@ -14,7 +14,7 @@ public class Vertex
 	/* ========================= */
 	
 	/**le numero du vertex (changeable)*/
-    private int number;
+    private int index;
 
     /* ============================ */
     /* Déclaration des contructeurs */
@@ -25,7 +25,7 @@ public class Vertex
      */
     public Vertex() 
     {
-        number = 0;
+        index = 0;
     }
     
     /**
@@ -34,7 +34,7 @@ public class Vertex
      */
     public Vertex(int i) 
     {
-        number = i;
+        index = i;
     }
     
     /* ======================== */
@@ -46,7 +46,7 @@ public class Vertex
     {
         if (i>=0) 
         {
-            number = i;
+            index = i;
         }
         else throw new IllegalArgumentException("Indice négatif");
     }
@@ -54,6 +54,6 @@ public class Vertex
     //Getter du number
     public int getIndex() 
     {
-        return number;
+        return index;
     }
 }

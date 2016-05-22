@@ -6,7 +6,7 @@ import components.VoltageGenerator;
 import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
-import resolution.Extracteur;
+import resolution.Extractor;
 
 /**
  * Classe définissant un test pour l'utilisation de deux générateurs
@@ -15,7 +15,7 @@ import resolution.Extracteur;
 public class TestDual extends AbstractUnit
 {
 	CircuitGraph g;
-	Extracteur e;
+	Extractor e;
 
 	@Override
 	public void setUp() 
@@ -55,7 +55,7 @@ public class TestDual extends AbstractUnit
 
 
 		//création de l'extracteur
-		e = new Extracteur(g);
+		e = new Extractor(g);
 
 	}
 	
