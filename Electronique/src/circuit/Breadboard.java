@@ -102,7 +102,7 @@ public class Breadboard
         }
         catch(IndexOutOfBoundsException ex)
         {
-        	System.out.println("Le graphe est vide : " + ex);
+        	System.out.println("Problème de graphe : " + ex);
         }
         catch(PowerSupplyException p)
         {
@@ -158,7 +158,8 @@ public class Breadboard
         }
         catch(IndexOutOfBoundsException ex)
         {
-        	System.out.println("Le graphe est vide : " + ex);
+        	System.out.println("Problème de graphe : ");
+        	ex.printStackTrace();
         }
         catch(PowerSupplyException p)
         {
@@ -169,7 +170,7 @@ public class Breadboard
 		ArrayList<GraphicalComponent> result = new ArrayList<>();
 		for(AbstractDipole a : components)
 		{
-			int k = a.getIndex();
+			int k = a.getIndex()-1;
 			int i = a.getFirstLink().getIndex();
 			int j = a.getSecondLink().getIndex();
 
@@ -181,12 +182,12 @@ public class Breadboard
 			else if(a.getType().equals(Type.CURRENTGENERATOR))
 			{
 				a=(CurrentGenerator)a;
-				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k+1),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
 			}
 			else if(a.getType().equals(Type.VOLTAGEGENERATOR))
 			{
 				a=(VoltageGenerator)a;
-				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
+				result.add(new GraphicalComponent(a.getName(), a.getValue(), extractor.getVoltage(i, j), extractor.getGeneratorCurrent(k+1),getRelatedImage(a.getName()),getRelatedOrientation(a.getName())));
 			}
 		}
 		GraphicalFunctions.showResult(anchorPane3,programmeLaunch,anchorPane4, result,Run);
@@ -338,17 +339,19 @@ public class Breadboard
 	{
 		if (graphical.getCtype().equals(Type.ADMITTANCE)) 
 		{
-            components.add(new Admittance(graphical.getCname(), null, null,index));
+			Admittance a = new Admittance(graphical.getCname(),null,null);
+            components.add(a);
         }
        else if (graphical.getCtype().equals(Type.CURRENTGENERATOR))
         {
             components.add(new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue(),index));
+            index++;
         }
         else if (graphical.getCtype().equals(Type.VOLTAGEGENERATOR))
         {
             components.add(new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue(),index));
+            index++;
         }
-		index++;
 	}
 
     /**
