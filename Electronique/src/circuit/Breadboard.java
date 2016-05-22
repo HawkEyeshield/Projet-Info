@@ -102,7 +102,7 @@ public class Breadboard
         }
         catch(IndexOutOfBoundsException ex)
         {
-        	System.out.println("Le graphe est vide : " + ex);
+        	System.out.println("Problème de graphe : " + ex);
         }
         catch(PowerSupplyException p)
         {
@@ -158,7 +158,8 @@ public class Breadboard
         }
         catch(IndexOutOfBoundsException ex)
         {
-        	System.out.println("Le graphe est vide : " + ex);
+        	System.out.println("Problème de graphe : ");
+        	ex.printStackTrace();
         }
         catch(PowerSupplyException p)
         {
@@ -338,17 +339,19 @@ public class Breadboard
 	{
 		if (graphical.getCtype().equals(Type.ADMITTANCE)) 
 		{
-            components.add(new Admittance(graphical.getCname(), null, null,index));
+			Admittance a = new Admittance(graphical.getCname(),null,null);
+            components.add(a);
         }
        else if (graphical.getCtype().equals(Type.CURRENTGENERATOR))
         {
             components.add(new CurrentGenerator(graphical.getCname(), null, null, graphical.getCvalue(),index));
+            index++;
         }
         else if (graphical.getCtype().equals(Type.VOLTAGEGENERATOR))
         {
             components.add(new VoltageGenerator(graphical.getCname(), null, null, graphical.getCvalue(),index));
+            index++;
         }
-		index++;
 	}
 
     /**

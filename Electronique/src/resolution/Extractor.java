@@ -58,7 +58,7 @@ public class Extractor
 
     /**
      * @param resetting determine si les vertices vont etre reparametres (proscrit si vous concevez vous meme votre circuit)
-     * @throws IndexOutOfBoundsException si le solveur possède un tableau vide dans la méthode printVariables
+     * @throws IndexOutOfBoundsException si le solveur a un problème de tableau dans la méthode printVariables
      * @throws PowerSupplyException si aucun générateur de tension ou courant n'est détecté
      */
     @SuppressWarnings("unchecked")
@@ -390,6 +390,10 @@ public class Extractor
 
 
         solveur = new Solver(voltages, currents, admittances, powerCurrents, eq);
+        
+        System.out.println("Variables initiales");
+        
+        solveur.printVariables();
         if (solveur.resolution()) {
             for (int i = 0; i < nbGenerators; i++) resultCurrents[i] = solveur.currGenerator()[i][1];
             //rapatriement resultats
