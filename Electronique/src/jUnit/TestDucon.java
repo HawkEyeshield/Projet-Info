@@ -4,6 +4,7 @@ package jUnit;
 import components.Admittance;
 import components.CurrentGenerator;
 import components.VoltageGenerator;
+import exceptions.AdmittanceError;
 import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
 import graphStructure.Vertex;
@@ -36,8 +37,13 @@ public class TestDucon extends AbstractUnit
 		v.index = 0;
 		g.addComponent(v0, v1, v);
 
-
-		g.addComponent(v0, v1, new Admittance("Y1", v0, v1, 1));
+		Admittance a = new Admittance("Y1", v0, v1);
+		try {
+			a.setVoltage(10);
+		} catch (AdmittanceError admittanceError) {
+			admittanceError.printStackTrace();
+		}
+		g.addComponent(v0, v1, a);
 
 
 		//création de l'extracteur

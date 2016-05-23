@@ -151,6 +151,8 @@ public class Solver
         }
         //on est sorti -> on a resolu le systeme.
         logn("System solved");
+        System.out.println(updateNumberUnknown()+ " "+nbUnknown);
+        printVariables();
         return true;
     }
 
@@ -373,7 +375,7 @@ public class Solver
         for (int c = 0; c < 3; c++)
             for (int i = 0; i < nbNodes; i++)
                 for (int j = 0; j < nbNodes; j++)
-                    for (int k = 0;k<vars[k].size(i, j);k++)
+                    for (int k = 0;k<vars[c].size(i, j);k++)
                         if (!vars[c].get(i, j, k).found) nb++;
         nbUnknown = nb;
         return nb == 0;
