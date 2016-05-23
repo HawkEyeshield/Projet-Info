@@ -2,6 +2,7 @@ package jUnit;
 
 
 import components.Admittance;
+import components.CurrentGenerator;
 import components.VoltageGenerator;
 import exceptions.PowerSupplyException;
 import graphStructure.CircuitGraph;
@@ -31,7 +32,7 @@ public class TestDucon extends AbstractUnit
 
 		//les divers composants sont ici ajoutés au graphe.
 		//Admittance a;
-		VoltageGenerator v = new VoltageGenerator("E0", v0, v1, 40);
+		CurrentGenerator v = new CurrentGenerator("E0", v0, v1, 40);
 		v.index = 0;
 		g.addComponent(v0, v1, v);
 

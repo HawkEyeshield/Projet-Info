@@ -283,9 +283,12 @@ public class Extractor
                 if ((type == Type.VOLTAGEGENERATOR) || (type == Type.CURRENTGENERATOR)) {
                     gen = (AbstractGenerator) m.component();
                     iGen = gen.index;
-                    if (addedGens.contains(iGen)) {//Si on ne l'a pas ajouté (pas trouvé dans l'arraylist des generateurs)
-                        if (type == Type.CURRENTGENERATOR)//Si c'est un generateur de courant, on ajoute le courant donné dans le tableau des generateurs de courant
+                    if (!addedGens.contains(iGen)) {//Si on ne l'a pas ajouté (pas trouvé dans l'arraylist des generateurs)
+                        if (type == Type.CURRENTGENERATOR) {//Si c'est un generateur de courant, on ajoute le courant donné dans le tableau des generateurs de courant
                             powerCurrents[iGen] = new double[]{1, signe * gen.getCurrent()};
+                            System.out.println("generateur de courants : " + iGen + "  " + signe * gen.getCurrent());
+                        }
+
                         addedGens.add(iGen);//on ajoute le generateur
 
                         //on map le generateur, pour avoir la correspondance indice - (sommetdepart/sommetarrivée)
