@@ -60,9 +60,10 @@ public class Extractor
      * @param resetting determine si les vertices vont etre reparametres (proscrit si vous concevez vous meme votre circuit)
      * @throws IndexOutOfBoundsException si le solveur a un problème de tableau dans la méthode printVariables
      * @throws PowerSupplyException si aucun générateur de tension ou courant n'est détecté
+     * @throws IllegalArgumentException lancée si le système est non solvable
      */
     @SuppressWarnings("unchecked")
-	public boolean extraction(boolean resetting) throws IndexOutOfBoundsException, PowerSupplyException{
+	public boolean extraction(boolean resetting) throws IndexOutOfBoundsException, PowerSupplyException, IllegalArgumentException{
         //Pour le moment, les admittances paralleles ne sont pas acceptées. Une version future les incluera, je n'ai pas le temps pour l'instant
 
         Vertex[] vertices = graph.getAllVertices();
@@ -403,7 +404,7 @@ public class Extractor
             return true;
         } else {
             logn("Systeme inrésolvable. Arret...\n");
-            return false;
+            throw new IllegalArgumentException();
         }
 
     }

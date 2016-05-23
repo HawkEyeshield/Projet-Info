@@ -158,12 +158,18 @@ public class Breadboard
         }
         catch(IndexOutOfBoundsException ex)
         {
-        	System.out.println("Problème de graphe : ");
+        	System.out.println("Problème de graphe : " + ex.getMessage());
         	ex.printStackTrace();
         }
         catch(PowerSupplyException p)
         {
-        	System.out.println(p.getMessage());
+        	System.out.println("Problème de circuit : " + p.getMessage());
+        	p.printStackTrace();
+        }
+        catch(IllegalArgumentException i)
+        {
+        	System.out.println("Problème de circuit : " + i.getMessage());
+        	i.printStackTrace();
         }
 		extractor.printVariables();
 		
