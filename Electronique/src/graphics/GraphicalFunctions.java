@@ -1134,76 +1134,79 @@ public class GraphicalFunctions
 
 			courantGenerator.setOnMouseDragged(event1 -> 
 			{
-				if (state == "d" && event1.isPrimaryButtonDown()) { //En position Drag and Drop
-					// position de l'image
-					double imagx;
-					double imagy;
-					if(courantGenerator.getRotate() == 0) {//Dans le bon sens
-						imagx = image.getWidth();
-						imagy = image.getHeight();
-					}
-					else{//rotation 90° donc on inverse la hauteur et la largeur et on prend en compte que le point (x,y) de l'image
-						//n'est plus en haut a gauche de l'image visuel.
-						imagy = image.getWidth() - 25;
-						imagx = image.getHeight() - 25;
-					}
+				if (event1.isPrimaryButtonDown()) {
+					if (state == "d") { //En position Drag and Drop
+						// position de l'image
+						double imagx;
+						double imagy;
+						if(courantGenerator.getRotate() == 0) {//Dans le bon sens
+							imagx = image.getWidth();
+							imagy = image.getHeight();
+						}
+						else{//rotation 90° donc on inverse la hauteur et la largeur et on prend en compte que le point (x,y) de l'image
+							//n'est plus en haut a gauche de l'image visuel.
+							imagy = image.getWidth() - 25;
+							imagx = image.getHeight() - 25;
+						}
 
-					// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
-					positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
+						// positionFenetre contient les valeurs du coin en haut a gauche visible de l'anchorPane2
+						positionFenetre[0] = positionRelative(anchorPane2,scrollPane);
 
-					// on récupère la taille de la fenêtre
-					double x = event1.getSceneX() + positionFenetre[0][0];
-					double y = event1.getSceneY() + positionFenetre[0][1];
+						// on récupère la taille de la fenêtre
+						double x = event1.getSceneX() + positionFenetre[0][0];
+						double y = event1.getSceneY() + positionFenetre[0][1];
 
-					//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
-					//alors que celles du composant à partir de anchorPane2
-					y = y - 60;
+						//On effectue cet ajustement car les coordonées de la souris sont calculées a partir du cadre global
+						//alors que celles du composant à partir de anchorPane2
+						y = y - 60;
 
-					// Permet de ne pas sortir du cadre
-					if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
-						x = (imagx / 2);
-					}
-					if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
-						y = (imagy / 2);
-					}
+						// Permet de ne pas sortir du cadre
+						if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
+							x = (imagx / 2);
+						}
+						if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+							y = (imagy / 2);
+						}
 
-					double mx = anchorPane2.getWidth();
+						double mx = anchorPane2.getWidth();
 
-					double my = anchorPane2.getHeight();
+						double my = anchorPane2.getHeight();
 
-					if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
-						x = mx - imagx / 2 ;
-					}
+						if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
+							x = mx - imagx / 2 ;
+						}
 
 						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
 						 * c est a dire le centre x plus la largeur de l image divise par 2 */
-					if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
-						y = my - imagy / 2 ;
+						if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
+							y = my - imagy / 2 ;
+						}
+
+						//Ici on repositionne l'image est les 4 potentiel carré noir autour
+						if(courantGenerator.getRotate() == 0) {
+							courantGenerator.setX(x - imagx / 2);
+							courantGenerator.setY(y - imagy / 2);
+						}
+						else{
+							courantGenerator.setX(x - imagx /2 - 25);
+							courantGenerator.setY(y - imagy /2 + 25);
+						}
+
+
+						linkArea3.setX(courantGenerator.getX() + image.getWidth());
+						linkArea3.setY(courantGenerator.getY() + image.getHeight() / 2);
+						linkArea1.setX(courantGenerator.getX());
+						linkArea1.setY(courantGenerator.getY() + image.getHeight() / 2);
+						linkArea2.setX(courantGenerator.getX() + imagx + 25);
+						linkArea2.setY(courantGenerator.getY() - 25);
+						linkArea4.setX(courantGenerator.getX() + imagx + 25);
+						linkArea4.setY(courantGenerator.getY() + 75);
+
+						actualiseViewOfLink(componentCourantGenerator, anchorPane2); //On actualise les liens
 					}
-
-					//Ici on repositionne l'image est les 4 potentiel carré noir autour
-					if(courantGenerator.getRotate() == 0) {
-						courantGenerator.setX(x - imagx / 2);
-						courantGenerator.setY(y - imagy / 2);
-					}
-					else{
-						courantGenerator.setX(x -50);
-						courantGenerator.setY(y +25);
-					}
-
-					linkArea3.setX(courantGenerator.getX() + image.getWidth());
-					linkArea3.setY(courantGenerator.getY() + image.getHeight() / 2);
-					linkArea1.setX(courantGenerator.getX());
-					linkArea1.setY(courantGenerator.getY() + image.getHeight() / 2);
-					linkArea2.setX(courantGenerator.getX() + imagx + 25);
-					linkArea2.setY(courantGenerator.getY() - 25);
-					linkArea4.setX(courantGenerator.getX() + imagx + 25);
-					linkArea4.setY(courantGenerator.getY() + 75);
-
-					actualiseViewOfLink(componentCourantGenerator,anchorPane2);
-
 				}
 			});
+
 		});
 	}
 
@@ -1833,31 +1836,27 @@ public class GraphicalFunctions
 						//alors que celles du composant à partir de anchorPane2
 						y = y - 60;
 
+						// Permet de ne pas sortir du cadre
+						if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
+							x = (imagx / 2);
+						}
+						if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
+							y = (imagy / 2);
+						}
+
 						double mx = anchorPane2.getWidth();
 
 						double my = anchorPane2.getHeight();
-						if(resistance.getRotate() == 0) {
-							// Permet de ne pas sortir du cadre
-							if (x < (imagx / 2)) { // on evite de sortir du cadre a gauche
-								System.out.println(x);
-								x = (imagx / 2);
-							}
-							if (y < (imagy / 2)) { // on evite de sortir du cadre en haut
-								y = (imagy / 2);
-							}
 
-
-							if (x + imagx / 2 > mx) {// on evite de sortir du cadre a droite
-								x = mx - imagx / 2;
-							}
+						if (x + imagx / 2 > mx ) {// on evite de sortir du cadre a droite
+							x = mx - imagx / 2 ;
+						}
 
 						/* Ici on prend la taille de l'écran, on lui enlève la scrollbare et on regarde si le bord de l'image
 						 * c est a dire le centre x plus la largeur de l image divise par 2 */
-							if (y + imagy / 2 > my) {// on evite de sortir du cadre en bas
-								y = my - imagy / 2;
-							}
+						if (y + imagy / 2 > my ) {// on evite de sortir du cadre en bas
+							y = my - imagy / 2 ;
 						}
-
 
 						//Ici on repositionne l'image est les 4 potentiel carré noir autour
 						if(resistance.getRotate() == 0) {
@@ -1865,9 +1864,10 @@ public class GraphicalFunctions
 							resistance.setY(y - imagy / 2);
 						}
 						else{
-							resistance.setX(x - imagx/2 + 25);
-							resistance.setY(y - imagy/2 - 25);
+							resistance.setX(x - imagx /2 - 25);
+							resistance.setY(y - imagy /2 + 25);
 						}
+
 
 						linkArea3.setX(resistance.getX() + image.getWidth());
 						linkArea3.setY(resistance.getY() + image.getHeight() / 2);
