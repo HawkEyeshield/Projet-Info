@@ -603,11 +603,9 @@ public class GraphicalFunctions
 					if (a.equals("Tanguy")) {//Ce teste permet de mettre en evidence l'importance de certain nom de composant
 						System.out.println("Excellent choix !");
 					}
-					componentVoltageGenerator.name = a;
-					
-					//Actualise le nom dans la breadboard
 					breadboard.getDipole(componentVoltageGenerator).setName(a);
-					
+					componentVoltageGenerator.name = a;
+
 					anchorPane2.getChildren().remove(zonePourChangerName);//on enleve la zone d'affichage du message
 
 				});
@@ -1037,10 +1035,11 @@ public class GraphicalFunctions
 					if (a.equals("Tanguy")) {
 						System.out.println("Excellent choix !");
 					}
+					breadboard.getDipole(componentCourantGenerator).setName(a);
 					componentCourantGenerator.name = a;
 					
-					//Actualise le nom dans la breadboard
-					breadboard.getDipole(componentCourantGenerator).setName(a);
+
+
 					
 					anchorPane2.getChildren().remove(zonePourChangerName);
 
