@@ -364,7 +364,7 @@ public class GraphicalFunctions
 
         // Permet de faire apparaitre le generateur de tension dans la zone centrale en cliquant dans la zone des composants
 		firstVoltageGenerator.setOnMouseClicked(event ->
-		{	//Fait apparaitre différente image
+		{	//Fait apparaitre differente image
 
 			//L'image principale du composant
 			ImageView tensionGenerator = new ImageView();
@@ -765,9 +765,10 @@ public class GraphicalFunctions
 							tensionGenerator.setY(y - imagy / 2);
 						}
 						else{
-							tensionGenerator.setX(x - 50);
-							tensionGenerator.setY(y - 25);
+							tensionGenerator.setX(x - imagx /2 - 25);
+							tensionGenerator.setY(y - imagy /2 + 25);
 						}
+
 
 						linkArea3.setX(tensionGenerator.getX() + image.getWidth());
 						linkArea3.setY(tensionGenerator.getY() + image.getHeight() / 2);
@@ -1186,8 +1187,8 @@ public class GraphicalFunctions
 						courantGenerator.setY(y - imagy / 2);
 					}
 					else{
-						courantGenerator.setX(x - 50);
-						courantGenerator.setY(y - 25);
+						courantGenerator.setX(x -50);
+						courantGenerator.setY(y +25);
 					}
 
 					linkArea3.setX(courantGenerator.getX() + image.getWidth());
@@ -1864,8 +1865,8 @@ public class GraphicalFunctions
 							resistance.setY(y - imagy / 2);
 						}
 						else{
-							resistance.setX(x - 50);
-							resistance.setY(y - 25);
+							resistance.setX(x - imagx/2 + 25);
+							resistance.setY(y - imagy/2 - 25);
 						}
 
 						linkArea3.setX(resistance.getX() + image.getWidth());
