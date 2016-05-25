@@ -1,7 +1,6 @@
 package main;
 
 import org.junit.Test;
-import org.junit.runner.JUnitCore;
 import jUnit.AbstractUnit;
 import jUnit.TestBreadboard;
 import jUnit.TestComputeError;
