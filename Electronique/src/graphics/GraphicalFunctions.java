@@ -1713,10 +1713,9 @@ public class GraphicalFunctions
 					if (a.equals("Tanguy")) {
 						System.out.println("Excellent choix !");
 					}
-					componentResistance.name = a;
-					
-					//Actualise le nom dans la breadboard
+					//Actualise le nom dans la breadboard AVANT le composant graphique
 					breadboard.getDipole(componentResistance).setName(a);
+					componentResistance.name = a;
 					
 					anchorPane2.getChildren().remove(zonePourChangerName);
 
