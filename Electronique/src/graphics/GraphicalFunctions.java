@@ -1717,7 +1717,7 @@ public class GraphicalFunctions
 					
 					//Actualise le nom dans la breadboard
 					breadboard.getDipole(componentResistance).setName(a);
-					
+
 					anchorPane2.getChildren().remove(zonePourChangerName);
 
 				});
