@@ -53,21 +53,24 @@ public class Controller implements javafx.fxml.Initializable//implement très ut
                     try
                     {
                         GraphicalFunctions.breadboard.computeInterface(anchorPane3,programmeLaunch,anchorPane4,Run);
+                        Run.setText("Résolu !");
+                        Run.setDisable(true);
                     }
-                    catch(IllegalArgumentException e)
+                    catch(Exception e)
                     {
                         System.out.println();
                         //TODO faire apparaître une fenêtre avec un message d'erreur
-                        Text erreur = new Text("Erreur, le programme ne peut être resolu" + e.getMessage());//On change le texte du bouton
+                        anchorPane3.getChildren().remove(programmeLaunch);
+                        Text erreur = new Text("Erreur, le programme ne peut être resolu : " + e.getMessage());//On change le texte du bouton
                         double [] scrollPosition2 = GraphicalFunctions.positionRelative(anchorPane3,scrollPane); // Donne la position relative de la fenêtre
                         erreur.setX(550 + scrollPosition2[0]);//On définit la zone
                         erreur.setY(20 + scrollPosition2[1]);
                         anchorPane3.getChildren().add(erreur);//et on affiche
                         e.printStackTrace();
                         GraphicalFunctions.erreur = erreur;
+                        Run.setText("Erreur !");
+                        Run.setDisable(true);
                     }
-                    Run.setText("Résolu !");
-                    Run.setDisable(true);
                     //GraphicalFunctions.showResult(anchorPane3, programmeLaunch, anchorPane4, result, CreerUnLien);
                 }
                 else{

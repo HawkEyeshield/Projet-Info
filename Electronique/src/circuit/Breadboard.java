@@ -114,7 +114,7 @@ public class Breadboard
     /** Méthode faisant appel au solveur pour la résolution via l'interface 
 	 * @throws IllegalArgumentException exception levée si un problème de graphe est repéré par le solveur, doit être catch par l'interface graphique*/
 
-    public void computeInterface(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run) throws IllegalArgumentException
+    public void computeInterface(AnchorPane anchorPane3, Text programmeLaunch, AnchorPane anchorPane4, Button Run) throws IllegalArgumentException, IndexOutOfBoundsException, PowerSupplyException
     {	
     	CircuitGraph gConsole = new CircuitGraph();
     	for(int i=0; i<GraphicalFunctions.listOfLink.size();i++)
@@ -152,25 +152,8 @@ public class Breadboard
     	}
     	extractor = new Extractor(gConsole);
 
-        try
-        {
-        	extractor.extraction(false);
-        }
-        catch(IndexOutOfBoundsException ex)
-        {
-        	System.out.println("Problème de graphe : " + ex.getMessage());
-        	ex.printStackTrace();
-        }
-        catch(PowerSupplyException p)
-        {
-        	System.out.println("Problème de circuit : " + p.getMessage());
-        	p.printStackTrace();
-        }
-        catch(IllegalArgumentException i)
-        {
-        	System.out.println("Problème de circuit : " + i.getMessage());
-        	i.printStackTrace();
-        }
+        extractor.extraction(false);
+       
 		extractor.printVariables();
 		
 		ArrayList<GraphicalComponent> result = new ArrayList<>();

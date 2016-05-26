@@ -1904,14 +1904,6 @@ public class GraphicalFunctions
 
 		//Supprime le message
 		anchorPane3.getChildren().remove(programmeLaunch);
-		if(valueToShow !=null){//On affiche les valeurs qui interessent l utilisateur
-			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
-					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
-			informations.setLayoutX(20);
-			informations.setLayoutY(500);
-			anchorPane4.getChildren().add(informations);
-			informationsList.add(informations);
-		}
 
 		for(int i = 0; i < result.size() ; i++){//On affiche aussi toutes les valeurs
 			//On cree deux messages en fonctions de l'orientation de l'image
@@ -1938,6 +1930,16 @@ public class GraphicalFunctions
 				informationsList.add(informationsh); //On ajoute les info a la liste pour pouvoir les supprimer plus tard
 			}
 		}
+		
+		if(valueToShow !=null){//On affiche les valeurs qui interessent l utilisateur
+			Text informations = new Text("Nom : " + valueToShow.name + "\nValeur : " + valueToShow.value
+					+ "\nValeur du courant = " + valueToShow.courant + "\nValeur de tension = " + valueToShow.voltage);
+			informations.setLayoutX(20);
+			informations.setLayoutY(500);
+			anchorPane4.getChildren().add(informations);
+			informationsList.add(informations);
+		}
+		
 		GraphicalFunctions.isProgramRunning = false;//On aurtorise a l utilisateur de relancer le programme
 
 	}
